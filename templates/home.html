@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NexaCart | Login</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='suraj.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    <div class="page">
+
+        <div class="auth-wrapper" id="authWrapper">
+
+            <div class="background-shape"></div>
+            <div class="secondary-shape"></div>
+
+
+            <!-- =========================
+                 CUSTOMER LOGIN PANEL
+            ========================== -->
+
+            <div class="credentials-panel signin">
+
+                <div class="form-content">
+
+                    <div class="brand slide-element">
+                        <i class="fa-solid fa-brain"></i>
+                        NEXACART
+                    </div>
+
+                    <h2 class="slide-element">
+                        Login
+                    </h2>
+
+                    <p class="description slide-element">
+                        Welcome back! Login to continue.
+                    </p>
+
+
+                    <!-- CUSTOMER LOGIN FORM -->
+
+                    <form id="loginForm">
+
+                        <div class="field-wrapper slide-element">
+
+                            <input
+                                type="text"
+                                id="loginUsername"
+                                required
+                            >
+
+                            <label>
+                                Username
+                            </label>
+
+                            <i class="fa-solid fa-user"></i>
+
+                        </div>
+
+
+                        <div class="field-wrapper slide-element">
+
+                            <input
+                                type="password"
+                                id="loginPassword"
+                                required
+                            >
+
+                            <label>
+                                Password
+                            </label>
+
+                            <i class="fa-solid fa-lock"></i>
+
+                        </div>
+
+
+                        <div class="options slide-element">
+
+                            <label>
+                                <input type="checkbox">
+                                Remember me
+                            </label>
+
+                            <a href="#">
+                                Forgot Password?
+                            </a>
+
+                        </div>
+
+
+                        <div class="field-wrapper slide-element">
+
+                            <button
+                                class="submit-button"
+                                type="submit"
+                            >
+
+                                <span>
+                                    Login
+                                </span>
+
+                                <i class="fa-solid fa-arrow-right"></i>
+
+                            </button>
+
+                        </div>
+
+
+                        <!-- CUSTOMER SIGN UP -->
+
+                        <div class="switch-link slide-element">
+
+                            <p>
+
+                                Don't have an account?
+
+                                <br>
+
+                                <a href="#" id="registerTrigger">
+                                    Sign Up
+                                </a>
+
+                            </p>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 CUSTOMER LOGIN WELCOME
+            ========================== -->
+
+            <div class="welcome-section signin">
+
+                <div class="welcome-content">
+
+                    <div class="welcome-icon slide-element">
+
+                        <i class="fa-solid fa-cart-shopping"></i>
+
+                    </div>
+
+
+                    <h2 class="slide-element">
+
+                        WELCOME
+                        <br>
+
+                        <span>
+                            BACK!
+                        </span>
+
+                    </h2>
+
+
+                    <p class="slide-element">
+
+                        Your intelligent shopping experience starts here.
+
+                    </p>
+
+
+                    <div class="ai-badge slide-element">
+
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+                        AI Powered Shopping
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 CUSTOMER REGISTER PANEL
+            ========================== -->
+
+            <div class="credentials-panel signup">
+
+                <div class="form-content">
+
+                    <div class="brand slide-element">
+
+                        <i class="fa-solid fa-brain"></i>
+
+                        NEXACART
+
+                    </div>
+
+
+                    <h2 class="slide-element">
+                        Register
+                    </h2>
+
+
+                    <p class="description slide-element">
+
+                        Create your NexaCart account.
+
+                    </p>
+
+
+                    <!-- CUSTOMER REGISTER FORM -->
+
+                    <form id="registerForm">
+
+
+                        <!-- USERNAME -->
+
+                        <div class="field-wrapper slide-element">
+
+                            <input
+                                type="text"
+                                id="registerUsername"
+                                required
+                            >
+
+                            <label>
+                                Username
+                            </label>
+
+                            <i class="fa-solid fa-user"></i>
+
+                        </div>
+
+
+                        <!-- EMAIL -->
+
+                        <div class="field-wrapper slide-element">
+
+                            <input
+                                type="email"
+                                id="registerEmail"
+                                required
+                            >
+
+                            <label>
+                                Email
+                            </label>
+
+                            <i class="fa-solid fa-envelope"></i>
+
+                        </div>
+
+
+                        <!-- PHONE -->
+
+                        <div class="field-wrapper slide-element">
+
+                            <input
+                                type="tel"
+                                id="registerPhone"
+                                required
+                            >
+
+                            <label>
+                                Phone Number
+                            </label>
+
+                            <i class="fa-solid fa-phone"></i>
+
+                        </div>
+
+
+                        <!-- PASSWORD -->
+
+                        <div class="field-wrapper slide-element">
+
+                            <input
+                                type="password"
+                                id="registerPassword"
+                                required
+                            >
+
+                            <label>
+                                Password
+                            </label>
+
+                            <i class="fa-solid fa-lock"></i>
+
+                        </div>
+
+
+                        <!-- REGISTER BUTTON -->
+
+                        <div class="field-wrapper slide-element">
+
+                            <button
+                                class="submit-button"
+                                type="submit"
+                            >
+
+                                <span>
+                                    Register
+                                </span>
+
+                                <i class="fa-solid fa-user-plus"></i>
+
+                            </button>
+
+                        </div>
+
+
+                        <!-- BACK TO LOGIN -->
+
+                        <div class="switch-link slide-element">
+
+                            <p>
+
+                                Already have an account?
+
+                                <br>
+
+                                <a href="#" id="loginTrigger">
+                                    Sign In
+                                </a>
+
+                            </p>
+
+                        </div>
+
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 CUSTOMER REGISTER WELCOME
+            ========================== -->
+
+            <div class="welcome-section signup">
+
+                <div class="welcome-content">
+
+
+                    <div class="welcome-icon slide-element">
+
+                        <i class="fa-solid fa-robot"></i>
+
+                    </div>
+
+
+                    <h2 class="slide-element">
+
+                        JOIN
+                        <br>
+
+                        <span>
+                            NEXACART!
+                        </span>
+
+                    </h2>
+
+
+                    <p class="slide-element">
+
+                        Discover products with intelligent recommendations.
+
+                    </p>
+
+
+                    <div class="ai-badge slide-element">
+
+                        <i class="fa-solid fa-microchip"></i>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =========================
+             FOOTER
+        ========================== -->
+
+        <div class="footer">
+
+            Made with
+
+            <span>
+                ♥
+            </span>
+
+            by
+
+            <b>
+                TEAM APEX
+            </b>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script src="{{ url_for('static', filename='ankit.js') }}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,890 @@
+@import url(
+    'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap'
+);
+
+
+/* ================= RESET ================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+
+body {
+
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #1a1a2e;
+
+    color: #fff;
+
+    padding: 20px;
+
+}
+
+
+/* ================= PAGE ================= */
+
+.page {
+
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+}
+
+
+/* ================= AUTH WRAPPER ================= */
+
+.auth-wrapper {
+
+    position: relative;
+
+    width: 100%;
+
+    max-width: 900px;
+
+    height: 550px;
+
+    border: 2px solid #00d4ff;
+
+    box-shadow:
+        0 0 25px #00d4ff;
+
+    overflow: hidden;
+
+    background: #1a1a2e;
+
+}
+
+
+/* ================= FORMS ================= */
+
+.credentials-panel {
+
+    position: absolute;
+
+    top: 0;
+
+    width: 50%;
+
+    height: 100%;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    z-index: 10;
+
+}
+
+
+.credentials-panel.signin {
+
+    left: 0;
+
+    padding: 40px 55px;
+
+}
+
+
+.credentials-panel.signup {
+
+    right: 0;
+
+    padding: 40px 55px;
+
+}
+
+
+/* ================= FORM CONTENT ================= */
+
+.form-content {
+
+    width: 100%;
+
+    max-width: 350px;
+
+}
+
+
+.brand {
+
+    color: #00d4ff;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 12px;
+
+}
+
+
+.brand i {
+
+    margin-right: 8px;
+
+}
+
+
+.credentials-panel h2 {
+
+    font-size: 36px;
+
+    margin-bottom: 5px;
+
+}
+
+
+.description {
+
+    color: #aeb4ca;
+
+    font-size: 13px;
+
+    margin-bottom: 25px;
+
+}
+
+
+/* ================= INPUT ================= */
+
+.field-wrapper {
+
+    position: relative;
+
+    width: 100%;
+
+    height: 50px;
+
+    margin-top: 22px;
+
+}
+
+
+.field-wrapper input {
+
+    width: 100%;
+
+    height: 100%;
+
+    background: transparent;
+
+    border: none;
+
+    outline: none;
+
+    border-bottom: 2px solid #fff;
+
+    color: #fff;
+
+    font-size: 15px;
+
+    font-weight: 500;
+
+    padding-right: 30px;
+
+    transition: .3s;
+
+}
+
+
+.field-wrapper input:focus {
+
+    border-bottom-color: #00d4ff;
+
+}
+
+
+.field-wrapper label {
+
+    position: absolute;
+
+    left: 0;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #fff;
+
+    font-size: 15px;
+
+    pointer-events: none;
+
+    transition: .3s;
+
+}
+
+
+.field-wrapper input:focus ~ label,
+.field-wrapper input:valid ~ label {
+
+    top: -5px;
+
+    color: #00d4ff;
+
+    font-size: 11px;
+
+}
+
+
+.field-wrapper i {
+
+    position: absolute;
+
+    right: 3px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #fff;
+
+}
+
+
+.field-wrapper input:focus ~ i {
+
+    color: #00d4ff;
+
+}
+
+
+/* ================= OPTIONS ================= */
+
+.options {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    font-size: 10px;
+
+    margin-top: 15px;
+
+}
+
+
+.options a {
+
+    color: #00d4ff;
+
+    text-decoration: none;
+
+}
+
+
+.options input {
+
+    accent-color: #00d4ff;
+
+}
+
+
+/* ================= BUTTON ================= */
+
+.submit-button {
+    
+        position: relative;
+
+    width: 100%;
+
+    height: 45px;
+
+    border-radius: 40px;
+
+    border: 2px solid #00d4ff;
+
+    background: transparent;
+
+    color: #fff;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    transition: .3s;
+
+}
+    .submit-button:hover {
+        
+        transform: translateY(-2px);
+        box-shadow:
+            0 0 25px rgba(0, 225, 255, 0.8);
+        }
+
+
+.submit-button i {
+
+    position: relative;
+
+    margin-left: 8px;
+
+    color: #fff;
+
+}
+
+
+.submit-button::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    top: -100%;
+
+    width: 100%;
+
+    height: 300%;
+
+    background:
+        linear-gradient(
+            #1a1a2e,
+            #00d4ff,
+            #1a1a2e,
+            #00d4ff
+        );
+
+    z-index: -1;
+
+    transition: .5s;
+
+}
+
+
+.submit-button:hover::before {
+
+    top: 0;
+
+}
+
+
+.submit-button:hover {
+
+    box-shadow:
+        0 0 15px #00d4ff;
+
+}
+
+
+/* ================= SWITCH ================= */
+
+.switch-link {
+
+    text-align: center;
+
+    margin-top: 20px;
+
+    font-size: 13px;
+
+    color: #bfc4d5;
+
+}
+
+
+.switch-link a {
+
+    color: #00d4ff;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+}
+
+
+.switch-link a:hover {
+
+    text-decoration: underline;
+
+}
+
+
+/* ================= WELCOME ================= */
+
+.welcome-section {
+
+    position: absolute;
+
+    top: 0;
+
+    width: 50%;
+
+    height: 100%;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+
+    z-index: 5;
+
+}
+
+
+.welcome-section.signin {
+
+    right: 0;
+
+    padding-left: 100px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #00c6e8,
+            #00e1e8
+        );
+
+    clip-path:
+        polygon(
+            25% 0,
+            100% 0,
+            100% 100%,
+            0 100%
+        );
+
+}
+
+
+.welcome-section.signup {
+
+    left: 0;
+
+    padding-right: 100px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #00c6e8,
+            #00e1e8
+        );
+
+    clip-path:
+        polygon(
+            0 0,
+            75% 0,
+            100% 100%,
+            0 100%
+        );
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transform: translateX(-100%);
+
+    transition: .8s ease;
+
+}
+
+
+/* ================= WELCOME CONTENT ================= */
+
+.welcome-content {
+
+    max-width: 300px;
+
+}
+
+
+.welcome-icon {
+
+    width: 70px;
+
+    height: 70px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    margin: 0 auto 20px;
+
+    border: 2px solid rgba(255,255,255,.7);
+
+    font-size: 28px;
+
+}
+
+
+.welcome-section h2 {
+
+    font-size: 38px;
+
+    line-height: 1.15;
+
+    font-weight: 800;
+
+}
+
+
+.welcome-section h2 span {
+
+    color: #064c65;
+
+}
+
+
+.welcome-section p {
+
+    margin-top: 15px;
+
+    color: #064c65;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+}
+
+
+.ai-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin-top: 20px;
+
+    padding: 8px 13px;
+
+    border-radius: 20px;
+
+    background: rgba(0,0,0,.12);
+
+    color: #064c65;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+}
+
+
+/* ================= BACKGROUND SHAPE ================= */
+
+.background-shape {
+
+    position: absolute;
+
+    right: 0;
+
+    top: -5px;
+
+    width: 850px;
+
+    height: 650px;
+
+    background:
+        linear-gradient(
+            45deg,
+            #1a1a2e,
+            #00d4ff
+        );
+
+    transform:
+        rotate(10deg)
+        skewY(40deg);
+
+    transform-origin: bottom right;
+
+    transition: 1.2s ease;
+
+    z-index: 2;
+
+}
+
+
+.secondary-shape {
+
+    position: absolute;
+
+    left: 250px;
+
+    top: 100%;
+
+    width: 850px;
+
+    height: 700px;
+
+    background: #1a1a2e;
+
+    border-top: 3px solid #00d4ff;
+
+    transform: rotate(0deg);
+
+    transition: 1.2s ease;
+
+    z-index: 3;
+
+}
+
+
+/* ================= REGISTER MODE ================= */
+
+.auth-wrapper.toggled .background-shape {
+
+    transform:
+        rotate(0deg)
+        skewY(0deg);
+
+}
+
+
+.auth-wrapper.toggled .secondary-shape {
+
+    transform:
+        rotate(-10deg)
+        skewY(-40deg);
+
+}
+
+
+.auth-wrapper.toggled .signin {
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transform: translateX(-100%);
+
+    transition: .7s ease;
+
+}
+
+
+.auth-wrapper.toggled .welcome-section.signin {
+
+    transform: translateX(100%);
+
+}
+
+
+.auth-wrapper.toggled .credentials-panel.signup {
+
+    opacity: 1;
+
+    visibility: visible;
+
+    transform: translateX(0);
+
+}
+
+
+.credentials-panel.signup {
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transform: translateX(100%);
+
+    transition: .7s ease;
+
+}
+
+
+.auth-wrapper.toggled .welcome-section.signup {
+
+    opacity: 1;
+
+    visibility: visible;
+
+    transform: translateX(0);
+
+}
+
+
+/* ================= FOOTER ================= */
+
+.footer {
+
+    margin-top: 25px;
+
+    color: #b9bdce;
+
+    font-size: 13px;
+
+}
+
+
+.footer span {
+
+    color: #ff4f9a;
+
+}
+
+
+.footer b {
+
+    color: #00d4ff;
+
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px) {
+
+    body {
+
+        padding: 10px;
+
+    }
+
+
+    .auth-wrapper {
+
+        height: 570px;
+
+        max-width: 500px;
+
+    }
+
+
+    .welcome-section {
+
+        display: none;
+
+    }
+
+
+    .credentials-panel {
+
+        width: 100%;
+
+        padding: 40px 30px !important;
+
+    }
+
+
+    .background-shape,
+    .secondary-shape {
+
+        display: none;
+
+    }
+
+
+    .credentials-panel.signup {
+
+        transform: translateX(100%);
+
+    }
+
+
+    .auth-wrapper.toggled .credentials-panel.signup {
+
+        transform: translateX(0);
+
+    }
+
+
+    .auth-wrapper.toggled .credentials-panel.signin {
+
+        transform: translateX(-100%);
+
+    }
+
+}
+/* ==========================================
+   SELLER OPTION
+========================================== */
+
+.seller-option {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+    text-align: center;
+}
+
+.seller-option p {
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #777;
+}
+
+.seller-option a {
+    color: #00a8cc;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.seller-option a:hover {
+    text-decoration: underline;
+}
+
+.seller-option span {
+    margin: 0 8px;
+    color: #aaa;
+}
+/* =========================
+   SELLER OPTION
+========================= */
+
+.seller-option {
+    text-align: center;
+    margin-top: 18px;
+    position: relative;
+    z-index: 20;
+}
+
+.seller-option p {
+    color: #777;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.seller-option a {
+    color: #00a8cc;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.seller-option a:hover {
+    text-decoration: underline;
+}
+
+.seller-option span {
+    color: #aaa;
+    margin: 0 7px;
+}
