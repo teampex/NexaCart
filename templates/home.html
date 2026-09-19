@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
+
 <title>NexaCart | Smart E-Commerce</title>
 
 <!-- CSS -->
@@ -25,7 +25,7 @@
 <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-```
+
 
 </head>
 
@@ -37,7 +37,6 @@
 
 <div class="top-bar">
 
-```
 <div class="top-left">
 
     <span>
@@ -66,7 +65,7 @@
     <span class="divider">|</span>
     <span>Track Order</span>
 </div>
-```
+
 
 </div>
 
@@ -148,7 +147,7 @@
     </button>
 
 </div>
-```
+
 
 </header>
 
@@ -158,7 +157,7 @@
 
 <div class="mobile-menu" id="mobileMenu">
 
-```
+
 <a href="{{ url_for('home') }}">Home</a>
 
 <a href="#products">Products</a>
@@ -172,11 +171,26 @@
 <a href="#brands">Brands</a>
 
 <!-- FIXED MOBILE LOGIN LINK -->
-<a href="{{ url_for('login_page') }}" class="mobile-login">
+{% if logged_in %}
+
+<a href="#" class="login-btn">
+    <i class="fa-regular fa-user"></i>
+    {{ username }}
+</a>
+
+<a href="{{ url_for('logout') }}" class="login-btn">
+    Logout
+</a>
+
+{% else %}
+
+<a href="{{ url_for('login_page') }}" class="login-btn">
     <i class="fa-regular fa-user"></i>
     Login
 </a>
-```
+
+{% endif %}
+
 
 </div>
 
@@ -188,7 +202,7 @@
 
 <section class="hero-section">
 
-```
+
 <div class="hero-content">
 
     <div class="hero-text">
@@ -271,7 +285,7 @@
     </div>
 
 </div>
-```
+
 
 </section>
 
@@ -281,7 +295,7 @@
 
 <section class="categories-section" id="categories">
 
-```
+
 <div class="section-heading">
 
     <div>
@@ -381,4 +395,4 @@
 
             <img
                 src="https://
-```
+
