@@ -2,428 +2,972 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>NexaCart | Login</title>
+    <title>NexaCart | Smart E-Commerce</title>
 
+    <!-- CSS -->
     <link rel="stylesheet"
-          href="{{ url_for('static', filename='suraj.css') }}">
+      href="{{ url_for('static', filename='home.css') }}">
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 </head>
 
 <body>
 
-    <div class="page">
+    <!-- ================= NAVBAR ================= -->
 
-        <div class="auth-wrapper" id="authWrapper">
+    <header class="navbar">
 
-            <div class="background-shape"></div>
-            <div class="secondary-shape"></div>
+        <div class="brand">
 
-
-            <!-- =========================
-                 CUSTOMER LOGIN PANEL
-            ========================== -->
-
-            <div class="credentials-panel signin">
-
-                <div class="form-content">
-
-                    <div class="brand slide-element">
-                        <i class="fa-solid fa-brain"></i>
-                        NEXACART
-                    </div>
-
-                    <h2 class="slide-element">
-                        Login
-                    </h2>
-
-                    <p class="description slide-element">
-                        Welcome back! Login to continue.
-                    </p>
-
-
-                    <!-- CUSTOMER LOGIN FORM -->
-
-                    <form id="loginForm">
-
-                        <div class="field-wrapper slide-element">
-
-                            <input
-                                type="text"
-                                id="loginUsername"
-                                required
-                            >
-
-                            <label>
-                                Username
-                            </label>
-
-                            <i class="fa-solid fa-user"></i>
-
-                        </div>
-
-
-                        <div class="field-wrapper slide-element">
-
-                            <input
-                                type="password"
-                                id="loginPassword"
-                                required
-                            >
-
-                            <label>
-                                Password
-                            </label>
-
-                            <i class="fa-solid fa-lock"></i>
-
-                        </div>
-
-
-                        <div class="options slide-element">
-
-                            <label>
-                                <input type="checkbox">
-                                Remember me
-                            </label>
-
-                            <a href="#">
-                                Forgot Password?
-                            </a>
-
-                        </div>
-
-
-                        <div class="field-wrapper slide-element">
-
-                            <button
-                                class="submit-button"
-                                type="submit"
-                            >
-
-                                <span>
-                                    Login
-                                </span>
-
-                                <i class="fa-solid fa-arrow-right"></i>
-
-                            </button>
-
-                        </div>
-
-
-                        <!-- CUSTOMER SIGN UP -->
-
-                        <div class="switch-link slide-element">
-
-                            <p>
-
-                                Don't have an account?
-
-                                <br>
-
-                                <a href="#" id="registerTrigger">
-                                    Sign Up
-                                </a>
-
-                            </p>
-
-                        </div>
-
-                    </form>
-
-                </div>
-
+            <div class="brand-icon">
+                <i class="fa-solid fa-bolt"></i>
             </div>
 
-
-            <!-- =========================
-                 CUSTOMER LOGIN WELCOME
-            ========================== -->
-
-            <div class="welcome-section signin">
-
-                <div class="welcome-content">
-
-                    <div class="welcome-icon slide-element">
-
-                        <i class="fa-solid fa-cart-shopping"></i>
-
-                    </div>
-
-
-                    <h2 class="slide-element">
-
-                        WELCOME
-                        <br>
-
-                        <span>
-                            BACK!
-                        </span>
-
-                    </h2>
-
-
-                    <p class="slide-element">
-
-                        Your intelligent shopping experience starts here.
-
-                    </p>
-
-
-                    <div class="ai-badge slide-element">
-
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-
-                        AI Powered Shopping
-
-                    </div>
-
-                </div>
-
+            <div>
+                <h2>NexaCart</h2>
+                <span>SMART COMMERCE</span>
             </div>
-
-
-            <!-- =========================
-                 CUSTOMER REGISTER PANEL
-            ========================== -->
-
-            <div class="credentials-panel signup">
-
-                <div class="form-content">
-
-                    <div class="brand slide-element">
-
-                        <i class="fa-solid fa-brain"></i>
-
-                        NEXACART
-
-                    </div>
-
-
-                    <h2 class="slide-element">
-                        Register
-                    </h2>
-
-
-                    <p class="description slide-element">
-
-                        Create your NexaCart account.
-
-                    </p>
-
-
-                    <!-- CUSTOMER REGISTER FORM -->
-
-                    <form id="registerForm">
-
-
-                        <!-- USERNAME -->
-
-                        <div class="field-wrapper slide-element">
-
-                            <input
-                                type="text"
-                                id="registerUsername"
-                                required
-                            >
-
-                            <label>
-                                Username
-                            </label>
-
-                            <i class="fa-solid fa-user"></i>
-
-                        </div>
-
-
-                        <!-- EMAIL -->
-
-                        <div class="field-wrapper slide-element">
-
-                            <input
-                                type="email"
-                                id="registerEmail"
-                                required
-                            >
-
-                            <label>
-                                Email
-                            </label>
-
-                            <i class="fa-solid fa-envelope"></i>
-
-                        </div>
-
-
-                        <!-- PHONE -->
-
-                        <div class="field-wrapper slide-element">
-
-                            <input
-                                type="tel"
-                                id="registerPhone"
-                                required
-                            >
-
-                            <label>
-                                Phone Number
-                            </label>
-
-                            <i class="fa-solid fa-phone"></i>
-
-                        </div>
-
-
-                        <!-- PASSWORD -->
-
-                        <div class="field-wrapper slide-element">
-
-                            <input
-                                type="password"
-                                id="registerPassword"
-                                required
-                            >
-
-                            <label>
-                                Password
-                            </label>
-
-                            <i class="fa-solid fa-lock"></i>
-
-                        </div>
-
-
-                        <!-- REGISTER BUTTON -->
-
-                        <div class="field-wrapper slide-element">
-
-                            <button
-                                class="submit-button"
-                                type="submit"
-                            >
-
-                                <span>
-                                    Register
-                                </span>
-
-                                <i class="fa-solid fa-user-plus"></i>
-
-                            </button>
-
-                        </div>
-
-
-                        <!-- BACK TO LOGIN -->
-
-                        <div class="switch-link slide-element">
-
-                            <p>
-
-                                Already have an account?
-
-                                <br>
-
-                                <a href="#" id="loginTrigger">
-                                    Sign In
-                                </a>
-
-                            </p>
-
-                        </div>
-
-
-                    </form>
-
-                </div>
-
-            </div>
-
-
-            <!-- =========================
-                 CUSTOMER REGISTER WELCOME
-            ========================== -->
-
-            <div class="welcome-section signup">
-
-                <div class="welcome-content">
-
-
-                    <div class="welcome-icon slide-element">
-
-                        <i class="fa-solid fa-robot"></i>
-
-                    </div>
-
-
-                    <h2 class="slide-element">
-
-                        JOIN
-                        <br>
-
-                        <span>
-                            NEXACART!
-                        </span>
-
-                    </h2>
-
-
-                    <p class="slide-element">
-
-                        Discover products with intelligent recommendations.
-
-                    </p>
-
-
-                    <div class="ai-badge slide-element">
-
-                        <i class="fa-solid fa-microchip"></i>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
 
         </div>
 
+        <nav class="nav-links">
 
-        <!-- =========================
-             FOOTER
-        ========================== -->
+            <a href="#home" class="active">Home</a>
 
-        <div class="footer">
+            <a href="#products">Products</a>
 
-            Made with
+            <a href="#categories">Categories</a>
 
-            <span>
-                ♥
-            </span>
+            <a href="#ai-search">AI Search</a>
 
-            by
+            <a href="#offers">Offers</a>
 
-            <b>
-                TEAM APEX
-            </b>
+        </nav>
+
+        <div class="nav-actions">
+
+            <button
+                type="button"
+                class="icon-btn"
+                title="Search"
+                onclick="openSearch()">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+            </button>
+
+            <button
+                type="button"
+                class="icon-btn cart-btn"
+                title="Cart">
+
+                <i class="fa-solid fa-bag-shopping"></i>
+
+                <b id="cartCount">0</b>
+
+            </button>
+
+            <!-- LOGIN CONNECTION — DON'T REMOVE -->
+
+    {% if logged_in %}
+
+<div class="user-menu">
+
+    <button type="button"
+            class="user-btn"
+            onclick="toggleUserMenu(event)">
+
+        <i class="fa-regular fa-user"></i>
+        <span>{{ username }}</span>
+        <i class="fa-solid fa-chevron-down"></i>
+
+    </button>
+
+    <div class="user-dropdown" id="userDropdown">
+
+        <div class="user-info">
+
+            <i class="fa-solid fa-circle-user"></i>
+
+            <div>
+                <strong>{{ username }}</strong>
+                <small>Logged in</small>
+            </div>
 
         </div>
 
+        <hr>
+
+        <a href="/profile">
+            <i class="fa-regular fa-user"></i>
+            My Profile
+        </a>
+
+        <a href="/logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Logout
+        </a>
+
+    </div>
+
+</div>
+
+{% else %}
+
+<a href="{{ url_for('login_page') }}" class="login-btn">
+    <i class="fa-regular fa-user"></i>
+    Login
+</a>
+
+{% endif %}
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= SEARCH OVERLAY ================= -->
+
+    <div class="search-overlay" id="searchOverlay">
+
+        <div class="search-box">
+
+            <button
+                type="button"
+                class="close-search"
+                onclick="closeSearch()">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+            <span>SEARCH PRODUCTS</span>
+
+            <h2>What are you looking for?</h2>
+
+            <div class="big-search">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search mobiles, shoes, laptops..."
+                    autocomplete="off">
+
+                <button
+                    type="button"
+                    onclick="performSearch()">
+
+                    Search
+
+                </button>
+
+            </div>
+
+            <div class="search-tags">
+
+                <button type="button">Smartphones</button>
+
+                <button type="button">Laptops</button>
+
+                <button type="button">Fashion</button>
+
+                <button type="button">Headphones</button>
+
+            </div>
+
+        </div>
 
     </div>
 
 
-    <!-- =========================
-         JAVASCRIPT
-    ========================== -->
+    <!-- ================= HERO ================= -->
 
-    <script src="{{ url_for('static', filename='ankit.js') }}"></script>
+    <main id="home">
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="ai-badge">
+
+                    <span class="pulse"></span>
+
+                    AI POWERED SHOPPING
+
+                </div>
+
+                <h1>
+
+                    Shopping made
+
+                    <span>intelligent.</span>
+
+                </h1>
+
+                <p>
+
+                    Discover products, explore smart recommendations
+                    and find what you need with AI-powered shopping.
+
+                </p>
+
+                <div class="hero-buttons">
+
+                    <a
+                        href="#products"
+                        class="primary-btn">
+
+                        Explore Products
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+                    <!-- AI SEARCH BUTTON -->
+
+                    <button
+                        type="button"
+                        class="secondary-btn"
+                        onclick="startVisualSearch()">
+
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+                        Try AI Search
+
+                    </button>
+
+                </div>
+
+                <div class="hero-stats">
+
+                    <div>
+
+                        <strong>10K+</strong>
+
+                        <span>Products</span>
+
+                    </div>
+
+                    <div>
+
+                        <strong>AI</strong>
+
+                        <span>Powered</span>
+
+                    </div>
+
+                    <div>
+
+                        <strong>24/7</strong>
+
+                        <span>Shopping</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="hero-visual">
+
+                <div class="glow"></div>
+
+                <div class="product-orbit orbit-one"></div>
+
+                <div class="product-orbit orbit-two"></div>
+
+                <div class="main-product">
+
+                    <div class="floating-label top-label">
+
+                        <i class="fa-solid fa-star"></i>
+
+                        AI Recommended
+
+                    </div>
+
+                    <div class="product-icon">
+
+                        <i class="fa-solid fa-headphones"></i>
+
+                    </div>
+
+                    <div class="product-info">
+
+                        <span>FEATURED PRODUCT</span>
+
+                        <h3>Premium Wireless</h3>
+
+                        <p>Smart Audio Collection</p>
+
+                        <div class="price">
+
+                            ₹2,499
+
+                            <del>₹3,499</del>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="floating-card card-one">
+
+                    <i class="fa-solid fa-chart-line"></i>
+
+                    <div>
+
+                        <b>Smart Choice</b>
+
+                        <span>98% Match</span>
+
+                    </div>
+
+                </div>
+
+                <div class="floating-card card-two">
+
+                    <i class="fa-solid fa-truck-fast"></i>
+
+                    <div>
+
+                        <b>Fast Delivery</b>
+
+                        <span>Available</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= CATEGORIES ================= -->
+
+        <section class="section" id="categories">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="section-label">
+                        EXPLORE
+                    </span>
+
+                    <h2>Shop by category</h2>
+
+                </div>
+
+                <a href="#products">
+
+                    View all
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+            <div class="categories-grid">
+
+                <div
+                    class="category-card category-purple"
+                    onclick="categoryClick('Mobiles')">
+
+                    <div class="category-icon">
+
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+
+                    </div>
+
+                    <h3>Mobiles</h3>
+
+                    <span>Latest smartphones</span>
+
+                </div>
+
+
+                <div
+                    class="category-card category-blue"
+                    onclick="categoryClick('Laptops')">
+
+                    <div class="category-icon">
+
+                        <i class="fa-solid fa-laptop"></i>
+
+                    </div>
+
+                    <h3>Laptops</h3>
+
+                    <span>Powerful machines</span>
+
+                </div>
+
+
+                <div
+                    class="category-card category-pink"
+                    onclick="categoryClick('Fashion')">
+
+                    <div class="category-icon">
+
+                        <i class="fa-solid fa-shirt"></i>
+
+                    </div>
+
+                    <h3>Fashion</h3>
+
+                    <span>Style your way</span>
+
+                </div>
+
+
+                <div
+                    class="category-card category-orange"
+                    onclick="categoryClick('Electronics')">
+
+                    <div class="category-icon">
+
+                        <i class="fa-solid fa-headphones"></i>
+
+                    </div>
+
+                    <h3>Electronics</h3>
+
+                    <span>Smart gadgets</span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= AI SEARCH ================= -->
+
+        <section class="ai-section" id="ai-search">
+
+            <div class="ai-content">
+
+                <span class="section-label">
+                    NEXT GENERATION SEARCH
+                </span>
+
+                <h2>
+
+                    Find products with<br>
+
+                    <span>AI Visual Search.</span>
+
+                </h2>
+
+                <p>
+
+                    Don't know the product name?
+                    Simply upload an image and our AI system can
+                    help you discover similar products.
+
+                </p>
+
+                <!-- VISUAL SEARCH BUTTON -->
+
+                <button
+                    type="button"
+                    class="upload-btn"
+                    onclick="startVisualSearch()">
+
+                    <i class="fa-solid fa-camera"></i>
+
+                    Try Visual Search
+
+                </button>
+
+            </div>
+
+
+            <div class="ai-upload-card">
+
+                <div class="scan-line"></div>
+
+                <div class="upload-icon">
+
+                    <i class="fa-solid fa-image"></i>
+
+                </div>
+
+                <h3>
+                    Visual Product Search
+                </h3>
+
+                <p>
+                    Upload a product image
+                </p>
+
+                <div class="upload-dots">
+
+                    <span></span>
+
+                    <span></span>
+
+                    <span></span>
+
+                </div>
+
+                <small>
+                    AI powered • Fast • Smart
+                </small>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= PRODUCTS ================= -->
+
+        <section
+            class="section products-section"
+            id="products">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="section-label">
+                        TRENDING NOW
+                    </span>
+
+                    <h2>
+                        Popular products
+                    </h2>
+
+                </div>
+
+                <a href="#products">
+
+                    See all
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+
+            <div class="products-grid">
+
+                <!-- PRODUCT 1 -->
+
+                <div class="product-card">
+
+                    <div class="product-image purple-product">
+
+                        <span>NEW</span>
+
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+
+                    </div>
+
+                    <div class="product-details">
+
+                        <small>SMARTPHONE</small>
+
+                        <h3>Nova X Pro</h3>
+
+                        <div class="rating">
+
+                            ★★★★★
+
+                            <span>(128)</span>
+
+                        </div>
+
+                        <div class="product-bottom">
+
+                            <strong>₹29,999</strong>
+
+                            <button
+                                type="button"
+                                onclick="addToCart('Nova X Pro')">
+
+                                <i class="fa-solid fa-plus"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PRODUCT 2 -->
+
+                <div class="product-card">
+
+                    <div class="product-image blue-product">
+
+                        <span>-20%</span>
+
+                        <i class="fa-solid fa-laptop"></i>
+
+                    </div>
+
+                    <div class="product-details">
+
+                        <small>LAPTOP</small>
+
+                        <h3>UltraBook Air</h3>
+
+                        <div class="rating">
+
+                            ★★★★★
+
+                            <span>(94)</span>
+
+                        </div>
+
+                        <div class="product-bottom">
+
+                            <strong>₹54,999</strong>
+
+                            <button
+                                type="button"
+                                onclick="addToCart('UltraBook Air')">
+
+                                <i class="fa-solid fa-plus"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PRODUCT 3 -->
+
+                <div class="product-card">
+
+                    <div class="product-image pink-product">
+
+                        <span>HOT</span>
+
+                        <i class="fa-solid fa-shoe-prints"></i>
+
+                    </div>
+
+                    <div class="product-details">
+
+                        <small>FOOTWEAR</small>
+
+                        <h3>Urban Runner</h3>
+
+                        <div class="rating">
+
+                            ★★★★☆
+
+                            <span>(76)</span>
+
+                        </div>
+
+                        <div class="product-bottom">
+
+                            <strong>₹1,999</strong>
+
+                            <button
+                                type="button"
+                                onclick="addToCart('Urban Runner')">
+
+                                <i class="fa-solid fa-plus"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PRODUCT 4 -->
+
+                <div class="product-card">
+
+                    <div class="product-image orange-product">
+
+                        <span>AI PICK</span>
+
+                        <i class="fa-solid fa-headphones"></i>
+
+                    </div>
+
+                    <div class="product-details">
+
+                        <small>AUDIO</small>
+
+                        <h3>SoundMax Pro</h3>
+
+                        <div class="rating">
+
+                            ★★★★★
+
+                            <span>(211)</span>
+
+                        </div>
+
+                        <div class="product-bottom">
+
+                            <strong>₹2,499</strong>
+
+                            <button
+                                type="button"
+                                onclick="addToCart('SoundMax Pro')">
+
+                                <i class="fa-solid fa-plus"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= OFFER ================= -->
+
+        <section
+            class="offer-section"
+            id="offers">
+
+            <div>
+
+                <span>
+                    LIMITED TIME OFFER
+                </span>
+
+                <h2>
+
+                    Smart deals.<br>
+
+                    Better prices.
+
+                </h2>
+
+                <p>
+
+                    Discover exclusive offers across thousands
+                    of products.
+
+                </p>
+
+                <button
+                    type="button"
+                    onclick="showOffer()">
+
+                    Explore Offers
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </button>
+
+            </div>
+
+            <div class="offer-number">
+
+                <strong>50%</strong>
+
+                <span>OFF</span>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ==================================================
+         AI VISUAL SEARCH MODAL
+         ================================================== -->
+
+    <div
+        class="visual-modal"
+        id="visualModal">
+
+        <div class="visual-modal-box">
+
+            <!-- CLOSE -->
+
+            <button
+                type="button"
+                class="visual-close"
+                onclick="closeVisualSearch()">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+            <!-- ICON -->
+
+            <div class="modal-icon">
+
+                <i class="fa-solid fa-camera"></i>
+
+            </div>
+
+            <h2>
+                AI Visual Search
+            </h2>
+
+            <p>
+                Upload a product image and discover similar products.
+            </p>
+
+            <!-- UPLOAD AREA -->
+
+            <label
+                class="image-upload-area"
+                for="productImage">
+
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+
+                <strong>
+                    Upload Product Image
+                </strong>
+
+                <span>
+                    PNG, JPG or JPEG
+                </span>
+
+            </label>
+
+            <input
+                type="file"
+                id="productImage"
+                accept="image/png,image/jpeg"
+                hidden>
+
+            <!-- IMAGE PREVIEW -->
+
+            <div
+                class="preview-area"
+                id="previewArea">
+
+                <img
+                    id="previewImage"
+                    alt="Selected product">
+
+            </div>
+
+            <!-- ANALYZE -->
+
+            <button
+                type="button"
+                class="analyze-btn"
+                onclick="analyzeImage()">
+
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+                Analyze with AI
+
+            </button>
+
+            <!-- RESULT -->
+
+            <div class="ai-result">
+
+                <span>
+                    AI RESULT
+                </span>
+
+                <strong id="resultText">
+                    Waiting for image...
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <div class="footer-brand">
+
+            <div class="brand-icon">
+
+                <i class="fa-solid fa-bolt"></i>
+
+            </div>
+
+            <div>
+
+                <h3>NexaCart</h3>
+
+                <span>
+                    SMART COMMERCE
+                </span>
+
+            </div>
+
+        </div>
+
+        <p>
+            AI-powered e-commerce experience.
+        </p>
+
+        <div class="footer-links">
+
+            <a href="#home">Home</a>
+
+            <a href="#products">Products</a>
+
+            <a href="#categories">Categories</a>
+
+            <a href="#ai-search">AI Search</a>
+
+        </div>
+
+        <div class="copyright">
+
+            © 2026 NexaCart • TEAM APEX
+
+        </div>
+
+    </footer>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+<script src="{{ url_for('static', filename='home.js') }}"></script>
 
 </body>
 
