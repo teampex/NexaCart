@@ -1,974 +1,384 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>NexaCart | Smart E-Commerce</title>
+```
+<title>NexaCart | Smart E-Commerce</title>
 
-    <!-- CSS -->
-    <link rel="stylesheet"
+<!-- CSS -->
+<link rel="stylesheet"
       href="{{ url_for('static', filename='home.css') }}">
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+<link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
 
-    <!-- Font Awesome -->
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<!-- Font Awesome -->
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+```
 
 </head>
 
 <body>
 
-    <!-- ================= NAVBAR ================= -->
+<!-- =====================================================
+     TOP ANNOUNCEMENT BAR
+===================================================== -->
 
-    <header class="navbar">
+<div class="top-bar">
 
-        <div class="brand">
+```
+<div class="top-left">
 
-            <div class="brand-icon">
-                <i class="fa-solid fa-bolt"></i>
-            </div>
+    <span>
+        <i class="fa-solid fa-truck"></i>
+        Free shipping on orders over ₹999
+    </span>
 
-            <div>
-                <h2>NexaCart</h2>
-                <span>SMART COMMERCE</span>
-            </div>
+    <span class="divider">|</span>
 
-        </div>
+    <span>
+        <i class="fa-solid fa-rotate-left"></i>
+        Easy returns
+    </span>
 
-        <nav class="nav-links">
+    <span class="divider">|</span>
 
-            <a href="#home" class="active">Home</a>
+    <span>
+        <i class="fa-solid fa-lock"></i>
+        Secure checkout
+    </span>
 
-            <a href="#products">Products</a>
+</div>
 
-            <a href="#categories">Categories</a>
+<div class="top-right">
+    <span>Help & Support</span>
+    <span class="divider">|</span>
+    <span>Track Order</span>
+</div>
+```
 
-            <a href="#ai-search">AI Search</a>
+</div>
 
-            <a href="#offers">Offers</a>
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
 
-        </nav>
+<header class="navbar">
 
-        <div class="nav-actions">
+```
+<div class="nav-container">
 
-            <button
-                type="button"
-                class="icon-btn"
-                title="Search"
-                onclick="openSearch()">
+    <!-- Logo -->
+    <a href="{{ url_for('home') }}" class="logo">
+        Nexa<span>Cart.</span>
+    </a>
 
-                <i class="fa-solid fa-magnifying-glass"></i>
 
-            </button>
+    <!-- Navigation -->
+    <nav class="main-nav">
 
-            <button
-                type="button"
-                class="icon-btn cart-btn"
-                title="Cart">
+        <a href="{{ url_for('home') }}" class="active">Home</a>
 
-                <i class="fa-solid fa-bag-shopping"></i>
+        <a href="#products">Products</a>
 
-                <b id="cartCount">0</b>
+        <a href="#categories">Categories</a>
 
-            </button>
+        <a href="#offers">Offers</a>
 
-            <!-- LOGIN CONNECTION — DON'T REMOVE -->
+        <a href="#new-arrivals">New Arrivals</a>
 
-    {% if logged_in %}
+        <a href="#brands" class="brand-link">
+            Brands
+            <i class="fa-solid fa-chevron-down"></i>
+        </a>
 
-<div class="user-menu">
+    </nav>
 
-    <button type="button"
-            class="user-btn"
-            onclick="toggleUserMenu(event)">
 
-        <i class="fa-regular fa-user"></i>
-        <span>{{ username }}</span>
-        <i class="fa-solid fa-chevron-down"></i>
+    <!-- Search -->
+    <div class="nav-search">
 
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search products..."
+        >
+
+    </div>
+
+
+    <!-- Actions -->
+    <div class="nav-actions">
+
+        <button class="nav-icon" title="Wishlist">
+            <i class="fa-regular fa-heart"></i>
+            <small id="wishlistCount">0</small>
+        </button>
+
+        <button class="nav-icon" title="Shopping Bag">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <small id="cartCount">0</small>
+        </button>
+
+        <!-- FIXED LOGIN LINK -->
+        <a href="{{ url_for('login_page') }}" class="login-btn">
+            <i class="fa-regular fa-user"></i>
+            Login
+        </a>
+
+    </div>
+
+
+    <!-- Mobile menu button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fa-solid fa-bars"></i>
     </button>
 
-    <div class="user-dropdown" id="userDropdown">
+</div>
+```
 
-        <div class="user-info">
+</header>
 
-            <i class="fa-solid fa-circle-user"></i>
+<!-- =====================================================
+     MOBILE MENU
+===================================================== -->
+
+<div class="mobile-menu" id="mobileMenu">
+
+```
+<a href="{{ url_for('home') }}">Home</a>
+
+<a href="#products">Products</a>
+
+<a href="#categories">Categories</a>
+
+<a href="#offers">Offers</a>
+
+<a href="#new-arrivals">New Arrivals</a>
+
+<a href="#brands">Brands</a>
+
+<!-- FIXED MOBILE LOGIN LINK -->
+<a href="{{ url_for('login_page') }}" class="mobile-login">
+    <i class="fa-regular fa-user"></i>
+    Login
+</a>
+```
+
+</div>
+
+<main>
+
+<!-- =====================================================
+     HERO SECTION
+===================================================== -->
+
+<section class="hero-section">
+
+```
+<div class="hero-content">
+
+    <div class="hero-text">
+
+        <p class="eyebrow">
+            NEW COLLECTION 2026
+        </p>
+
+        <h1>
+            Shopping<br>
+            <span>made smarter.</span>
+        </h1>
+
+        <p class="hero-description">
+            Discover products you'll love, curated for
+            your everyday needs with a smarter shopping
+            experience.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="#products" class="primary-btn">
+                Shop Now
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+
+            <a href="#categories" class="secondary-btn">
+                Explore Categories
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- Hero Product -->
+
+    <div class="hero-product">
+
+        <div class="rating-card">
+
+            <div class="rating-star">
+                <i class="fa-solid fa-star"></i>
+            </div>
 
             <div>
-                <strong>{{ username }}</strong>
-                <small>Logged in</small>
+                <strong>4.9/5</strong>
+                <small>Customer rating</small>
             </div>
 
         </div>
 
-        <hr>
 
-        <a href="/profile">
-            <i class="fa-regular fa-user"></i>
-            My Profile
-        </a>
+        <div class="smart-card">
 
-        <a href="/logout">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            Logout
-        </a>
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+            <span>Smart Picks</span>
+
+        </div>
+
+
+        <div class="hero-image-circle">
+
+            <img
+                src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=85"
+                alt="Premium Headphones"
+            >
+
+        </div>
+
+
+        <div class="ai-card">
+
+            <i class="fa-solid fa-microchip"></i>
+            AI Curated
+
+        </div>
 
     </div>
 
 </div>
+```
 
-{% else %}
+</section>
 
-<a href="{{ url_for('login_page') }}" class="login-btn">
-    <i class="fa-regular fa-user"></i>
-    Login
-</a>
+<!-- =====================================================
+     CATEGORIES
+===================================================== -->
 
-{% endif %}
+<section class="categories-section" id="categories">
 
-        </div>
+```
+<div class="section-heading">
 
-    </header>
+    <div>
 
-
-    <!-- ================= SEARCH OVERLAY ================= -->
-
-    <div class="search-overlay" id="searchOverlay">
-
-        <div class="search-box">
-
-            <button
-                type="button"
-                class="close-search"
-                onclick="closeSearch()">
-
-                <i class="fa-solid fa-xmark"></i>
-
-            </button>
-
-            <span>SEARCH PRODUCTS</span>
-
-            <h2>What are you looking for?</h2>
-
-            <div class="big-search">
-
-                <i class="fa-solid fa-magnifying-glass"></i>
-
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Search mobiles, shoes, laptops..."
-                    autocomplete="off">
-
-                <button
-                    type="button"
-                    onclick="performSearch()">
-
-                    Search
-
-                </button>
-
-            </div>
-
-            <div class="search-tags">
-
-                <button type="button">Smartphones</button>
-
-                <button type="button">Laptops</button>
-
-                <button type="button">Fashion</button>
-
-                <button type="button">Headphones</button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ================= HERO ================= -->
-
-    <main id="home">
-
-        <section class="hero">
-
-            <div class="hero-content">
-
-                <div class="ai-badge">
-
-                    <span class="pulse"></span>
-
-                    AI POWERED SHOPPING
-
-                </div>
-
-                <h1>
-
-                    Shopping made
-
-                    <span>intelligent.</span>
-
-                </h1>
-
-                <p>
-
-                    Discover products, explore smart recommendations
-                    and find what you need with AI-powered shopping.
-
-                </p>
-
-                <div class="hero-buttons">
-
-                    <a
-                        href="#products"
-                        class="primary-btn">
-
-                        Explore Products
-
-                        <i class="fa-solid fa-arrow-right"></i>
-
-                    </a>
-
-                    <!-- AI SEARCH BUTTON -->
-
-                    <button
-                        type="button"
-                        class="secondary-btn"
-                        onclick="startVisualSearch()">
-
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-
-                        Try AI Search
-
-                    </button>
-
-                </div>
-
-                <div class="hero-stats">
-
-                    <div>
-
-                        <strong>10K+</strong>
-
-                        <span>Products</span>
-
-                    </div>
-
-                    <div>
-
-                        <strong>AI</strong>
-
-                        <span>Powered</span>
-
-                    </div>
-
-                    <div>
-
-                        <strong>24/7</strong>
-
-                        <span>Shopping</span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="hero-visual">
-
-                <div class="glow"></div>
-
-                <div class="product-orbit orbit-one"></div>
-
-                <div class="product-orbit orbit-two"></div>
-
-                <div class="main-product">
-
-                    <div class="floating-label top-label">
-
-                        <i class="fa-solid fa-star"></i>
-
-                        AI Recommended
-
-                    </div>
-
-                    <div class="product-icon">
-
-                        <i class="fa-solid fa-headphones"></i>
-
-                    </div>
-
-                    <div class="product-info">
-
-                        <span>FEATURED PRODUCT</span>
-
-                        <h3>Premium Wireless</h3>
-
-                        <p>Smart Audio Collection</p>
-
-                        <div class="price">
-
-                            ₹2,499
-
-                            <del>₹3,499</del>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="floating-card card-one">
-
-                    <i class="fa-solid fa-chart-line"></i>
-
-                    <div>
-
-                        <b>Smart Choice</b>
-
-                        <span>98% Match</span>
-
-                    </div>
-
-                </div>
-
-                <div class="floating-card card-two">
-
-                    <i class="fa-solid fa-truck-fast"></i>
-
-                    <div>
-
-                        <b>Fast Delivery</b>
-
-                        <span>Available</span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= CATEGORIES ================= -->
-
-        <section class="section" id="categories">
-
-            <div class="section-heading">
-
-                <div>
-
-                    <span class="section-label">
-                        EXPLORE
-                    </span>
-
-                    <h2>Shop by category</h2>
-
-                </div>
-
-                <a href="#products">
-
-                    View all
-
-                    <i class="fa-solid fa-arrow-right"></i>
-
-                </a>
-
-            </div>
-
-            <div class="categories-grid">
-
-                <div
-                    class="category-card category-purple"
-                    onclick="categoryClick('Mobiles')">
-
-                    <div class="category-icon">
-
-                        <i class="fa-solid fa-mobile-screen-button"></i>
-
-                    </div>
-
-                    <h3>Mobiles</h3>
-
-                    <span>Latest smartphones</span>
-
-                </div>
-
-
-                <div
-                    class="category-card category-blue"
-                    onclick="categoryClick('Laptops')">
-
-                    <div class="category-icon">
-
-                        <i class="fa-solid fa-laptop"></i>
-
-                    </div>
-
-                    <h3>Laptops</h3>
-
-                    <span>Powerful machines</span>
-
-                </div>
-
-
-                <div
-                    class="category-card category-pink"
-                    onclick="categoryClick('Fashion')">
-
-                    <div class="category-icon">
-
-                        <i class="fa-solid fa-shirt"></i>
-
-                    </div>
-
-                    <h3>Fashion</h3>
-
-                    <span>Style your way</span>
-
-                </div>
-
-
-                <div
-                    class="category-card category-orange"
-                    onclick="categoryClick('Electronics')">
-
-                    <div class="category-icon">
-
-                        <i class="fa-solid fa-headphones"></i>
-
-                    </div>
-
-                    <h3>Electronics</h3>
-
-                    <span>Smart gadgets</span>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= AI SEARCH ================= -->
-
-        <section class="ai-section" id="ai-search">
-
-            <div class="ai-content">
-
-                <span class="section-label">
-                    NEXT GENERATION SEARCH
-                </span>
-
-                <h2>
-
-                    Find products with<br>
-
-                    <span>AI Visual Search.</span>
-
-                </h2>
-
-                <p>
-
-                    Don't know the product name?
-                    Simply upload an image and our AI system can
-                    help you discover similar products.
-
-                </p>
-
-                <!-- VISUAL SEARCH BUTTON -->
-
-                <button
-                    type="button"
-                    class="upload-btn"
-                    onclick="startVisualSearch()">
-
-                    <i class="fa-solid fa-camera"></i>
-
-                    Try Visual Search
-
-                </button>
-
-            </div>
-
-
-            <div class="ai-upload-card">
-
-                <div class="scan-line"></div>
-
-                <div class="upload-icon">
-
-                    <i class="fa-solid fa-image"></i>
-
-                </div>
-
-                <h3>
-                    Visual Product Search
-                </h3>
-
-                <p>
-                    Upload a product image
-                </p>
-
-                <div class="upload-dots">
-
-                    <span></span>
-
-                    <span></span>
-
-                    <span></span>
-
-                </div>
-
-                <small>
-                    AI powered • Fast • Smart
-                </small>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= PRODUCTS ================= -->
-
-        <section
-            class="section products-section"
-            id="products">
-
-            <div class="section-heading">
-
-                <div>
-
-                    <span class="section-label">
-                        TRENDING NOW
-                    </span>
-
-                    <h2>
-                        Popular products
-                    </h2>
-
-                </div>
-
-                <a href="#products">
-
-                    See all
-
-                    <i class="fa-solid fa-arrow-right"></i>
-
-                </a>
-
-            </div>
-
-
-            <div class="products-grid">
-
-                <!-- PRODUCT 1 -->
-
-                <div class="product-card">
-
-                    <div class="product-image purple-product">
-
-                        <span>NEW</span>
-
-                        <i class="fa-solid fa-mobile-screen-button"></i>
-
-                    </div>
-
-                    <div class="product-details">
-
-                        <small>SMARTPHONE</small>
-
-                        <h3>Nova X Pro</h3>
-
-                        <div class="rating">
-
-                            ★★★★★
-
-                            <span>(128)</span>
-
-                        </div>
-
-                        <div class="product-bottom">
-
-                            <strong>₹29,999</strong>
-
-                            <button
-                                type="button"
-                                onclick="addToCart('Nova X Pro')">
-
-                                <i class="fa-solid fa-plus"></i>
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- PRODUCT 2 -->
-
-                <div class="product-card">
-
-                    <div class="product-image blue-product">
-
-                        <span>-20%</span>
-
-                        <i class="fa-solid fa-laptop"></i>
-
-                    </div>
-
-                    <div class="product-details">
-
-                        <small>LAPTOP</small>
-
-                        <h3>UltraBook Air</h3>
-
-                        <div class="rating">
-
-                            ★★★★★
-
-                            <span>(94)</span>
-
-                        </div>
-
-                        <div class="product-bottom">
-
-                            <strong>₹54,999</strong>
-
-                            <button
-                                type="button"
-                                onclick="addToCart('UltraBook Air')">
-
-                                <i class="fa-solid fa-plus"></i>
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- PRODUCT 3 -->
-
-                <div class="product-card">
-
-                    <div class="product-image pink-product">
-
-                        <span>HOT</span>
-
-                        <i class="fa-solid fa-shoe-prints"></i>
-
-                    </div>
-
-                    <div class="product-details">
-
-                        <small>FOOTWEAR</small>
-
-                        <h3>Urban Runner</h3>
-
-                        <div class="rating">
-
-                            ★★★★☆
-
-                            <span>(76)</span>
-
-                        </div>
-
-                        <div class="product-bottom">
-
-                            <strong>₹1,999</strong>
-
-                            <button
-                                type="button"
-                                onclick="addToCart('Urban Runner')">
-
-                                <i class="fa-solid fa-plus"></i>
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- PRODUCT 4 -->
-
-                <div class="product-card">
-
-                    <div class="product-image orange-product">
-
-                        <span>AI PICK</span>
-
-                        <i class="fa-solid fa-headphones"></i>
-
-                    </div>
-
-                    <div class="product-details">
-
-                        <small>AUDIO</small>
-
-                        <h3>SoundMax Pro</h3>
-
-                        <div class="rating">
-
-                            ★★★★★
-
-                            <span>(211)</span>
-
-                        </div>
-
-                        <div class="product-bottom">
-
-                            <strong>₹2,499</strong>
-
-                            <button
-                                type="button"
-                                onclick="addToCart('SoundMax Pro')">
-
-                                <i class="fa-solid fa-plus"></i>
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= OFFER ================= -->
-
-        <section
-            class="offer-section"
-            id="offers">
-
-            <div>
-
-                <span>
-                    LIMITED TIME OFFER
-                </span>
-
-                <h2>
-
-                    Smart deals.<br>
-
-                    Better prices.
-
-                </h2>
-
-                <p>
-
-                    Discover exclusive offers across thousands
-                    of products.
-
-                </p>
-
-                <button
-                    type="button"
-                    onclick="showOffer()">
-
-                    Explore Offers
-
-                    <i class="fa-solid fa-arrow-right"></i>
-
-                </button>
-
-            </div>
-
-            <div class="offer-number">
-
-                <strong>50%</strong>
-
-                <span>OFF</span>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- ==================================================
-         AI VISUAL SEARCH MODAL
-         ================================================== -->
-
-    <div
-        class="visual-modal"
-        id="visualModal">
-
-        <div class="visual-modal-box">
-
-            <!-- CLOSE -->
-
-            <button
-                type="button"
-                class="visual-close"
-                onclick="closeVisualSearch()">
-
-                <i class="fa-solid fa-xmark"></i>
-
-            </button>
-
-            <!-- ICON -->
-
-            <div class="modal-icon">
-
-                <i class="fa-solid fa-camera"></i>
-
-            </div>
-
-            <h2>
-                AI Visual Search
-            </h2>
-
-            <p>
-                Upload a product image and discover similar products.
-            </p>
-
-            <!-- UPLOAD AREA -->
-
-            <label
-                class="image-upload-area"
-                for="productImage">
-
-                <i class="fa-solid fa-cloud-arrow-up"></i>
-
-                <strong>
-                    Upload Product Image
-                </strong>
-
-                <span>
-                    PNG, JPG or JPEG
-                </span>
-
-            </label>
-
-            <input
-                type="file"
-                id="productImage"
-                accept="image/png,image/jpeg"
-                hidden>
-
-            <!-- IMAGE PREVIEW -->
-
-            <div
-                class="preview-area"
-                id="previewArea">
-
-                <img
-                    id="previewImage"
-                    alt="Selected product">
-
-            </div>
-
-            <!-- ANALYZE -->
-
-            <button
-                type="button"
-                class="analyze-btn"
-                onclick="analyzeImage()">
-
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-
-                Analyze with AI
-
-            </button>
-
-            <!-- RESULT -->
-
-            <div class="ai-result">
-
-                <span>
-                    AI RESULT
-                </span>
-
-                <strong id="resultText">
-                    Waiting for image...
-                </strong>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ================= FOOTER ================= -->
-
-    <footer>
-
-        <div class="footer-brand">
-
-            <div class="brand-icon">
-
-                <i class="fa-solid fa-bolt"></i>
-
-            </div>
-
-            <div>
-
-                <h3>NexaCart</h3>
-
-                <span>
-                    SMART COMMERCE
-                </span>
-
-            </div>
-
-        </div>
-
-        <p>
-            AI-powered e-commerce experience.
+        <p class="section-label">
+            SHOP BY CATEGORY
         </p>
 
-        <div class="footer-links">
+        <h2>
+            Find your favourites
+        </h2>
 
-            <a href="#home">Home</a>
+    </div>
 
-            <a href="#products">Products</a>
+    <a href="#categories">
+        View All
+        <i class="fa-solid fa-arrow-right"></i>
+    </a>
 
-            <a href="#categories">Categories</a>
+</div>
 
-            <a href="#ai-search">AI Search</a>
+
+<div class="category-grid">
+
+
+    <div class="category-card">
+
+        <div class="category-image">
+
+            <img
+                src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80"
+                alt="Men"
+            >
 
         </div>
 
-        <div class="copyright">
+        <h3>Men</h3>
+        <p>120+ Items</p>
 
-            © 2026 NexaCart • TEAM APEX
+    </div>
+
+
+    <div class="category-card">
+
+        <div class="category-image">
+
+            <img
+                src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=300&q=80"
+                alt="Women"
+            >
 
         </div>
 
-    </footer>
+        <h3>Women</h3>
+        <p>150+ Items</p>
+
+    </div>
 
 
-    <!-- ================= JAVASCRIPT ================= -->
-<script src="{{ url_for('static', filename='home.js') }}"></script>
+    <div class="category-card">
 
-</body>
+        <div class="category-image">
 
-</html>
+            <img
+                src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300&q=80"
+                alt="Shoes"
+            >
+
+        </div>
+
+        <h3>Shoes</h3>
+        <p>200+ Items</p>
+
+    </div>
+
+
+    <div class="category-card">
+
+        <div class="category-image">
+
+            <img
+                src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=300&q=80"
+                alt="Bags"
+            >
+
+        </div>
+
+        <h3>Bags</h3>
+        <p>80+ Items</p>
+
+    </div>
+
+
+    <div class="category-card">
+
+        <div class="category-image">
+
+            <img
+                src="https://
+```

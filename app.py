@@ -67,13 +67,6 @@ def home_page():
 
 @app.route("/login", methods=["GET"])
 def login_page():
-
-    # If user is already logged in,
-    # don't show login page again.
-    if "user_id" in session:
-
-        return redirect("/")
-
     return render_template("index.html")
 
 
