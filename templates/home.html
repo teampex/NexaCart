@@ -1,429 +1,897 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>NexaCart | Login</title>
+<title>NexaCart | Smart E-Commerce</title>
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='suraj.css') }}">
+<!-- CSS -->
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='home.css') }}">
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+<!-- Font Awesome -->
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 
 </head>
 
 <body>
 
-    <div class="page">
+<!-- =====================================================
+     TOP ANNOUNCEMENT BAR
+===================================================== -->
 
-        <div class="auth-wrapper" id="authWrapper">
-
-            <div class="background-shape"></div>
-            <div class="secondary-shape"></div>
+<div class="top-bar">
 
 
-            <!-- =========================
-                 CUSTOMER LOGIN PANEL
-            ========================== -->
+<div class="top-left">
 
-            <div class="credentials-panel signin">
+    <span>
+        <i class="fa-solid fa-truck"></i>
+        Free shipping on orders over ₹999
+    </span>
 
-                <div class="form-content">
+    <span class="divider">|</span>
 
-                    <div class="brand slide-element">
-                        <i class="fa-solid fa-brain"></i>
-                        NEXACART
-                    </div>
+    <span>
+        <i class="fa-solid fa-rotate-left"></i>
+        Easy returns
+    </span>
 
-                    <h2 class="slide-element">
-                        Login
-                    </h2>
+    <span class="divider">|</span>
 
+    <span>
+        <i class="fa-solid fa-lock"></i>
+        Secure checkout
+    </span>
+
+<<<<<<< HEAD
                     <p class="description slide-element">
                         Welcome! Login to continue.
                     </p>
+=======
+</div>
+>>>>>>> 92d0823e636d9b62da2ab11eda6c838f8830a3b1
 
+<div class="top-right">
+    <span>Help & Support</span>
+    <span class="divider">|</span>
+    <span>Track Order</span>
+</div>
 
-                    <!-- CUSTOMER LOGIN FORM -->
 
-                    <form id="loginForm">
+</div>
 
-                        <div class="field-wrapper slide-element">
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
 
-                            <input
-                                type="text"
-                                id="loginUsername"
-                                required
-                            >
+<header class="navbar">
 
-                            <label>
-                                Username
-                            </label>
 
-                            <i class="fa-solid fa-user"></i>
+<div class="nav-container">
 
-                        </div>
+    <!-- Logo -->
+    <a href="{{ url_for('home') }}" class="logo">
+        Nexa<span>Cart.</span>
+    </a>
 
 
-                        <div class="field-wrapper slide-element">
+    <!-- Navigation -->
+    <nav class="main-nav">
 
-                            <input
-                                type="password"
-                                id="loginPassword"
-                                required
-                            >
+        <a href="{{ url_for('home') }}" class="active">Home</a>
 
-                            <label>
-                                Password
-                            </label>
+        <a href="#products">Products</a>
 
-                            <i class="fa-solid fa-lock"></i>
+        <a href="#categories">Categories</a>
 
-                        </div>
+        <a href="#offers">Offers</a>
 
+        <a href="#new-arrivals">New Arrivals</a>
 
-                        <div class="options slide-element">
+        <a href="#brands" class="brand-link">
+            Brands
+            <i class="fa-solid fa-chevron-down"></i>
+        </a>
 
-                            <label>
-                                <input type="checkbox">
-                                Remember me
-                            </label>
+    </nav>
 
-                            <a href="#">
-                                Forgot Password?
-                            </a>
 
-                        </div>
+    <!-- Search -->
+    <div class="nav-search">
 
+        <i class="fa-solid fa-magnifying-glass"></i>
 
-                        <div class="field-wrapper slide-element">
-
-                            <button
-                                class="submit-button"
-                                type="submit"
-                            >
-
-                                <span>
-                                    Login
-                                </span>
-
-                                <i class="fa-solid fa-arrow-right"></i>
-
-                            </button>
-
-                        </div>
-
-
-                        <!-- CUSTOMER SIGN UP -->
-
-                        <div class="switch-link slide-element">
-
-                            <p>
-
-                                Don't have an account?
-
-                                <br>
-
-                                <a href="#" id="registerTrigger">
-                                    Sign Up
-                                </a>
-
-                            </p>
-
-                        </div>
-
-                    </form>
-
-                </div>
-
-            </div>
-
-
-            <!-- =========================
-                 CUSTOMER LOGIN WELCOME
-            ========================== -->
-
-            <div class="welcome-section signin">
-
-                <div class="welcome-content">
-
-                    <div class="welcome-icon slide-element">
-
-                        <i class="fa-solid fa-cart-shopping"></i>
-
-                    </div>
-
-
-                    <h2 class="slide-element">
-
-                        WELCOME
-                        <br>
-
-                        <span>
-                            BACK!
-                        </span>
-
-                    </h2>
-
-
-                    <p class="slide-element">
-
-                        Your intelligent shopping experience starts here.
-
-                    </p>
-
-
-                    <div class="ai-badge slide-element">
-
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-
-                        AI Powered Shopping
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- =========================
-                 CUSTOMER REGISTER PANEL
-            ========================== -->
-
-            <div class="credentials-panel signup">
-
-                <div class="form-content">
-
-                    <div class="brand slide-element">
-
-                        <i class="fa-solid fa-brain"></i>
-
-                        NEXACART
-
-                    </div>
-
-
-                    <h2 class="slide-element">
-                        Register
-                    </h2>
-
-
-                    <p class="description slide-element">
-
-                        Create your NexaCart account.
-
-                    </p>
-
-
-                    <!-- CUSTOMER REGISTER FORM -->
-
-                    <form id="registerForm">
-
-
-                        <!-- USERNAME -->
-
-                        <div class="field-wrapper slide-element">
-
-                            <input
-                                type="text"
-                                id="registerUsername"
-                                required
-                            >
-
-                            <label>
-                                Username
-                            </label>
-
-                            <i class="fa-solid fa-user"></i>
-
-                        </div>
-
-
-                        <!-- EMAIL -->
-
-                        <div class="field-wrapper slide-element">
-
-                            <input
-                                type="email"
-                                id="registerEmail"
-                                required
-                            >
-
-                            <label>
-                                Email
-                            </label>
-
-                            <i class="fa-solid fa-envelope"></i>
-
-                        </div>
-
-
-                        <!-- PHONE -->
-
-                        <div class="field-wrapper slide-element">
-
-                            <input
-                                type="tel"
-                                id="registerPhone"
-                                required
-                            >
-
-                            <label>
-                                Phone Number
-                            </label>
-
-                            <i class="fa-solid fa-phone"></i>
-
-                        </div>
-
-
-                        <!-- PASSWORD -->
-
-                        <div class="field-wrapper slide-element">
-
-                            <input
-                                type="password"
-                                id="registerPassword"
-                                required
-                            >
-
-                            <label>
-                                Password
-                            </label>
-
-                            <i class="fa-solid fa-lock"></i>
-
-                        </div>
-
-
-                        <!-- REGISTER BUTTON -->
-
-                        <div class="field-wrapper slide-element">
-
-                            <button
-                                class="submit-button"
-                                type="submit"
-                            >
-
-                                <span>
-                                    Register
-                                </span>
-
-                                <i class="fa-solid fa-user-plus"></i>
-
-                            </button>
-
-                        </div>
-
-
-                        <!-- BACK TO LOGIN -->
-
-                        <div class="switch-link slide-element">
-
-                            <p>
-
-                                Already have an account?
-
-                                <br>
-
-                                <a href="#" id="loginTrigger">
-                                    Sign In
-                                </a>
-
-                            </p>
-
-                        </div>
-
-
-                    </form>
-
-                </div>
-
-            </div>
-
-
-            <!-- =========================
-                 CUSTOMER REGISTER WELCOME
-            ========================== -->
-
-            <div class="welcome-section signup">
-
-                <div class="welcome-content">
-
-
-                    <div class="welcome-icon slide-element">
-
-                        <i class="fa-solid fa-robot"></i>
-
-                    </div>
-
-
-                    <h2 class="slide-element">
-
-                        JOIN
-                        <br>
-
-                        <span>
-                            NEXACART!
-                        </span>
-
-                    </h2>
-
-
-                    <p class="slide-element">
-
-                        Discover products with intelligent recommendations.
-
-                    </p>
-
-
-                    <div class="ai-badge slide-element">
-
-                        <i class="fa-solid fa-microchip"></i>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-
-        </div>
-
-
-        <!-- =========================
-             FOOTER
-        ========================== -->
-
-        <div class="footer">
-
-            Made with
-
-            <span>
-                ♥
-            </span>
-
-            by
-
-            <b>
-                TEAM APEX
-            </b>
-
-        </div>
-
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search products..."
+        >
 
     </div>
 
 
-    <!-- =========================
-         JAVASCRIPT
-    ========================== -->
+    <!-- Actions -->
+    <div class="nav-actions">
 
-    <script src="{{ url_for('static', filename='ankit.js') }}"></script>
+        <button class="nav-icon" title="Wishlist">
+            <i class="fa-regular fa-heart"></i>
+            <small id="wishlistCount">0</small>
+        </button>
+
+        <button class="nav-icon" title="Shopping Bag">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <small id="cartCount">0</small>
+        </button>
+
+        <!-- FIXED LOGIN LINK -->
+        <a href="{{ url_for('login_page') }}" class="login-btn">
+            <i class="fa-regular fa-user"></i>
+            Login
+        </a>
+
+    </div>
+
+
+    <!-- Mobile menu button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+</div>
+
+
+</header>
+
+<!-- =====================================================
+     MOBILE MENU
+===================================================== -->
+
+<div class="mobile-menu" id="mobileMenu">
+
+
+<a href="{{ url_for('home') }}">Home</a>
+
+<a href="#products">Products</a>
+
+<a href="#categories">Categories</a>
+
+<a href="#offers">Offers</a>
+
+<a href="#new-arrivals">New Arrivals</a>
+
+<a href="#brands">Brands</a>
+
+<!-- FIXED MOBILE LOGIN LINK -->
+{% if logged_in %}
+
+<a href="#" class="login-btn">
+    <i class="fa-regular fa-user"></i>
+    {{ username }}
+</a>
+
+<a href="{{ url_for('logout') }}" class="login-btn">
+    Logout
+</a>
+
+{% else %}
+
+<a href="{{ url_for('login_page') }}" class="login-btn">
+    <i class="fa-regular fa-user"></i>
+    Login
+</a>
+
+{% endif %}
+
+</div>
+
+<main>
+
+<!-- =====================================================
+     HERO SECTION
+===================================================== -->
+
+<section class="hero-section">
+
+<div class="hero-content">
+
+    <div class="hero-text">
+
+        <p class="eyebrow">
+            NEW COLLECTION 2026
+        </p>
+
+        <h1>
+            Shopping<br>
+            <span>made smarter.</span>
+        </h1>
+
+        <p class="hero-description">
+            Discover products you'll love, created for
+            your everyday needs with a smarter shopping
+            experience.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="#products" class="primary-btn">
+                Shop Now
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+
+            <a href="#categories" class="secondary-btn">
+                Explore Categories
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- Hero Product -->
+
+    <div class="hero-product">
+
+        <div class="rating-card">
+
+            <div class="rating-star">
+                <i class="fa-solid fa-star"></i>
+            </div>
+
+            <div>
+                <strong>4.9/5</strong>
+                <small>Customer rating</small>
+            </div>
+
+        </div>
+
+
+        <div class="smart-card">
+
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+            <span>Smart Picks</span>
+
+        </div>
+
+
+        <div class="hero-image-circle">
+
+            <img
+                src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=85"
+                alt="Premium Headphones"
+            >
+
+        </div>
+
+
+        <div class="ai-card">
+
+            <i class="fa-solid fa-microchip"></i>
+            AI created
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- =====================================================
+     CATEGORIES
+===================================================== -->
+
+<section class="categories-section" id="categories">
+
+
+<div class="section-heading">
+
+    <div>
+
+        <p class="section-label">
+            SHOP BY CATEGORY
+        </p>
+
+        <h2>
+            Find your favourites
+        </h2>
+
+    </div>
+
+    <a href="#categories">
+        View All
+        <i class="fa-solid fa-arrow-right"></i>
+    </a>
+
+</div>
+
+
+<div class="category-grid">
+
+
+    <div class="category-card">
+
+        <div class="category-image">
+
+            <img
+                src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80"
+                alt="Men"
+            >
+
+        </div>
+
+        <h3>Men</h3>
+        <p>120+ Items</p>
+
+    </div>
+
+
+    <div class="category-card">
+
+        <div class="category-image">
+
+            <img
+                src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=300&q=80"
+                alt="Women"
+            >
+
+        </div>
+
+        <h3>Women</h3>
+        <p>150+ Items</p>
+
+    </div>
+
+
+    <div class="category-card">
+
+        <div class="category-image">
+
+            <img
+                src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300&q=80"
+                alt="Shoes"
+            >
+
+        </div>
+
+        <h3>Shoes</h3>
+        <p>200+ Items</p>
+
+    </div>
+
+
+    <div class="category-card">
+
+        <div class="category-image">
+
+            <img
+                src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=300&q=80"
+                alt="Bags"
+            >
+
+        </div>
+
+        <h3>Bags</h3>
+        <p>80+ Items</p>
+
+    </div>
+
+
+    <div class="category-card">
+
+        <div class="category-image">
+
+            <img
+                src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=300&q=80"
+                alt="Watches"
+            >
+
+        </div>
+
+        <h3>Watches</h3>
+        <p>60+ Items</p>
+
+    </div>
+
+
+    <div class="category-card">
+
+        <div class="category-image">
+
+            <img
+                src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=300&q=80"
+                alt="Accessories"
+            >
+
+        </div>
+
+        <h3>Accessories</h3>
+        <p>100+ Items</p>
+
+    </div>
+
+
+    <div class="category-card">
+
+        <div class="category-image">
+
+            <img
+                src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=300&q=80"
+                alt="Electronics"
+            >
+
+        </div>
+
+        <h3>Electronics</h3>
+        <p>180+ Items</p>
+
+    </div>
+
+
+    <div class="category-card">
+
+        <div class="category-image">
+
+            <img
+                src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=300&q=80"
+                alt="Beauty"
+            >
+
+        </div>
+
+        <h3>Beauty</h3>
+        <p>90+ Items</p>
+
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- =====================================================
+     PROMO BANNERS
+===================================================== -->
+
+<section class="promo-section" id="offers">
+
+
+<!-- Summer Sale -->
+
+<div class="promo-card sale-banner">
+
+    <div class="promo-content">
+
+        <p>SUMMER SALE</p>
+
+        <h2>
+            Up to 50% Off
+        </h2>
+
+        <span>
+            On selected items
+        </span>
+
+        <button class="small-btn">
+
+            Shop Now
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+        </button>
+
+    </div>
+
+    <img
+        src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=900&q=85"
+        alt="Summer Sale"
+    >
+
+</div>
+
+
+<!-- New Arrivals -->
+
+<div class="promo-card arrival-banner" id="new-arrivals">
+
+    <div class="promo-content">
+
+        <p>NEW ARRIVALS</p>
+
+        <h2>
+            Discover The<br>
+            Latest Trends
+        </h2>
+
+        <span>
+            Fresh styles, just for you
+        </span>
+
+        <button class="small-btn">
+
+            Explore Now
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+        </button>
+
+    </div>
+
+    <img
+        src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=85"
+        alt="New Arrivals"
+    >
+
+</div>
+
+
+</section>
+
+<!-- =====================================================
+     TRENDING PRODUCTS
+===================================================== -->
+
+<section class="products-section" id="products">
+
+
+<div class="section-heading">
+
+    <div>
+
+        <h2>
+            Trending Products
+        </h2>
+
+    </div>
+
+    <a href="#products">
+
+        View All
+
+        <i class="fa-solid fa-arrow-right"></i>
+
+    </a>
+
+</div>
+
+
+<div class="product-grid" id="productGrid">
+
+    <!-- Products are loaded by JavaScript -->
+
+</div>
+
+
+</section>
+
+<!-- =====================================================
+     SERVICE STRIP
+===================================================== -->
+
+<section class="service-section">
+
+```
+<div class="service-item">
+
+    <i class="fa-solid fa-truck-fast"></i>
+
+    <div>
+
+        <strong>
+            Free Shipping
+        </strong>
+
+        <span>
+            On orders over ₹999
+        </span>
+
+    </div>
+
+</div>
+
+
+<div class="service-item">
+
+    <i class="fa-solid fa-headset"></i>
+
+    <div>
+
+        <strong>
+            24/7 Support
+        </strong>
+
+        <span>
+            We're here to help
+        </span>
+
+    </div>
+
+</div>
+
+
+<div class="service-item">
+
+    <i class="fa-solid fa-shield-halved"></i>
+
+    <div>
+
+        <strong>
+            Secure Payment
+        </strong>
+
+        <span>
+            100% secure checkout
+        </span>
+
+    </div>
+
+</div>
+
+
+<div class="service-item">
+
+    <i class="fa-solid fa-money-bill-transfer"></i>
+
+    <div>
+
+        <strong>
+            Money Back
+        </strong>
+
+        <span>
+            30 days guarantee
+        </span>
+
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- =====================================================
+     BRANDS
+===================================================== -->
+
+<section class="brands-section" id="brands">
+
+```
+<div class="brand-heading">
+
+    <span></span>
+
+    <p>
+        Trusted by 10,000+ Customers
+    </p>
+
+    <span></span>
+
+</div>
+
+
+<div class="brand-list">
+
+    <strong>ZARA</strong>
+
+    <strong>adidas</strong>
+
+    <strong>FOSSIL</strong>
+
+    <strong>PUMA</strong>
+
+    <strong>CASIO</strong>
+
+    <strong>SONY</strong>
+
+</div>
+
+
+</section>
+
+<!-- =====================================================
+     NEWSLETTER
+===================================================== -->
+
+<section class="newsletter">
+
+
+<div class="newsletter-image">
+
+    <img
+        src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=500&q=80"
+        alt="NexaCart Picks"
+    >
+
+</div>
+
+
+<div class="newsletter-text">
+
+    <p>
+        NEXACART PICKS
+    </p>
+
+    <h2>
+        Smart finds,<br>
+        straight to your inbox.
+    </h2>
+
+    <span>
+        Get new arrivals, special offers and product drops.
+    </span>
+
+</div>
+
+
+<form class="newsletter-form" id="newsletterForm">
+
+    <input
+        type="email"
+        id="emailInput"
+        placeholder="Your email address"
+        required
+    >
+
+    <button type="submit">
+
+        Subscribe
+
+        <i class="fa-solid fa-paper-plane"></i>
+
+    </button>
+
+</form>
+
+
+</section>
+
+</main>
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="footer">
+
+
+<div class="footer-container">
+
+
+    <div class="footer-brand">
+
+        <a href="{{ url_for('home') }}" class="logo">
+            Nexa<span>Cart.</span>
+        </a>
+
+        <p>
+            Smart shopping.<br>
+            beautifully created.
+        </p>
+
+        <small>
+            © 2026 NexaCart. All rights reserved.
+        </small>
+
+    </div>
+
+
+    <div class="footer-column">
+
+        <h4>
+            Shop
+        </h4>
+
+        <a href="#products">
+            All Products
+        </a>
+
+        <a href="#categories">
+            Categories
+        </a>
+
+        <a href="#offers">
+            Offers
+        </a>
+
+    </div>
+
+
+    <div class="footer-column">
+
+        <h4>
+            Help
+        </h4>
+
+        <a href="#">
+            Contact Us
+        </a>
+
+        <a href="#">
+            Shipping
+        </a>
+
+        <a href="#">
+            Returns
+        </a>
+
+    </div>
+
+
+    <div class="footer-column">
+
+        <h4>
+            Follow
+        </h4>
+
+        <div class="social-icons">
+
+            <a href="#">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+
+            <a href="#">
+                <i class="fa-brands fa-github"></i>
+            </a>
+
+            <a href="#">
+                <i class="fa-brands fa-linkedin-in"></i>
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="payment-icons">
+
+        <span>VISA</span>
+
+        <span>●●</span>
+
+        <span>PayPal</span>
+
+        <span>G Pay</span>
+
+    </div>
+
+</div>
+
+
+</footer>
+
+<!-- Toast -->
+
+<div class="toast" id="toast">
+
+
+<i class="fa-solid fa-check"></i>
+
+<span id="toastMessage">
+    Added to cart
+</span>
+
+
+</div>
+
+<!-- JavaScript -->
+
+<script src="{{ url_for('static', filename='home.js') }}"></script>
 
 </body>
 
