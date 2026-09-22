@@ -122,7 +122,9 @@
 </div>
                 <div class="account-dropdown" id="accountDropdown" hidden>
                     <div class="account-dropdown-user"><strong id="dropdownUsername">Welcome!</strong><small id="dropdownEmail"></small></div>
-                    <button type="button" id="myProfileBtn"><i class="fa-regular fa-id-card"></i> My Profile</button>
+                    <a href="{{ url_for('profile') }}" id="myProfileBtn" class="profile-link">
+                  <i class="fa-regular fa-id-card"></i> My Profile
+                     </a>
                     <button type="button" id="dropdownWishlistBtn"><i class="fa-regular fa-heart"></i> My Wishlist</button>
                     <button type="button" id="dropdownCartBtn"><i class="fa-solid fa-bag-shopping"></i> My Cart</button>
                        <a href="{{ url_for('login') }}" id="dropdownLoginLink">

@@ -1,12 +1,5 @@
-from flask import (
-    Flask,
-    render_template,
-    request,
-    jsonify,
-    session,
-    redirect,
-    url_for
-)
+from flask import Flask, render_template,request,jsonify,session, redirect,url_for
+
 
 import mysql.connector
 from mysql.connector import Error
@@ -647,7 +640,428 @@ def register():
 
             except Exception:
                 pass
+# =========================================================
+# ADMIN PANEL
+# =========================================================
 
+@app.route("/admin")
+def admin():
+
+    # Login required
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    db = None
+    cursor = None
+
+    try:
+
+        db = get_db_connection()
+        cursor = db.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT *
+            FROM products
+            ORDER BY id DESC
+        """)
+
+        products = cursor.fetchall()
+
+        return render_template(
+            "admin.html",
+            products=products
+        )
+
+    except Error as error:
+
+        print("----------------------------------------")
+        print("ADMIN ERROR")
+        print(error)
+        print("----------------------------------------")
+
+        return render_template(
+            "admin.html",
+            products=[]
+        )
+
+    finally:
+
+        if cursor:
+            cursor.close()
+
+        if db:
+            if db.is_connected():
+                db.close()
+
+
+# =========================================================
+# GET ALL PRODUCTS
+# =========================================================
+
+@app.route("/api/products", methods=["GET"])
+def get_products():
+
+    db = None
+    cursor = None
+
+    try:
+
+        db = get_db_connection()
+        cursor = db.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT *
+            FROM products
+            WHERE status = 'active'
+            ORDER BY id DESC
+        """)
+
+        products = cursor.fetchall()
+
+        return jsonify(products), 200
+
+    except Error as error:
+
+        print("PRODUCT FETCH ERROR:", error)
+
+        return jsonify({
+            "success": False,
+            "message": "Unable to load products."
+        }), 500
+
+    finally:
+
+        if cursor:
+            cursor.close()
+
+        if db:
+            if db.is_connected():
+                db.close()
+
+
+# =========================================================
+# ADD PRODUCT
+# =========================================================
+
+@app.route("/admin/add-product", methods=["POST"])
+def add_product():
+
+    db = None
+    cursor = None
+
+    try:
+
+        data = request.get_json(silent=True)
+
+        if not data:
+            return jsonify({
+                "success": False,
+                "message": "No product data received."
+            }), 400
+
+        name = data.get("name")
+        category = data.get("category")
+        price = data.get("price", 0)
+        old_price = data.get("old_price", 0)
+        stock = data.get("stock", 0)
+        image = data.get("image", "")
+        description = data.get("description", "")
+
+        # -----------------------------------------
+        # VALIDATION
+        # -----------------------------------------
+
+        if not name:
+            return jsonify({
+                "success": False,
+                "message": "Product name is required."
+            }), 400
+
+        try:
+            price = float(price)
+            old_price = float(old_price or 0)
+            stock = int(stock or 0)
+        except (ValueError, TypeError):
+
+            return jsonify({
+                "success": False,
+                "message": "Invalid price or stock."
+            }), 400
+
+        # -----------------------------------------
+        # DATABASE
+        # -----------------------------------------
+
+        db = get_db_connection()
+        cursor = db.cursor()
+
+        query = """
+            INSERT INTO products
+            (
+                name,
+                category,
+                price,
+                old_price,
+                stock,
+                image,
+                description,
+                status
+            )
+            VALUES
+            (
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                'active'
+            )
+        """
+
+        cursor.execute(
+            query,
+            (
+                name,
+                category,
+                price,
+                old_price,
+                stock,
+                image,
+                description
+            )
+        )
+
+        product_id = cursor.lastrowid
+
+        db.commit()
+
+        return jsonify({
+            "success": True,
+            "message": "Product added successfully!",
+            "product_id": product_id
+        }), 201
+
+    except Error as error:
+
+        if db:
+            db.rollback()
+
+        print("----------------------------------------")
+        print("ADD PRODUCT ERROR")
+        print(error)
+        print("----------------------------------------")
+
+        return jsonify({
+            "success": False,
+            "message": "Database error while adding product."
+        }), 500
+
+    except Exception as error:
+
+        if db:
+            db.rollback()
+
+        print("ADD PRODUCT ERROR:", error)
+
+        return jsonify({
+            "success": False,
+            "message": "Something went wrong."
+        }), 500
+
+    finally:
+
+        if cursor:
+            cursor.close()
+
+        if db:
+            if db.is_connected():
+                db.close()
+
+
+# =========================================================
+# UPDATE PRODUCT
+# =========================================================
+
+@app.route(
+    "/admin/update-product/<int:product_id>",
+    methods=["PUT"]
+)
+def update_product(product_id):
+
+    db = None
+    cursor = None
+
+    try:
+
+        data = request.get_json(silent=True)
+
+        if not data:
+            return jsonify({
+                "success": False,
+                "message": "No product data received."
+            }), 400
+
+        name = data.get("name")
+        category = data.get("category")
+        price = data.get("price", 0)
+        old_price = data.get("old_price", 0)
+        stock = data.get("stock", 0)
+        image = data.get("image", "")
+        description = data.get("description", "")
+
+        if not name:
+            return jsonify({
+                "success": False,
+                "message": "Product name is required."
+            }), 400
+
+        db = get_db_connection()
+        cursor = db.cursor(dictionary=True)
+
+        # Check product
+        cursor.execute(
+            """
+            SELECT id
+            FROM products
+            WHERE id = %s
+            """,
+            (product_id,)
+        )
+
+        product = cursor.fetchone()
+
+        if not product:
+
+            return jsonify({
+                "success": False,
+                "message": "Product not found."
+            }), 404
+
+        # Update
+        cursor.execute(
+            """
+            UPDATE products
+            SET
+                name = %s,
+                category = %s,
+                price = %s,
+                old_price = %s,
+                stock = %s,
+                image = %s,
+                description = %s
+            WHERE id = %s
+            """,
+            (
+                name,
+                category,
+                price,
+                old_price,
+                stock,
+                image,
+                description,
+                product_id
+            )
+        )
+
+        db.commit()
+
+        return jsonify({
+            "success": True,
+            "message": "Product updated successfully!"
+        }), 200
+
+    except Error as error:
+
+        if db:
+            db.rollback()
+
+        print("UPDATE PRODUCT ERROR:", error)
+
+        return jsonify({
+            "success": False,
+            "message": "Database error."
+        }), 500
+
+    finally:
+
+        if cursor:
+            cursor.close()
+
+        if db:
+            if db.is_connected():
+                db.close()
+
+
+# =========================================================
+# DELETE PRODUCT
+# =========================================================
+
+@app.route(
+    "/admin/delete-product/<int:product_id>",
+    methods=["DELETE"]
+)
+def delete_product(product_id):
+
+    db = None
+    cursor = None
+
+    try:
+
+        db = get_db_connection()
+        cursor = db.cursor()
+
+        cursor.execute(
+            """
+            DELETE FROM products
+            WHERE id = %s
+            """,
+            (product_id,)
+        )
+
+        if cursor.rowcount == 0:
+
+            return jsonify({
+                "success": False,
+                "message": "Product not found."
+            }), 404
+
+        db.commit()
+
+        return jsonify({
+            "success": True,
+            "message": "Product deleted successfully!"
+        }), 200
+
+    except Error as error:
+
+        if db:
+            db.rollback()
+
+        print("DELETE PRODUCT ERROR:", error)
+
+        return jsonify({
+            "success": False,
+            "message": "Database error."
+        }), 500
+
+    finally:
+
+        if cursor:
+            cursor.close()
+
+        if db:
+            if db.is_connected():
+                db.close()            
+# to conect profile ----------------------------------------------------------
+@app.route("/My profile")
+def profile():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    return render_template("profile.html")
+   
 
 # =========================================================
 # LOGOUT
