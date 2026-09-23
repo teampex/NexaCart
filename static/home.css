@@ -1644,3 +1644,32 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
  .panel-body { padding:10px 15px; }
  .panel-footer { padding:15px; }
 }
+/* ================================
+   ADMIN LOGIN NAV LINK
+================================ */
+
+.admin-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #6d28d9;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.25s ease;
+}
+
+.admin-nav-link i {
+    font-size: 14px;
+}
+
+.admin-nav-link:hover {
+    color: #4c1d95;
+    transform: translateY(-1px);
+}.mobile-admin-login {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #6d28d9;
+    font-weight: 700;
+}
