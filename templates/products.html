@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>NexaCart | All Products</title>
+
+    <link rel="stylesheet"
+          href="products.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<header class="products-navbar">
+
+    <a href="home.html"
+       class="logo">
+        <i class="fa-solid fa-brain"></i>
+        Nexa<span>Cart</span>
+    </a>
+
+    <a href="home.html"
+       class="back-home">
+        <i class="fa-solid fa-arrow-left"></i>
+        Home
+    </a>
+
+</header>
+
+
+<main class="products-page">
+
+    <section class="products-heading">
+
+        <div>
+
+            <span class="small-title">
+                NEXACART COLLECTION
+            </span>
+
+            <h1 id="pageTitle">
+                All Products
+            </h1>
+
+            <p id="productCount">
+                Explore our complete collection
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- FILTER BAR -->
+
+    <section class="filter-bar">
+
+        <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                type="text"
+                id="productSearch"
+                placeholder="Search products...">
+
+        </div>
+
+
+        <select id="categoryFilter">
+
+            <option value="all">
+                All Categories
+            </option>
+
+        </select>
+
+
+        <select id="priceFilter">
+
+            <option value="all">
+                All Prices
+            </option>
+
+            <option value="0-1000">
+                Under ₹1,000
+            </option>
+
+            <option value="1000-2000">
+                ₹1,000 - ₹2,000
+            </option>
+
+            <option value="2000-5000">
+                ₹2,000 - ₹5,000
+            </option>
+
+            <option value="5000+">
+                ₹5,000+
+            </option>
+
+        </select>
+
+
+        <select id="ratingFilter">
+
+            <option value="all">
+                All Ratings
+            </option>
+
+            <option value="4">
+                4★ & above
+            </option>
+
+            <option value="4.5">
+                4.5★ & above
+            </option>
+
+        </select>
+
+
+        <select id="sortProducts">
+
+            <option value="featured">
+                Featured
+            </option>
+
+            <option value="low">
+                Price: Low → High
+            </option>
+
+            <option value="high">
+                Price: High → Low
+            </option>
+
+            <option value="rating">
+                Highest Rated
+            </option>
+
+            <option value="newest">
+                Newest
+            </option>
+
+        </select>
+
+    </section>
+
+
+    <!-- PRODUCTS -->
+
+    <section
+        class="products-grid"
+        id="productsGrid">
+    </section>
+
+
+    <!-- NO RESULT -->
+
+    <div
+        class="no-results"
+        id="noResults">
+
+        <i class="fa-solid fa-box-open"></i>
+
+        <h2>No products found</h2>
+
+        <p>
+            Try another search or category.
+        </p>
+
+    </div>
+
+</main>
+
+
+<script src="products-data.js"></script>
+<script src="products.js"></script>
+
+</body>
+
+</html>

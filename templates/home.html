@@ -1,79 +1,58 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NexaCart | Smart E-Commerce</title>
+    <title>NexaCart | Smart Shopping</title>
 
-<!-- CSS -->
-<link rel="stylesheet"
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+      <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    
+    <link rel="stylesheet"
       href="{{ url_for('static', filename='home.css') }}">
-
-<!-- Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet">
-
-<!-- Font Awesome -->
-<link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-
 </head>
 
-<body>
-
-<!-- =====================================================
-     TOP ANNOUNCEMENT BAR
-===================================================== -->
+<body>  
 
 <div class="top-bar">
 
+    <div class="top-left">
+        <span>
+            <i class="fa-solid fa-truck"></i>
+            Free shipping on orders over ₹999
+        </span>
 
-<div class="top-left">
+        <span class="divider">|</span>
 
-    <span>
-        <i class="fa-solid fa-truck"></i>
-        Free shipping on orders over ₹999
-    </span>
+        <span>
+            <i class="fa-solid fa-rotate-left"></i>
+            Easy returns
+        </span>
 
-    <span class="divider">|</span>
+        <span class="divider">|</span>
 
-    <span>
-        <i class="fa-solid fa-rotate-left"></i>
-        Easy returns
-    </span>
+        <span>
+            <i class="fa-solid fa-lock"></i>
+            Secure checkout
+        </span>
+    </div>
 
-    <span class="divider">|</span>
-
-    <span>
-        <i class="fa-solid fa-lock"></i>
-        Secure checkout
-    </span>
-
-<<<<<<< HEAD
-                    <p class="description slide-element">
-                        Welcome! Login to continue.
-                    </p>
-=======
-</div>
->>>>>>> 92d0823e636d9b62da2ab11eda6c838f8830a3b1
-
-<div class="top-right">
-    <span>Help & Support</span>
-    <span class="divider">|</span>
-    <span>Track Order</span>
-</div>
-
+    <div class="top-right">
+        <span>Help & Support</span>
+        <span class="divider">|</span>
+        <span>Track Order</span>
+    </div>
 
 </div>
+
 
 <!-- =====================================================
      NAVBAR
@@ -81,81 +60,93 @@
 
 <header class="navbar">
 
+    <div class="nav-container">
 
-<div class="nav-container">
-
-    <!-- Logo -->
-    <a href="{{ url_for('home') }}" class="logo">
-        Nexa<span>Cart.</span>
-    </a>
-
-
-    <!-- Navigation -->
-    <nav class="main-nav">
-
-        <a href="{{ url_for('home') }}" class="active">Home</a>
-
-        <a href="#products">Products</a>
-
-        <a href="#categories">Categories</a>
-
-        <a href="#offers">Offers</a>
-
-        <a href="#new-arrivals">New Arrivals</a>
-
-        <a href="#brands" class="brand-link">
-            Brands
-            <i class="fa-solid fa-chevron-down"></i>
+        <!-- Logo -->
+        <a href="#" class="logo">
+            Nexa<span>Cart.</span>
         </a>
 
-    </nav>
+        <!-- Navigation -->
+        <nav class="main-nav">
+
+            <a href="#" class="active">Home</a>
+            <a href="#products">Products</a>
+            <a href="#categories">Categories</a>
+            <a href="#offers">Offers</a>
+            <a href="#new-arrivals">New Arrivals</a>
+
+            <a href="#brands" class="brand-link">
+                Brands
+                <i class="fa-solid fa-chevron-down"></i>
+            </a>
+           
+        </nav>
 
 
-    <!-- Search -->
-    <div class="nav-search">
+        <!-- Search -->
+        <div class="nav-search">
 
-        <i class="fa-solid fa-magnifying-glass"></i>
+            <i class="fa-solid fa-magnifying-glass"></i>
 
-        <input
-            type="text"
-            id="searchInput"
-            placeholder="Search products..."
-        >
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search products..."
+            >
 
-    </div>
-
-
-    <!-- Actions -->
-    <div class="nav-actions">
-
-        <button class="nav-icon" title="Wishlist">
-            <i class="fa-regular fa-heart"></i>
-            <small id="wishlistCount">0</small>
-        </button>
-
-        <button class="nav-icon" title="Shopping Bag">
-            <i class="fa-solid fa-bag-shopping"></i>
-            <small id="cartCount">0</small>
-        </button>
-
-        <!-- FIXED LOGIN LINK -->
-        <a href="{{ url_for('login_page') }}" class="login-btn">
-            <i class="fa-regular fa-user"></i>
-            Login
-        </a>
-
-    </div>
+        </div>
 
 
-    <!-- Mobile menu button -->
-    <button class="mobile-menu-btn" id="mobileMenuBtn">
-        <i class="fa-solid fa-bars"></i>
-    </button>
+        <!-- Actions -->
+        <div class="nav-actions">
 
+            <button class="nav-icon" id="wishlistOpenBtn" title="Wishlist" aria-label="Open wishlist">
+                <i class="fa-regular fa-heart"></i>
+                <small id="wishlistCount">0</small>
+            </button>
+
+            <button class="nav-icon" id="cartOpenBtn" title="Shopping Bag" aria-label="Open cart">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <small id="cartCount">0</small>
+            </button>
+
+            <div class="account-wrap" id="accountWrap">
+                <button class="login-btn" id="accountBtn" type="button" aria-expanded="false">
+                    <i class="fa-regular fa-user"></i>
+                    <span id="accountLabel">Login</span>
+                    <i class="fa-solid fa-chevron-down account-chevron"></i>
+                </button>
+
+                
 </div>
+                <div class="account-dropdown" id="accountDropdown" hidden>
+                    <div class="account-dropdown-user"><strong id="dropdownUsername">Welcome!</strong><small id="dropdownEmail"></small></div>
+                    <a href="{{ url_for('profile') }}" id="myProfileBtn" class="profile-link">
+                  <i class="fa-regular fa-id-card"></i> My Profile
+                     </a>
+                    <button type="button" id="dropdownWishlistBtn"><i class="fa-regular fa-heart"></i> My Wishlist</button>
+                    <button type="button" id="dropdownCartBtn"><i class="fa-solid fa-bag-shopping"></i> My Cart</button>
+                       <a href="{{ url_for('login') }}" id="dropdownLoginLink">
+                       <i class="fa-solid fa-right-to-bracket"></i>
+                                Login
+                         </a>
+                    <button type="button" id="logoutBtn" hidden><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+                </div>
+            </div>
 
+        </div>
+
+
+        <!-- Mobile menu -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+    </div>
 
 </header>
+
 
 <!-- =====================================================
      MOBILE MENU
@@ -163,43 +154,23 @@
 
 <div class="mobile-menu" id="mobileMenu">
 
+    <a href="#">Home</a>
+    <a href="#products">Products</a>
+    <a href="#categories">Categories</a>
+    <a href="#offers">Offers</a>
+    <a href="#new-arrivals">New Arrivals</a>
+    <a href="#brands">Brands</a>
 
-<a href="{{ url_for('home') }}">Home</a>
-
-<a href="#products">Products</a>
-
-<a href="#categories">Categories</a>
-
-<a href="#offers">Offers</a>
-
-<a href="#new-arrivals">New Arrivals</a>
-
-<a href="#brands">Brands</a>
-
-<!-- FIXED MOBILE LOGIN LINK -->
-{% if logged_in %}
-
-<a href="#" class="login-btn">
-    <i class="fa-regular fa-user"></i>
-    {{ username }}
-</a>
-
-<a href="{{ url_for('logout') }}" class="login-btn">
-    Logout
-</a>
-
-{% else %}
-
-<a href="{{ url_for('login_page') }}" class="login-btn">
+   <a href="{{ url_for('login') }}" class="mobile-login" id="mobileLoginLink">
     <i class="fa-regular fa-user"></i>
     Login
 </a>
 
-{% endif %}
-
 </div>
 
+
 <main>
+
 
 <!-- =====================================================
      HERO SECTION
@@ -207,91 +178,91 @@
 
 <section class="hero-section">
 
-<div class="hero-content">
+    <div class="hero-content">
 
-    <div class="hero-text">
+        <div class="hero-text">
 
-        <p class="eyebrow">
-            NEW COLLECTION 2026
-        </p>
+            <p class="eyebrow">
+                NEW COLLECTION 2026
+            </p>
 
-        <h1>
-            Shopping<br>
-            <span>made smarter.</span>
-        </h1>
+            <h1>
+                Shopping<br>
+                <span>made smarter.</span>
+            </h1>
 
-        <p class="hero-description">
-            Discover products you'll love, created for
-            your everyday needs with a smarter shopping
-            experience.
-        </p>
+            <p class="hero-description">
+                Discover products you'll love, curated for
+                your everyday needs with a smarter shopping
+                experience.
+            </p>
 
-        <div class="hero-buttons">
+            <div class="hero-buttons">
 
-            <a href="#products" class="primary-btn">
-                Shop Now
-                <i class="fa-solid fa-arrow-right"></i>
-            </a>
+                <a href="#products" class="primary-btn">
+                    Shop Now
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
 
-            <a href="#categories" class="secondary-btn">
-                Explore Categories
-            </a>
+                <a href="#categories" class="secondary-btn">
+                    Explore Categories
+                </a>
 
-        </div>
-
-    </div>
-
-
-    <!-- Hero Product -->
-
-    <div class="hero-product">
-
-        <div class="rating-card">
-
-            <div class="rating-star">
-                <i class="fa-solid fa-star"></i>
-            </div>
-
-            <div>
-                <strong>4.9/5</strong>
-                <small>Customer rating</small>
             </div>
 
         </div>
 
 
-        <div class="smart-card">
+        <!-- Hero Product -->
 
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <div class="hero-product">
 
-            <span>Smart Picks</span>
+            <div class="rating-card">
 
-        </div>
+                <div class="rating-star">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+
+                <div>
+                    <strong>4.9/5</strong>
+                    <small>Customer rating</small>
+                </div>
+
+            </div>
 
 
-        <div class="hero-image-circle">
+            <div class="smart-card">
 
-            <img
-                src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=85"
-                alt="Premium Headphones"
-            >
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
 
-        </div>
+                <span>Smart Picks</span>
+
+            </div>
 
 
-        <div class="ai-card">
+            <div class="hero-image-circle">
 
-            <i class="fa-solid fa-microchip"></i>
-            AI created
+                <img
+                    src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=85"
+                    alt="Premium Headphones"
+                >
+
+            </div>
+
+
+            <div class="ai-card">
+
+                <i class="fa-solid fa-microchip"></i>
+                AI Curated
+
+            </div>
 
         </div>
 
     </div>
-
-</div>
-
 
 </section>
+
 
 <!-- =====================================================
      CATEGORIES
@@ -299,171 +270,196 @@
 
 <section class="categories-section" id="categories">
 
+    <div class="section-heading">
 
-<div class="section-heading">
+        <div>
+            <p class="section-label">SHOP BY CATEGORY</p>
 
-    <div>
+            <h2>Find your favourites</h2>
+        </div>
 
-        <p class="section-label">
-            SHOP BY CATEGORY
-        </p>
-
-        <h2>
-            Find your favourites
-        </h2>
+        <a href="products.html">
+            View All
+            <i class="fa-solid fa-arrow-right"></i>
+        </a>
 
     </div>
 
-    <a href="#categories">
-        View All
-        <i class="fa-solid fa-arrow-right"></i>
-    </a>
+
+    <div class="category-grid">
+
+
+        <div class="category-card">
+
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80"
+                     alt="Men">
+            </div>
+
+            <h3>Men</h3>
+            <p>120+ Items</p>
+
+        </div>
+
+
+        <div class="category-card">
+
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=300&q=80"
+                     alt="Women">
+            </div>
+
+            <h3>Women</h3>
+            <p>150+ Items</p>
+
+        </div>
+
+
+        <div class="category-card">
+
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300&q=80"
+                     alt="Shoes">
+            </div>
+
+            <h3>Shoes</h3>
+            <p>200+ Items</p>
+
+        </div>
+
+
+        <div class="category-card">
+
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=300&q=80"
+                     alt="Bags">
+            </div>
+
+            <h3>Bags</h3>
+            <p>80+ Items</p>
+
+        </div>
+
+
+        <div class="category-card">
+
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=300&q=80"
+                     alt="Watches">
+            </div>
+
+            <h3>Watches</h3>
+            <p>50+ Items</p>
+
+        </div>
+
+
+        <div class="category-card">
+
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=300&q=80"
+                     alt="Accessories">
+            </div>
+
+            <h3>Accessories</h3>
+            <p>100+ Items</p>
+
+        </div>
+
+
+        <div class="category-card">
+
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=300&q=80"
+                     alt="Electronics">
+            </div>
+
+            <h3>Electronics</h3>
+            <p>180+ Items</p>
+
+        </div>
+
+
+        <div class="category-card">
+
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=300&q=80"
+                     alt="Beauty">
+            </div>
+
+            <h3>Beauty</h3>
+            <p>90+ Items</p>
+
+        </div>
+
+        <div class="category-card" data-category="Sports">
+
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=300&q=80"
+                     alt="Sports">
+            </div>
+
+            <h3>Sports</h3>
+            <p>110+ Items</p>
+
+        </div>
+
+
+        <div class="category-card" data-category="Home & Living">
+
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=300&q=80"
+                     alt="Home & Living">
+            </div>
+
+            <h3>Home & Living</h3>
+            <p>140+ Items</p>
+
+        </div> 
+
+        <div class="category-card">
+
+    <div class="category-image">
+        <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=300&q=80"
+             alt="Books">
+    </div>
+
+    <h3>Books</h3>
+    <p>100+ Items</p>
+
+</div>  
+
+<div class="category-card">
+
+    <div class="category-image">
+        <img src="https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=300&q=80"
+             alt="Gaming">
+    </div>
+
+    <h3>Gaming</h3>
+    <p>100+ Items</p>
+
+</div>
+
+<div class="category-card">
+
+    <div class="category-image">
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=300&q=80"
+             alt="Grocery">
+    </div>
+
+    <h3>Grocery</h3>
+    <p>100+ Items</p> 
+
+    
 
 </div>
 
 
-<div class="category-grid">
-
-
-    <div class="category-card">
-
-        <div class="category-image">
-
-            <img
-                src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80"
-                alt="Men"
-            >
-
-        </div>
-
-        <h3>Men</h3>
-        <p>120+ Items</p>
-
     </div>
-
-
-    <div class="category-card">
-
-        <div class="category-image">
-
-            <img
-                src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=300&q=80"
-                alt="Women"
-            >
-
-        </div>
-
-        <h3>Women</h3>
-        <p>150+ Items</p>
-
-    </div>
-
-
-    <div class="category-card">
-
-        <div class="category-image">
-
-            <img
-                src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300&q=80"
-                alt="Shoes"
-            >
-
-        </div>
-
-        <h3>Shoes</h3>
-        <p>200+ Items</p>
-
-    </div>
-
-
-    <div class="category-card">
-
-        <div class="category-image">
-
-            <img
-                src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=300&q=80"
-                alt="Bags"
-            >
-
-        </div>
-
-        <h3>Bags</h3>
-        <p>80+ Items</p>
-
-    </div>
-
-
-    <div class="category-card">
-
-        <div class="category-image">
-
-            <img
-                src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=300&q=80"
-                alt="Watches"
-            >
-
-        </div>
-
-        <h3>Watches</h3>
-        <p>60+ Items</p>
-
-    </div>
-
-
-    <div class="category-card">
-
-        <div class="category-image">
-
-            <img
-                src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=300&q=80"
-                alt="Accessories"
-            >
-
-        </div>
-
-        <h3>Accessories</h3>
-        <p>100+ Items</p>
-
-    </div>
-
-
-    <div class="category-card">
-
-        <div class="category-image">
-
-            <img
-                src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=300&q=80"
-                alt="Electronics"
-            >
-
-        </div>
-
-        <h3>Electronics</h3>
-        <p>180+ Items</p>
-
-    </div>
-
-
-    <div class="category-card">
-
-        <div class="category-image">
-
-            <img
-                src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=300&q=80"
-                alt="Beauty"
-            >
-
-        </div>
-
-        <h3>Beauty</h3>
-        <p>90+ Items</p>
-
-    </div>
-
-</div>
-
 
 </section>
+
 
 <!-- =====================================================
      PROMO BANNERS
@@ -471,77 +467,64 @@
 
 <section class="promo-section" id="offers">
 
+    <!-- Summer Sale -->
 
-<!-- Summer Sale -->
+    <div class="promo-card sale-banner">
 
-<div class="promo-card sale-banner">
+        <div class="promo-content">
 
-    <div class="promo-content">
+            <p>SUMMER SALE</p>
 
-        <p>SUMMER SALE</p>
+            <h2>Up to 50% Off</h2>
 
-        <h2>
-            Up to 50% Off
-        </h2>
+            <span>On selected items</span>
 
-        <span>
-            On selected items
-        </span>
+            <button class="small-btn">
+                Shop Now
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
 
-        <button class="small-btn">
+        </div>
 
-            Shop Now
-
-            <i class="fa-solid fa-arrow-right"></i>
-
-        </button>
-
-    </div>
-
-    <img
-        src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=900&q=85"
-        alt="Summer Sale"
-    >
-
-</div>
-
-
-<!-- New Arrivals -->
-
-<div class="promo-card arrival-banner" id="new-arrivals">
-
-    <div class="promo-content">
-
-        <p>NEW ARRIVALS</p>
-
-        <h2>
-            Discover The<br>
-            Latest Trends
-        </h2>
-
-        <span>
-            Fresh styles, just for you
-        </span>
-
-        <button class="small-btn">
-
-            Explore Now
-
-            <i class="fa-solid fa-arrow-right"></i>
-
-        </button>
+        <img
+            src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=900&q=85"
+            alt="Summer Sale"
+        >
 
     </div>
 
-    <img
-        src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=85"
-        alt="New Arrivals"
-    >
 
-</div>
+    <!-- New Arrivals -->
 
+    <div class="promo-card arrival-banner" id="new-arrivals">
+
+        <div class="promo-content">
+
+            <p>NEW ARRIVALS</p>
+
+            <h2>
+                Discover The<br>
+                Latest Trends
+            </h2>
+
+            <span>Fresh styles, just for you</span>
+
+            <button class="small-btn">
+                Explore Now
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+
+        </div>
+
+        <img
+            src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=85"
+            alt="New Arrivals"
+        >
+
+    </div>
 
 </section>
+
 
 <!-- =====================================================
      TRENDING PRODUCTS
@@ -549,36 +532,28 @@
 
 <section class="products-section" id="products">
 
+    <div class="section-heading">
 
-<div class="section-heading">
+        <div>
+            <h2>Trending Products</h2>
+        </div>
 
-    <div>
-
-        <h2>
-            Trending Products
-        </h2>
+        <a href="products.html">
+            View All
+            <i class="fa-solid fa-arrow-right"></i>
+        </a>
 
     </div>
 
-    <a href="#products">
 
-        View All
+    <div class="product-grid" id="productGrid">
 
-        <i class="fa-solid fa-arrow-right"></i>
+        <!-- Products are loaded by JavaScript -->
 
-    </a>
-
-</div>
-
-
-<div class="product-grid" id="productGrid">
-
-    <!-- Products are loaded by JavaScript -->
-
-</div>
-
+    </div>
 
 </section>
+
 
 <!-- =====================================================
      SERVICE STRIP
@@ -586,84 +561,55 @@
 
 <section class="service-section">
 
-```
-<div class="service-item">
+    <div class="service-item">
 
-    <i class="fa-solid fa-truck-fast"></i>
+        <i class="fa-solid fa-truck-fast"></i>
 
-    <div>
-
-        <strong>
-            Free Shipping
-        </strong>
-
-        <span>
-            On orders over ₹999
-        </span>
+        <div>
+            <strong>Free Shipping</strong>
+            <span>On orders over ₹999</span>
+        </div>
 
     </div>
 
-</div>
 
+    <div class="service-item">
 
-<div class="service-item">
+        <i class="fa-solid fa-headset"></i>
 
-    <i class="fa-solid fa-headset"></i>
-
-    <div>
-
-        <strong>
-            24/7 Support
-        </strong>
-
-        <span>
-            We're here to help
-        </span>
+        <div>
+            <strong>24/7 Support</strong>
+            <span>We're here to help</span>
+        </div>
 
     </div>
 
-</div>
 
+    <div class="service-item">
 
-<div class="service-item">
+        <i class="fa-solid fa-shield-halved"></i>
 
-    <i class="fa-solid fa-shield-halved"></i>
-
-    <div>
-
-        <strong>
-            Secure Payment
-        </strong>
-
-        <span>
-            100% secure checkout
-        </span>
+        <div>
+            <strong>Secure Payment</strong>
+            <span>100% secure checkout</span>
+        </div>
 
     </div>
 
-</div>
 
+    <div class="service-item">
 
-<div class="service-item">
+        <i class="fa-solid fa-money-bill-transfer"></i>
 
-    <i class="fa-solid fa-money-bill-transfer"></i>
-
-    <div>
-
-        <strong>
-            Money Back
-        </strong>
-
-        <span>
-            30 days guarantee
-        </span>
+        <div>
+            <strong>Money Back</strong>
+            <span>30 days guarantee</span>
+        </div>
 
     </div>
-
-</div>
-
 
 </section>
+
 
 <!-- =====================================================
      BRANDS
@@ -671,97 +617,39 @@
 
 <section class="brands-section" id="brands">
 
-```
-<div class="brand-heading">
+    <div class="brand-heading">
 
-    <span></span>
+        <span></span>
 
-    <p>
-        Trusted by 10,000+ Customers
-    </p>
+        <p>Trusted by 10,000+ Customers</p>
 
-    <span></span>
+        <span></span>
 
-</div>
+    </div>
 
 
-<div class="brand-list">
+    <div class="brand-list">
 
-    <strong>ZARA</strong>
+        <strong>ZARA</strong>
+        <strong>adidas</strong>
+        <strong>FOSSIL</strong>
+        <strong>PUMA</strong>
+        <strong>CASIO</strong>
+        <strong>SONY</strong>
 
-    <strong>adidas</strong>
-
-    <strong>FOSSIL</strong>
-
-    <strong>PUMA</strong>
-
-    <strong>CASIO</strong>
-
-    <strong>SONY</strong>
-
-</div>
-
+    </div>
 
 </section>
+
 
 <!-- =====================================================
      NEWSLETTER
 ===================================================== -->
 
-<section class="newsletter">
 
-
-<div class="newsletter-image">
-
-    <img
-        src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=500&q=80"
-        alt="NexaCart Picks"
-    >
-
-</div>
-
-
-<div class="newsletter-text">
-
-    <p>
-        NEXACART PICKS
-    </p>
-
-    <h2>
-        Smart finds,<br>
-        straight to your inbox.
-    </h2>
-
-    <span>
-        Get new arrivals, special offers and product drops.
-    </span>
-
-</div>
-
-
-<form class="newsletter-form" id="newsletterForm">
-
-    <input
-        type="email"
-        id="emailInput"
-        placeholder="Your email address"
-        required
-    >
-
-    <button type="submit">
-
-        Subscribe
-
-        <i class="fa-solid fa-paper-plane"></i>
-
-    </button>
-
-</form>
-
-
-</section>
 
 </main>
+
 
 <!-- =====================================================
      FOOTER
@@ -769,130 +657,126 @@
 
 <footer class="footer">
 
-
-<div class="footer-container">
-
-
-    <div class="footer-brand">
-
-        <a href="{{ url_for('home') }}" class="logo">
-            Nexa<span>Cart.</span>
-        </a>
-
-        <p>
-            Smart shopping.<br>
-            beautifully created.
-        </p>
-
-        <small>
-            © 2026 NexaCart. All rights reserved.
-        </small>
-
-    </div>
+    <div class="footer-container">
 
 
-    <div class="footer-column">
+        <div class="footer-brand">
 
-        <h4>
-            Shop
-        </h4>
-
-        <a href="#products">
-            All Products
-        </a>
-
-        <a href="#categories">
-            Categories
-        </a>
-
-        <a href="#offers">
-            Offers
-        </a>
-
-    </div>
-
-
-    <div class="footer-column">
-
-        <h4>
-            Help
-        </h4>
-
-        <a href="#">
-            Contact Us
-        </a>
-
-        <a href="#">
-            Shipping
-        </a>
-
-        <a href="#">
-            Returns
-        </a>
-
-    </div>
-
-
-    <div class="footer-column">
-
-        <h4>
-            Follow
-        </h4>
-
-        <div class="social-icons">
-
-            <a href="#">
-                <i class="fa-brands fa-instagram"></i>
+            <a href="#" class="logo">
+                Nexa<span>Cart.</span>
             </a>
 
-            <a href="#">
-                <i class="fa-brands fa-github"></i>
-            </a>
+            <p>
+                Smart shopping.<br>
+                beautifully curated.
+            </p>
 
-            <a href="#">
-                <i class="fa-brands fa-linkedin-in"></i>
-            </a>
+            <small>
+                © 2026 NexaCart. All rights reserved.
+            </small>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h4>Shop</h4>
+
+            <a href="#products">All Products</a>
+            <a href="#categories">Categories</a>
+            <a href="#offers">Offers</a>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h4>Help</h4>
+
+            <a href="#">Contact Us</a>
+            <a href="#">Shipping</a>
+            <a href="#">Returns</a>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h4>Follow</h4>
+
+            <div class="social-icons">
+
+                <a href="#">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+
+                <a href="#">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+
+                <a href="#">
+                    <i class="fa-brands fa-linkedin-in"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="payment-icons">
+
+            <span>VISA</span>
+            <span>●●</span>
+            <span>PayPal</span>
+            <span>G Pay</span>
 
         </div>
 
     </div>
 
-
-    <div class="payment-icons">
-
-        <span>VISA</span>
-
-        <span>●●</span>
-
-        <span>PayPal</span>
-
-        <span>G Pay</span>
-
-    </div>
-
-</div>
-
-
 </footer>
 
-<!-- Toast -->
-
-<div class="toast" id="toast">
 
 
-<i class="fa-solid fa-check"></i>
+<!-- Cart / wishlist / profile panels (home.js controls these; login page remains untouched) -->
+<div class="panel-backdrop" id="panelBackdrop" hidden></div>
+<aside class="side-panel" id="cartPanel" aria-label="Shopping cart" aria-hidden="true">
+  <div class="panel-header"><div><p class="section-label">YOUR BAG</p><h2>Shopping Cart <span id="cartPanelCount">(0)</span></h2></div><button class="panel-close" data-close-panel aria-label="Close cart"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="panel-body" id="cartItems"></div>
+  <div class="panel-footer"><div class="cart-subtotal"><span>Subtotal</span><strong id="cartSubtotal">₹0</strong></div><small>Shipping and taxes calculated at checkout.</small><button class="panel-primary" id="checkoutBtn">Proceed to Checkout <i class="fa-solid fa-arrow-right"></i></button><button class="panel-secondary" data-close-panel>Continue Shopping</button></div>
+</aside>
+<aside class="side-panel" id="wishlistPanel" aria-label="Wishlist" aria-hidden="true">
+  <div class="panel-header"><div><p class="section-label">SAVED FOR LATER</p><h2>My Wishlist <span id="wishlistPanelCount">(0)</span></h2></div><button class="panel-close" data-close-panel aria-label="Close wishlist"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="panel-body" id="wishlistItems"></div>
+  <div class="panel-footer"><button class="panel-secondary" data-close-panel>Continue Shopping</button></div>
+</aside>
+<div class="modal-backdrop" id="profileModal" hidden>
+  <section class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+    <div class="panel-header">
+        <div><p class="section-label">ACCOUNT</p>
+            <h2 id="profileTitle">My Profile</h2>
+        </div>
+        <button class="panel-close" data-close-profile aria-label="Close profile">
+            <i class="fa-solid fa-xmark">
 
-<span id="toastMessage">
-    Added to cart
-</span>
-
-
+            </i>
+        </button>
+    </div>
+    <div class="profile-avatar"><i class="fa-regular fa-user"></i></div>
+    <h3 id="profileName">Guest</h3><p id="profileEmail" class="profile-email"></p>
+    <div class="profile-details"><div><span>Account</span><strong id="profileStatus">Guest</strong></div><div><span>Cart items</span><strong id="profileCartCount">0</strong></div><div><span>Wishlist items</span><strong id="profileWishlistCount">0</strong></div></div>
+    <button class="panel-primary" data-close-profile>Done</button>
+  </section>
 </div>
 
-<!-- JavaScript -->
+<!-- Toast -->
+<div class="toast" id="toast">
+    <i class="fa-solid fa-check"></i>
+    <span id="toastMessage">Added to cart</span>
+</div>
+
 
 <script src="{{ url_for('static', filename='home.js') }}"></script>
 
 </body>
-
 </html>

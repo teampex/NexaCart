@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile | NexaCart</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- NexaCart Profile CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='profile.css') }}">
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="profile-navbar">
+
+    <div class="brand">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span>Nexa<span>Cart</span></span>
+    </div>
+
+    <nav class="profile-navbar">
+
+    <a href="{{ url_for('home') }}" class="brand">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span>NexaCart</span>
+    </a>
+
+    <div class="nav-links">
+        <a href="{{ url_for('home') }}">Home</a>
+
+        <a href="{{ url_for('home') }}#products">
+            Products
+        </a>
+
+        <a href="{{ url_for('home') }}#categories">
+            Categories
+        </a>
+
+        <a href="{{ url_for('home') }}#ai-search">
+            AI Search
+        </a>
+
+        <a href="{{ url_for('home') }}#offers">
+            Offers
+        </a>
+    </div>
+
+    <!-- tumhara existing nav-right yahan rahega -->
+
+</nav>
+
+    <div class="nav-right">
+
+        <div class="nav-search">
+            <input
+                type="text"
+                placeholder="Search for products..."
+                id="profileSearch">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+
+        <button class="nav-icon" onclick="goWishlist()">
+            <i class="fa-regular fa-heart"></i>
+            <small id="wishlistCount">0</small>
+        </button>
+
+        <button class="nav-icon" onclick="goCart()">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <small id="cartCount">0</small>
+        </button>
+
+        <div class="nav-user">
+
+            <div class="mini-avatar" id="navAvatar">
+                A
+            </div>
+
+            <span id="navUsername">
+                User
+            </span>
+
+            <i class="fa-solid fa-chevron-down"></i>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="profile-container">
+
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="profile-sidebar">
+
+        <div class="sidebar-user">
+
+            <div class="big-avatar" id="sidebarAvatar">
+                A
+            </div>
+
+            <h3 id="sidebarUsername">
+                User
+            </h3>
+
+            <p>
+                <span class="online-dot"></span>
+                Online
+            </p>
+
+        </div>
+
+
+        <div class="sidebar-menu">
+
+            <button class="side-item active"
+                    onclick="showSection('profileSection', this)">
+
+                <i class="fa-regular fa-user"></i>
+
+                <span>My Profile</span>
+
+            </button>
+
+
+            <button class="side-item"
+                    onclick="showSection('ordersSection', this)">
+
+                <i class="fa-solid fa-box"></i>
+
+                <span>My Orders</span>
+
+            </button>
+
+
+            <button class="side-item"
+                    onclick="showSection('wishlistSection', this)">
+
+                <i class="fa-regular fa-heart"></i>
+
+                <span>Wishlist</span>
+
+            </button>
+
+
+            <button class="side-item"
+                    onclick="showSection('cartSection', this)">
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <span>My Cart</span>
+
+            </button>
+
+
+            <div class="side-divider"></div>
+
+
+            <button class="side-item"
+                    onclick="showSection('settingsSection', this)">
+
+                <i class="fa-solid fa-gear"></i>
+
+                <span>Account Settings</span>
+
+            </button>
+
+
+            <button class="side-item logout-side"
+                    onclick="logoutUser()">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>Logout</span>
+
+            </button>
+
+        </div>
+
+
+        <!-- PREMIUM CARD -->
+
+        <div class="premium-card">
+
+            <div class="premium-icon">
+                <i class="fa-solid fa-crown"></i>
+            </div>
+
+            <h3>NexaCart Premium</h3>
+
+            <p>
+                Get exclusive offers, faster delivery and more!
+            </p>
+
+            <button onclick="premiumMessage()">
+                Upgrade Now
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ================= CONTENT ================= -->
+
+    <section class="profile-content">
+
+
+        <!-- PROFILE HEADER -->
+
+        <div class="profile-heading">
+
+            <div>
+
+                <h1>
+                    My Profile
+                </h1>
+
+                <p>
+                    Manage your account information and preferences
+                </p>
+
+            </div>
+
+            <div class="heading-decoration">
+                <i class="fa-solid fa-crown"></i>
+            </div>
+
+        </div>
+
+
+
+        <!-- ================= PROFILE SECTION ================= -->
+
+        <div id="profileSection" class="content-section active-section">
+
+
+            <!-- PROFILE CARD -->
+
+            <div class="profile-main-card">
+
+                <div class="profile-user-info">
+
+                    <div class="profile-avatar-wrapper">
+
+                        <div class="profile-avatar"
+                             id="profileAvatar">
+                            A
+                        </div>
+
+                        <button class="camera-btn"
+                                onclick="changeAvatar()">
+
+                            <i class="fa-solid fa-camera"></i>
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="user-details">
+
+                        <div class="username-line">
+
+                            <h2 id="profileUsername">
+                                User
+                            </h2>
+
+                            <i class="fa-solid fa-circle-check verified"></i>
+
+                        </div>
+
+                        <p id="profileEmail">
+                            user@example.com
+                        </p>
+
+                        <span class="active-badge">
+                            Active Account
+                        </span>
+
+                        <p class="bio">
+                            Tech lover | Dreamer | NexaCart User
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <button class="edit-profile-btn"
+                        onclick="openEditProfile()">
+
+                    <i class="fa-solid fa-pen"></i>
+
+                    Edit Profile
+
+                </button>
+
+
+                <!-- STATS -->
+
+                <div class="profile-stats">
+
+                    <div class="stat">
+
+                        <div class="stat-icon blue">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </div>
+
+                        <div>
+                            <strong id="orderStat">0</strong>
+                            <span>Orders Placed</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat">
+
+                        <div class="stat-icon pink">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+
+                        <div>
+                            <strong id="wishlistStat">0</strong>
+                            <span>Wishlist Items</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat">
+
+                        <div class="stat-icon purple">
+                            <i class="fa-regular fa-star"></i>
+                        </div>
+
+                        <div>
+                            <strong>0</strong>
+                            <span>Reviews</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- PERSONAL INFORMATION -->
+
+            <div class="personal-card">
+
+                <div class="section-title">
+
+                    <div>
+                        <i class="fa-regular fa-user"></i>
+
+                        <div>
+                            <h2>Personal Information</h2>
+                            <p>Your account information</p>
+                        </div>
+
+                    </div>
+
+                    <button onclick="openEditProfile()">
+                        Edit
+                    </button>
+
+                </div>
+
+
+                <div class="information-list">
+
+
+                    <div class="info-row">
+
+                        <div class="info-icon">
+                            <i class="fa-regular fa-user"></i>
+                        </div>
+
+                        <div class="info-text">
+                            <span>Username</span>
+                            <strong id="infoUsername">
+                                User
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-row">
+
+                        <div class="info-icon">
+                            <i class="fa-regular fa-envelope"></i>
+                        </div>
+
+                        <div class="info-text">
+                            <span>Email Address</span>
+                            <strong id="infoEmail">
+                                user@example.com
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-row">
+
+                        <div class="info-icon">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+
+                        <div class="info-text">
+                            <span>Location</span>
+                            <strong id="infoLocation">
+                                India
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================= ORDERS ================= -->
+
+        <div id="ordersSection"
+             class="content-section hidden-section">
+
+            <div class="simple-section-card">
+
+                <div class="large-section-icon blue-icon">
+                    <i class="fa-solid fa-box"></i>
+                </div>
+
+                <h2>My Orders</h2>
+
+                <p>
+                    Track your purchases and order history here.
+                </p>
+
+                <div id="ordersList" class="empty-state">
+
+                    <i class="fa-solid fa-box-open"></i>
+
+                    <h3>No Orders Yet</h3>
+
+                    <p>
+                        Your purchased products will appear here.
+                    </p>
+
+                    <a href="home.html#products">
+                        Start Shopping
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================= WISHLIST ================= -->
+
+        <div id="wishlistSection"
+             class="content-section hidden-section">
+
+            <div class="simple-section-card">
+
+                <div class="large-section-icon pink-icon">
+                    <i class="fa-regular fa-heart"></i>
+                </div>
+
+                <h2>My Wishlist</h2>
+
+                <p>
+                    Products you saved for later.
+                </p>
+
+                <div id="profileWishlist"
+                     class="product-mini-grid">
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================= CART ================= -->
+
+        <div id="cartSection"
+             class="content-section hidden-section">
+
+            <div class="simple-section-card">
+
+                <div class="large-section-icon green-icon">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </div>
+
+                <h2>My Cart</h2>
+
+                <p>
+                    Products currently added to your shopping cart.
+                </p>
+
+                <div id="profileCart"
+                     class="product-mini-grid">
+
+                </div>
+
+                <div class="cart-total">
+
+                    <span>Total</span>
+
+                    <strong id="profileCartTotal">
+                        ₹0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================= SETTINGS ================= -->
+
+        <div id="settingsSection"
+             class="content-section hidden-section">
+
+            <div class="simple-section-card settings-card">
+
+                <div class="large-section-icon purple-icon">
+                    <i class="fa-solid fa-gear"></i>
+                </div>
+
+                <h2>Account Settings</h2>
+
+                <p>
+                    Manage your NexaCart account preferences.
+                </p>
+
+
+                <button class="setting-row"
+                        onclick="openEditProfile()">
+
+                    <div>
+                        <i class="fa-regular fa-user"></i>
+
+                        <span>
+                            Personal Information
+                        </span>
+                    </div>
+
+                    <i class="fa-solid fa-chevron-right"></i>
+
+                </button>
+
+
+                <button class="setting-row"
+                        onclick="showComingSoon('Password settings')">
+
+                    <div>
+                        <i class="fa-solid fa-lock"></i>
+
+                        <span>
+                            Change Password
+                        </span>
+                    </div>
+
+                    <i class="fa-solid fa-chevron-right"></i>
+
+                </button>
+
+
+                <button class="setting-row"
+                        onclick="showComingSoon('Notification settings')">
+
+                    <div>
+                        <i class="fa-regular fa-bell"></i>
+
+                        <span>
+                            Notifications
+                        </span>
+                    </div>
+
+                    <i class="fa-solid fa-chevron-right"></i>
+
+                </button>
+
+
+                <button class="setting-row"
+                        onclick="showComingSoon('Privacy settings')">
+
+                    <div>
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                        <span>
+                            Privacy & Security
+                        </span>
+                    </div>
+
+                    <i class="fa-solid fa-chevron-right"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+</main>
+
+
+
+<!-- ================= EDIT MODAL ================= -->
+
+<div class="modal-overlay"
+     id="editModal">
+
+    <div class="edit-modal">
+
+        <button class="close-modal"
+                onclick="closeEditProfile()">
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+        <h2>Edit Profile</h2>
+
+        <p>
+            Update your NexaCart profile information.
+        </p>
+
+
+        <label>
+            Username
+        </label>
+
+        <input
+            type="text"
+            id="editUsername"
+            placeholder="Enter username">
+
+
+        <label>
+            Email Address
+        </label>
+
+        <input
+            type="email"
+            id="editEmail"
+            placeholder="Enter email">
+
+
+        <label>
+            Location
+        </label>
+
+        <input
+            type="text"
+            id="editLocation"
+            placeholder="Enter location">
+
+
+        <div class="modal-actions">
+
+            <button class="cancel-btn"
+                    onclick="closeEditProfile()">
+
+                Cancel
+
+            </button>
+
+            <button class="save-btn"
+                    onclick="saveProfile()">
+
+                <i class="fa-solid fa-check"></i>
+
+                Save Changes
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= TOAST ================= -->
+
+<div class="toast"
+     id="profileToast">
+
+    <i class="fa-solid fa-circle-check"></i>
+
+    <span id="toastMessage">
+        Updated successfully
+    </span>
+
+</div>
+
+<script src="{{ url_for('static', filename='profile.js') }}"></script>
+
+</body>
+</html>

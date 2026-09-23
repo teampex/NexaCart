@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>NexaCart Admin Login</title>
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <!-- Admin Login CSS -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='admin_login.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         BACKGROUND
+    ====================================================== -->
+
+    <div class="login-background">
+
+        <div class="background-orb orb-one"></div>
+
+        <div class="background-orb orb-two"></div>
+
+        <div class="background-grid"></div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         LOGIN PAGE
+    ====================================================== -->
+
+    <main class="admin-login-page">
+
+
+        <!-- LEFT BRAND PANEL -->
+
+        <section class="brand-panel">
+
+            <div class="brand-content">
+
+
+                <a
+                    href="{{ url_for('home') }}"
+                    class="brand-logo"
+                >
+
+                    <span class="logo-icon">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                    </span>
+
+                    <span class="logo-text">
+                        Nexa<span>Cart</span>
+                    </span>
+
+                </a>
+
+
+
+                <div class="brand-heading">
+
+                    <span class="brand-badge">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        ADMIN PANEL
+                    </span>
+
+
+                    <h1>
+                        Manage your
+                        <span>store</span>
+                        smarter.
+                    </h1>
+
+
+                    <p>
+                        Control products, orders, customers
+                        and everything inside your NexaCart
+                        store from one powerful dashboard.
+                    </p>
+
+                </div>
+
+
+
+                <!-- FEATURES -->
+
+                <div class="brand-features">
+
+
+                    <div class="feature-item">
+
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-box-open"></i>
+                        </div>
+
+                        <div>
+                            <strong>
+                                Product Management
+                            </strong>
+
+                            <span>
+                                Add and manage your products
+                            </span>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="feature-item">
+
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+
+                        <div>
+                            <strong>
+                                Store Analytics
+                            </strong>
+
+                            <span>
+                                Track your store performance
+                            </span>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="feature-item">
+
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+
+                        <div>
+                            <strong>
+                                Secure Admin Access
+                            </strong>
+
+                            <span>
+                                Protected management area
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="brand-footer">
+
+                    <span>
+                        © 2026 NexaCart
+                    </span>
+
+                    <span class="footer-dot"></span>
+
+                    <span>
+                        Admin Portal
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- RIGHT LOGIN PANEL -->
+
+        <section class="login-panel">
+
+
+            <div class="login-card">
+
+
+                <!-- LOGIN HEADER -->
+
+                <div class="login-header">
+
+
+                    <div class="mobile-logo">
+
+                        <span class="mobile-logo-icon">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                        </span>
+
+                        <strong>
+                            Nexa<span>Cart</span>
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="login-icon">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                    </div>
+
+
+                    <span class="login-label">
+                        ADMIN ACCESS
+                    </span>
+
+
+                    <h2>
+                        Welcome back
+                    </h2>
+
+
+                    <p>
+                        Sign in to access your
+                        admin dashboard.
+                    </p>
+
+                </div>
+
+
+
+                <!-- ERROR -->
+
+                {% if error %}
+
+                <div class="login-error">
+
+                    <div class="error-icon">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Login failed
+                        </strong>
+
+                        <span>
+                            {{ error }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+
+
+                <!-- LOGIN FORM -->
+
+                <form
+                    method="POST"
+                    action="{{ url_for('admin_login') }}"
+                    id="adminLoginForm"
+                    autocomplete="on"
+                >
+
+
+                    <!-- USERNAME -->
+
+                    <div class="form-group">
+
+                        <label for="username">
+                            Admin Username
+                        </label>
+
+
+                        <div class="input-box">
+
+                            <i class="fa-regular fa-user input-icon"></i>
+
+
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                placeholder="Enter your username"
+                                autocomplete="username"
+                                required
+                            >
+
+
+                            <span class="input-status">
+                                <i class="fa-solid fa-check"></i>
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- PASSWORD -->
+
+                    <div class="form-group">
+
+                        <div class="password-label-row">
+
+                            <label for="password">
+                                Password
+                            </label>
+
+                            <span class="secure-text">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                Secure
+                            </span>
+
+                        </div>
+
+
+                        <div class="input-box">
+
+                            <i class="fa-solid fa-lock input-icon"></i>
+
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Enter your password"
+                                autocomplete="current-password"
+                                required
+                            >
+
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                id="passwordToggle"
+                                aria-label="Show password"
+                            >
+
+                                <i class="fa-regular fa-eye"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- REMEMBER -->
+
+                    <div class="login-options">
+
+                        <label class="remember-me">
+
+                            <input
+                                type="checkbox"
+                                id="rememberMe"
+                            >
+
+                            <span class="custom-checkbox">
+                                <i class="fa-solid fa-check"></i>
+                            </span>
+
+                            <span>
+                                Remember me
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+
+                    <!-- LOGIN BUTTON -->
+
+                    <button
+                        type="submit"
+                        class="login-button"
+                        id="loginButton"
+                    >
+
+                        <span class="button-text">
+                            Sign in to Dashboard
+                        </span>
+
+                        <span class="button-loader">
+                            <i class="fa-solid fa-circle-notch fa-spin"></i>
+                        </span>
+
+                        <i class="fa-solid fa-arrow-right button-arrow"></i>
+
+                    </button>
+
+
+                </form>
+
+
+
+                <!-- SECURITY NOTE -->
+
+                <div class="security-note">
+
+                    <div class="security-icon">
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Protected area
+                        </strong>
+
+                        <span>
+                            This page is restricted to
+                            authorized administrators.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- BACK HOME -->
+
+                <a
+                    href="{{ url_for('home') }}"
+                    class="back-home"
+                >
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    <span>
+                        Back to NexaCart
+                    </span>
+
+                </a>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- Admin Login JS -->
+    <script
+        src="{{ url_for('static', filename='admin_login.js') }}"
+    ></script>
+
+
+</body>
+
+</html>

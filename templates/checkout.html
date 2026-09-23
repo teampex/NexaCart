@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>NexaCart | Checkout</title>
+    <link rel="stylesheet" href="checkout.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+    <header><a class="logo" href="home.html">Nexa<span>Cart.</span></a><span><i class="fa-solid fa-lock"></i> Secure
+            Checkout</span></header>
+    <main>
+        <section class="left">
+            <div class="title">
+                <div><small>NEXACART CHECKOUT</small>
+                    <h1>Complete your order</h1>
+                </div><a href="home.html">← Continue shopping</a>
+            </div>
+            <form id="checkoutForm">
+                <section class="card">
+                    <h2><b>1</b> Contact</h2>
+                    <p>We'll use this for order updates.</p>
+                    <input id="email" placeholder="Email or mobile phone number" required>
+                </section>
+                <section class="card">
+                    <h2><b>2</b> Delivery</h2>
+                    <p>Where should we deliver your order?</p>
+                    <select id="country">
+                        <option>India</option>
+                    </select>
+                    <div class="grid2"><input id="firstName" placeholder="First name" required><input id="lastName"
+                            placeholder="Last name" required></div>
+                    <input id="address" placeholder="Address" required><input id="apartment"
+                        placeholder="Apartment, suite, etc. (optional)">
+                    <div class="grid3"><input id="city" placeholder="City" required><select id="state" required>
+                           <input type="text" name="state" placeholder="state">
+                        </select><input id="pin" maxlength="6" inputmode="numeric" placeholder="PIN code" required>
+                    </div>
+                    <input id="phone" maxlength="10" inputmode="numeric" placeholder="Phone" required>
+                    <label class="check"><input id="saveInfo" type="checkbox" checked> Save this information for next
+                        time</label>
+                </section>
+                <section class="card">
+                    <h2><b>3</b> Shipping method</h2><label class="ship"><input type="radio" checked>
+                        <span><strong>Standard Delivery</strong><small>3–7 business
+                                days</small></span><em>FREE</em></label>
+                </section>
+                <section class="card">
+                    <h2><b>4</b> Payment</h2>
+                    <p>All transactions are secure and encrypted.</p>
+                    <label class="pay active" data-method="razorpay"><input name="payment" type="radio" value="razorpay"
+                            checked><span><strong>Razorpay Secure</strong><small>UPI, Card, Net Banking,
+                                Wallets</small></span><i>UPI VISA MC</i></label>
+                    <div class="note" id="rzNote">🔒 You'll be redirected to Razorpay to complete your purchase.</div>
+                    <label class="pay" data-method="cod"><input name="payment" type="radio"
+                            value="cod"><span><strong>Cash on Delivery (COD)</strong><small>Pay when your order
+                                arrives</small></span></label>
+                    <button class="paybtn" id="payBtn">Pay now →</button>
+                    <div class="security">🔒 Secure checkout</div>
+                </section>
+            </form>
+        </section>
+        <aside>
+            <div class="sticky"><small>YOUR BAG</small>
+                <h2>Order summary <span id="count">(0)</span></h2>
+                <div id="items"></div>
+                <div class="line"><span>Subtotal</span><strong id="subtotal">₹0</strong></div>
+                <div class="line"><span>Shipping</span><strong>FREE</strong></div>
+                <div class="total"><span>Total</span><strong id="total">₹0</strong></div>
+                <div class="trust">🚚 Fast delivery<br>🛡 Secure checkout<br>↩ Easy returns</div>
+            </div>
+        </aside>
+    </main>
+    <div id="success" class="modal" hidden>
+        <div class="success">
+            <div class="ok">✓</div><small>ORDER CONFIRMED</small>
+            <h2>Thank you for your order!</h2>
+            <p>Your order has been placed successfully.</p><strong id="orderNo"></strong><button
+                onclick="location.href='home.html'">Continue Shopping</button>
+        </div>
+    </div>
+    <script src="checkout.js"></script>
+</body>
+
+</html>
