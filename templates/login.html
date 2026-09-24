@@ -5,408 +5,565 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>NexaCart | Login</title>
 
     <!-- Font Awesome -->
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <!-- Login CSS -->
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='login.css') }}"
-    >
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
 
 </head>
 
 
 <body>
 
-<div class="page">
+    <div class="page">
 
-    <!-- ================= AUTH WRAPPER ================= -->
+        <!-- ================= AUTH WRAPPER ================= -->
 
-    <div
-        class="auth-wrapper"
-        id="authWrapper"
-    >
+        <div class="auth-wrapper" id="authWrapper">
 
-        <!-- ================= BACKGROUND ================= -->
+            <!-- ================= BACKGROUND ================= -->
 
-        <div class="background-shape"></div>
+            <div class="background-shape"></div>
 
-        <div class="secondary-shape"></div>
+            <div class="secondary-shape"></div>
 
 
-        <!-- ================= LOGIN FORM ================= -->
+            <!-- ================= LOGIN FORM ================= -->
 
-        <div class="credentials-panel signin">
+            <div class="credentials-panel signin">
 
-            <div class="form-content">
+                <div class="form-content">
 
-                <!-- BRAND -->
+                    <!-- BRAND -->
 
-                <div class="brand slide-element">
+                    <div class="brand slide-element">
 
-                    <i class="fa-solid fa-brain"></i>
+                        <i class="fa-solid fa-brain"></i>
 
-                    NEXACART
-
-                </div>
-
-
-                <!-- TITLE -->
-
-                <h2 class="slide-element">
-                    Login
-                </h2>
-
-
-                <p class="description slide-element">
-                    Welcome back! Login to continue.
-                </p>
-
-
-                <!-- ================= NORMAL LOGIN ================= -->
-
-                <form
-                    id="loginForm"
-                    method="POST"
-                    action="{{ url_for('login') }}"
-                >
-
-                    <!-- Username -->
-
-                    <div class="field-wrapper slide-element">
-
-                        <input
-                            type="text"
-                            id="loginUsername"
-                            name="username"
-                            required
-                        >
-
-                        <label>
-                            Username
-                        </label>
-
-                        <i class="fa-solid fa-user"></i>
+                        NEXACART
 
                     </div>
 
 
-                    <!-- Password -->
+                    <!-- TITLE -->
 
-                    <div class="field-wrapper slide-element">
-
-                        <input
-                            type="password"
-                            id="loginPassword"
-                            name="password"
-                            required
-                        >
-
-                        <label>
-                            Password
-                        </label>
-
-                        <i class="fa-solid fa-lock"></i>
-
-                    </div>
-
-
-                    <!-- ================= OPTIONS ================= -->
-
-                    <div class="options slide-element">
-
-                        <label>
-
-                            <input
-                                type="checkbox"
-                                name="remember"
-                            >
-
-                            Remember me
-
-                        </label>
-
-
-                        <div class="login-options">
-
-                            <a
-                                href="#"
-                                id="forgotPassword"
-                            >
-                                Forgot Password?
-                            </a>
-
-                            <span>|</span>
-
-                            <a
-                                href="#"
-                                id="otpLoginTrigger"
-                            >
-                                Login with OTP
-                            </a>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- ================= LOGIN BUTTON ================= -->
-
-                    <div class="field-wrapper slide-element">
-
-                        <button
-                            class="submit-button"
-                            type="submit"
-                        >
-
-                            <span>
-                                Login
-                            </span>
-
-                            <i class="fa-solid fa-right-to-bracket"></i>
-
-                        </button>
-
-                    </div>
-
-
-                    <!-- ================= REGISTER SWITCH ================= -->
-
-                    <div class="switch-link slide-element">
-
-                        <p>
-
-                            Don't have an account?
-
-                            <br>
-
-                            <a
-                                href="#"
-                                id="registerTrigger"
-                            >
-                                Sign Up
-                            </a>
-
-                        </p>
-
-                    </div>
-
-                </form>
-
-
-                <!-- =====================================================
-                     OTP LOGIN PANEL
-                ====================================================== -->
-
-                <div
-                    class="otp-panel"
-                    id="otpPanel"
-                >
-
-                    <!-- Glowing Circle -->
-
-                    <div class="otp-orbit"></div>
-
-
-                    <!-- Icon -->
-
-                    <div class="otp-icon">
-
-                        <i class="fa-solid fa-mobile-screen-button"></i>
-
-                    </div>
-
-
-                    <!-- Title -->
-
-                    <h2>
-                        Login with OTP
+                    <h2 class="slide-element">
+                        Login
                     </h2>
 
 
-                    <p class="otp-description">
-                        Enter your registered mobile number
+                    <p class="description slide-element">
+                        Welcome back! Login to continue.
                     </p>
 
 
-                    <!-- ================= PHONE STEP ================= -->
+                    <!-- ================= NORMAL LOGIN ================= -->
 
-                    <div id="phoneStep">
+                    <form id="loginForm" method="POST" action="{{ url_for('login') }}">
 
-                        <div class="otp-phone-box">
+                        <!-- Username -->
+
+                        <div class="field-wrapper slide-element">
+
+                            <input type="text" id="loginUsername" name="username" required>
+
+                            <label>
+                                Username
+                            </label>
+
+                            <i class="fa-solid fa-user"></i>
+
+                        </div>
+
+
+                        <!-- Password -->
+
+                        <div class="field-wrapper slide-element">
+
+                            <input type="password" id="loginPassword" name="password" required>
+
+                            <label>
+                                Password
+                            </label>
+
+                            <i class="fa-solid fa-lock"></i>
+
+                        </div>
+
+
+                        <!-- ================= OPTIONS ================= -->
+
+                        <div class="options slide-element">
+
+                            <label>
+
+                                <input type="checkbox" name="remember">
+
+                                Remember me
+
+                            </label>
+
+
+                            <div class="login-options">
+
+                                <a href="#" id="forgotPassword">
+                                    Forgot Password?
+                                </a>
+
+                                <span>|</span>
+
+                                <a href="#" id="otpLoginTrigger">
+                                    Login with OTP
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                        <!-- LOGIN ROLE -->
+                        <div class="login-role slide-element">
+
+                            <p>Login as</p>
+
+                            <div class="role-options">
+
+                                <label class="role-card">
+                                    <input type="radio" name="role" value="customer" checked>
+                                    <i class="fa-solid fa-user"></i>
+                                    <span>Customer</span>
+                                </label>
+
+                                <label class="role-card">
+                                    <input type="radio" name="role" value="seller">
+                                    <i class="fa-solid fa-store"></i>
+                                    <span>Seller</span>
+                                </label>
+
+                                <label class="role-card">
+                                    <input type="radio" name="role" value="admin">
+                                    <i class="fa-solid fa-user-shield"></i>
+                                    <span>Admin</span>
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                        <!-- ================= LOGIN BUTTON ================= -->
+
+                        <div class="field-wrapper slide-element">
+
+                            <button class="submit-button" type="submit">
+
+                                <span>
+                                    Login
+                                </span>
+
+                                <i class="fa-solid fa-right-to-bracket"></i>
+
+                            </button>
+
+                        </div>
+
+
+                        <!-- ================= REGISTER SWITCH ================= -->
+
+                        <div class="switch-link slide-element">
+
+                            <p>
+
+                                Don't have an account?
+
+                                <br>
+
+                                <a href="#" id="registerTrigger">
+                                    Sign Up
+                                </a>
+
+                            </p>
+
+                        </div>
+
+                    </form>
+
+
+                    <!-- =====================================================
+                     OTP LOGIN PANEL
+                ====================================================== -->
+
+                    <div class="otp-panel" id="otpPanel">
+
+                        <!-- Glowing Circle -->
+
+                        <div class="otp-orbit"></div>
+
+
+                        <!-- Icon -->
+
+                        <div class="otp-icon">
+
+                            <i class="fa-solid fa-mobile-screen-button"></i>
+
+                        </div>
+
+
+                        <!-- Title -->
+
+                        <h2>
+                            Login with OTP
+                        </h2>
+
+
+                        <p class="otp-description">
+                            Enter your registered mobile number
+                        </p>
+
+
+                        <!-- ================= PHONE STEP ================= -->
+
+                        <div id="phoneStep">
+
+                            <div class="otp-phone-box">
+
+                                <i class="fa-solid fa-phone"></i>
+
+                                <input type="tel" id="otpPhone" maxlength="10" inputmode="numeric"
+                                    placeholder="10-digit mobile number">
+
+                            </div>
+
+
+                            <button type="button" id="sendOtpBtn" class="otp-btn">
+
+                                <span>
+                                    Send OTP
+                                </span>
+
+                                <i class="fa-solid fa-paper-plane"></i>
+
+                            </button>
+
+                        </div>
+
+
+                        <!-- ================= OTP STEP ================= -->
+
+                        <div id="otpStep" hidden>
+
+                            <div class="verify-icon">
+
+                                <i class="fa-solid fa-shield-halved"></i>
+
+                            </div>
+
+
+                            <h3>
+                                Verify OTP
+                            </h3>
+
+
+                            <p>
+
+                                OTP sent to
+
+                                <strong id="maskedPhone">
+                                    ******
+                                </strong>
+
+                            </p>
+
+
+                            <!-- OTP BOXES -->
+
+                            <div class="otp-boxes">
+
+                                <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
+
+                                <input class="otp-box" maxlength="1" inputmode="numeric">
+
+                                <input class="otp-box" maxlength="1" inputmode="numeric">
+
+                                <input class="otp-box" maxlength="1" inputmode="numeric">
+
+                                <input class="otp-box" maxlength="1" inputmode="numeric">
+
+                                <input class="otp-box" maxlength="1" inputmode="numeric">
+
+                            </div>
+
+
+                            <!-- TIMER -->
+
+                            <div class="otp-countdown">
+
+                                <i class="fa-regular fa-clock"></i>
+
+                                <span id="otpTimer">
+                                    00:30
+                                </span>
+
+                            </div>
+
+
+                            <!-- VERIFY -->
+
+                            <button type="button" id="verifyOtpBtn" class="otp-btn">
+
+                                <span>
+                                    Verify OTP
+                                </span>
+
+                                <i class="fa-solid fa-check"></i>
+
+                            </button>
+
+
+                            <!-- RESEND -->
+
+                            <button type="button" id="resendOtpBtn" class="resend-btn" disabled>
+                                Resend OTP
+                            </button>
+
+                        </div>
+
+
+                        <!-- BACK -->
+
+                        <button type="button" id="backLoginBtn" class="back-login">
+
+                            <i class="fa-solid fa-arrow-left"></i>
+
+                            Back to Login
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= LOGIN WELCOME ================= -->
+
+            <div class="welcome-section signin">
+
+                <div class="welcome-content">
+
+                    <div class="welcome-icon slide-element">
+
+                        <i class="fa-solid fa-cart-shopping"></i>
+
+                    </div>
+
+
+                    <h2 class="slide-element">
+
+                        WELCOME<br>
+
+                        <span>
+                            BACK!
+                        </span>
+
+                    </h2>
+
+
+                    <p class="slide-element">
+
+                        Your intelligent shopping
+                        experience starts here.
+
+                    </p>
+
+
+                    <div class="ai-badge slide-element">
+
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+                        SHOP AMAZINGLY
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= REGISTER FORM ================= -->
+
+            <div class="credentials-panel signup">
+
+                <div class="form-content">
+
+                    <div class="brand slide-element">
+
+                        <i class="fa-solid fa-brain"></i>
+
+                        NEXACART
+
+                    </div>
+
+
+                    <h2 class="slide-element">
+                        Register
+                    </h2>
+
+
+                    <p class="description slide-element">
+                        Create your NexaCart account.
+                    </p>
+
+
+                    <!-- REGISTER FORM -->
+
+                    <form id="registerForm" method="POST" action="/register">
+
+                        <!-- Username -->
+
+                        <div class="field-wrapper slide-element">
+
+                            <input type="text" id="registerUsername" name="username" required>
+
+                            <label>
+                                Username
+                            </label>
+
+                            <i class="fa-solid fa-user"></i>
+
+                        </div>
+
+
+                        <!-- Email -->
+
+                        <div class="field-wrapper slide-element">
+
+                            <input type="email" id="registerEmail" name="email" required>
+
+                            <label>
+                                Email
+                            </label>
+
+                            <i class="fa-solid fa-envelope"></i>
+
+                        </div>
+
+
+                        <!-- Phone -->
+
+                        <div class="field-wrapper slide-element">
+
+                            <input type="tel" id="registerPhone" name="phone" required>
+
+                            <label>
+                                Phone
+                            </label>
 
                             <i class="fa-solid fa-phone"></i>
 
-                            <input
-                                type="tel"
-                                id="otpPhone"
-                                maxlength="10"
-                                inputmode="numeric"
-                                placeholder="10-digit mobile number"
-                            >
+                        </div>
+
+
+                        <!-- Password -->
+
+                        <div class="field-wrapper slide-element">
+
+                            <input type="password" id="registerPassword" name="password" required>
+
+                            <label>
+                                Password
+                            </label>
+
+                            <i class="fa-solid fa-lock"></i>
 
                         </div>
 
 
-                        <button
-                            type="button"
-                            id="sendOtpBtn"
-                            class="otp-btn"
-                        >
+                        <!-- Register Button -->
 
-                            <span>
-                                Send OTP
-                            </span>
+                        <div class="field-wrapper slide-element">
 
-                            <i class="fa-solid fa-paper-plane"></i>
+                            <button class="submit-button" type="submit">
 
-                        </button>
+                                <span>
+                                    Register
+                                </span>
+
+                                <i class="fa-solid fa-user-plus"></i>
+
+                            </button>
+
+                        </div>
+
+
+                        <!-- Login Switch -->
+
+                        <div class="switch-link slide-element">
+
+                            <p>
+
+                                Already have an account?
+
+                                <br>
+
+                                <a href="#" id="loginTrigger">
+                                    Sign In
+                                </a>
+
+                            </p>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= REGISTER WELCOME ================= -->
+
+            <div class="welcome-section signup">
+
+                <div class="welcome-content">
+
+                    <div class="welcome-icon slide-element">
+
+                        <i class="fa-solid fa-robot"></i>
 
                     </div>
 
 
-                    <!-- ================= OTP STEP ================= -->
+                    <h2 class="slide-element">
 
-                    <div
-                        id="otpStep"
-                        hidden
-                    >
+                        JOIN<br>
 
-                        <div class="verify-icon">
+                        <span>
+                            NEXACART!
+                        </span>
 
-                            <i class="fa-solid fa-shield-halved"></i>
-
-                        </div>
+                    </h2>
 
 
-                        <h3>
-                            Verify OTP
-                        </h3>
+                    <p class="slide-element">
+
+                        Discover products with
+                        intelligent recommendations.
+
+                    </p>
 
 
-                        <p>
+                    <div class="ai-badge slide-element">
 
-                            OTP sent to
+                        <i class="fa-solid fa-microchip"></i>
 
-                            <strong id="maskedPhone">
-                                ******
-                            </strong>
-
-                        </p>
-
-
-                        <!-- OTP BOXES -->
-
-                        <div class="otp-boxes">
-
-                            <input
-                                class="otp-box"
-                                maxlength="1"
-                                inputmode="numeric"
-                                autocomplete="one-time-code"
-                            >
-
-                            <input
-                                class="otp-box"
-                                maxlength="1"
-                                inputmode="numeric"
-                            >
-
-                            <input
-                                class="otp-box"
-                                maxlength="1"
-                                inputmode="numeric"
-                            >
-
-                            <input
-                                class="otp-box"
-                                maxlength="1"
-                                inputmode="numeric"
-                            >
-
-                            <input
-                                class="otp-box"
-                                maxlength="1"
-                                inputmode="numeric"
-                            >
-
-                            <input
-                                class="otp-box"
-                                maxlength="1"
-                                inputmode="numeric"
-                            >
-
-                        </div>
-
-
-                        <!-- TIMER -->
-
-                        <div class="otp-countdown">
-
-                            <i class="fa-regular fa-clock"></i>
-
-                            <span id="otpTimer">
-                                00:30
-                            </span>
-
-                        </div>
-
-
-                        <!-- VERIFY -->
-
-                        <button
-                            type="button"
-                            id="verifyOtpBtn"
-                            class="otp-btn"
-                        >
-
-                            <span>
-                                Verify OTP
-                            </span>
-
-                            <i class="fa-solid fa-check"></i>
-
-                        </button>
-
-
-                        <!-- RESEND -->
-
-                        <button
-                            type="button"
-                            id="resendOtpBtn"
-                            class="resend-btn"
-                            disabled
-                        >
-                            Resend OTP
-                        </button>
+                        AI Powered Shopping
 
                     </div>
-
-
-                    <!-- BACK -->
-
-                    <button
-                        type="button"
-                        id="backLoginBtn"
-                        class="back-login"
-                    >
-
-                        <i class="fa-solid fa-arrow-left"></i>
-
-                        Back to Login
-
-                    </button>
 
                 </div>
 
@@ -415,283 +572,30 @@
         </div>
 
 
-        <!-- ================= LOGIN WELCOME ================= -->
+        <!-- ================= FOOTER ================= -->
 
-        <div class="welcome-section signin">
+        <div class="footer">
 
-            <div class="welcome-content">
+            Made with
 
-                <div class="welcome-icon slide-element">
+            <span>
+                ♥
+            </span>
 
-                    <i class="fa-solid fa-cart-shopping"></i>
+            by
 
-                </div>
-
-
-                <h2 class="slide-element">
-
-                    WELCOME<br>
-
-                    <span>
-                        BACK!
-                    </span>
-
-                </h2>
-
-
-                <p class="slide-element">
-
-                    Your intelligent shopping
-                    experience starts here.
-
-                </p>
-
-
-                <div class="ai-badge slide-element">
-
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
-
-                    AI Powered Shopping
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- ================= REGISTER FORM ================= -->
-
-        <div class="credentials-panel signup">
-
-            <div class="form-content">
-
-                <div class="brand slide-element">
-
-                    <i class="fa-solid fa-brain"></i>
-
-                    NEXACART
-
-                </div>
-
-
-                <h2 class="slide-element">
-                    Register
-                </h2>
-
-
-                <p class="description slide-element">
-                    Create your NexaCart account.
-                </p>
-
-
-                <!-- REGISTER FORM -->
-
-                <form
-                    id="registerForm"
-                    method="POST"
-                    action="/register"
-                >
-
-                    <!-- Username -->
-
-                    <div class="field-wrapper slide-element">
-
-                        <input
-                            type="text"
-                            id="registerUsername"
-                            name="username"
-                            required
-                        >
-
-                        <label>
-                            Username
-                        </label>
-
-                        <i class="fa-solid fa-user"></i>
-
-                    </div>
-
-
-                    <!-- Email -->
-
-                    <div class="field-wrapper slide-element">
-
-                        <input
-                            type="email"
-                            id="registerEmail"
-                            name="email"
-                            required
-                        >
-
-                        <label>
-                            Email
-                        </label>
-
-                        <i class="fa-solid fa-envelope"></i>
-
-                    </div>
-
-
-                    <!-- Phone -->
-
-                    <div class="field-wrapper slide-element">
-
-                        <input
-                            type="tel"
-                            id="registerPhone"
-                            name="phone"
-                            required
-                        >
-
-                        <label>
-                            Phone
-                        </label>
-
-                        <i class="fa-solid fa-phone"></i>
-
-                    </div>
-
-
-                    <!-- Password -->
-
-                    <div class="field-wrapper slide-element">
-
-                        <input
-                            type="password"
-                            id="registerPassword"
-                            name="password"
-                            required
-                        >
-
-                        <label>
-                            Password
-                        </label>
-
-                        <i class="fa-solid fa-lock"></i>
-
-                    </div>
-
-
-                    <!-- Register Button -->
-
-                    <div class="field-wrapper slide-element">
-
-                        <button
-                            class="submit-button"
-                            type="submit"
-                        >
-
-                            <span>
-                                Register
-                            </span>
-
-                            <i class="fa-solid fa-user-plus"></i>
-
-                        </button>
-
-                    </div>
-
-
-                    <!-- Login Switch -->
-
-                    <div class="switch-link slide-element">
-
-                        <p>
-
-                            Already have an account?
-
-                            <br>
-
-                            <a
-                                href="#"
-                                id="loginTrigger"
-                            >
-                                Sign In
-                            </a>
-
-                        </p>
-
-                    </div>
-
-                </form>
-
-            </div>
-
-        </div>
-
-
-        <!-- ================= REGISTER WELCOME ================= -->
-
-        <div class="welcome-section signup">
-
-            <div class="welcome-content">
-
-                <div class="welcome-icon slide-element">
-
-                    <i class="fa-solid fa-robot"></i>
-
-                </div>
-
-
-                <h2 class="slide-element">
-
-                    JOIN<br>
-
-                    <span>
-                        NEXACART!
-                    </span>
-
-                </h2>
-
-
-                <p class="slide-element">
-
-                    Discover products with
-                    intelligent recommendations.
-
-                </p>
-
-
-                <div class="ai-badge slide-element">
-
-                    <i class="fa-solid fa-microchip"></i>
-
-                    AI Powered Shopping
-
-                </div>
-
-            </div>
+            <b>
+                TEAM APEX
+            </b>
 
         </div>
 
     </div>
 
 
-    <!-- ================= FOOTER ================= -->
+    <!-- ================= JAVASCRIPT ================= -->
 
-    <div class="footer">
-
-        Made with
-
-        <span>
-            ♥
-        </span>
-
-        by
-
-        <b>
-            TEAM APEX
-        </b>
-
-    </div>
-
-</div>
-
-
-<!-- ================= JAVASCRIPT ================= -->
-
-<script src="{{ url_for('static', filename='login.js') }}"></script>
+    <script src="{{ url_for('static', filename='login.js') }}"></script>
 
 </body>
 

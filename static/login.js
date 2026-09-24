@@ -70,18 +70,49 @@ if (loginForm) {
 
             event.preventDefault();
 
+
+            /* GET SELECTED LOGIN ROLE */
+
+            const selectedRole =
+                document.querySelector(
+                    'input[name="role"]:checked'
+                );
+
+            if (!selectedRole) {
+
+                alert("Please select a login role.");
+
+                return;
+            }
+
+
+            const role =
+                selectedRole.value;
+
+
+            /* GET USERNAME */
+
             const username =
                 document
                     .getElementById("loginUsername")
                     .value
                     .trim();
 
+
+            /* GET PASSWORD */
+
             const password =
                 document
                     .getElementById("loginPassword")
                     .value;
 
-            if (username === "" || password === "") {
+
+            /* VALIDATION */
+
+            if (
+                username === "" ||
+                password === ""
+            ) {
 
                 alert(
                     "Please enter Username and Password."
@@ -93,21 +124,34 @@ if (loginForm) {
 
             try {
 
-                const response = await fetch(
-                    "/login",
-                    {
-                        method: "POST",
+                /* SEND LOGIN REQUEST */
 
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
+                const response =
+                    await fetch(
+                        "/login",
+                        {
+                            method: "POST",
 
-                        body: JSON.stringify({
-                            username: username,
-                            password: password
-                        })
-                    }
-                );
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    username:
+                                        username,
+
+                                    password:
+                                        password,
+
+                                    role:
+                                        role
+
+                                })
+                        }
+                    );
 
 
                 const result =
@@ -120,13 +164,14 @@ if (loginForm) {
                 );
 
 
-                /* =========================================
+                /* =================================================
                    LOGIN SUCCESS
-                ========================================= */
+                ================================================= */
 
                 if (result.success === true) {
 
-                    /* Save username */
+
+                    /* SAVE USERNAME */
 
                     localStorage.setItem(
                         "nexacartUsername",
@@ -134,7 +179,7 @@ if (loginForm) {
                     );
 
 
-                    /* Save user */
+                    /* SAVE USER */
 
                     localStorage.setItem(
                         "nexacartUser",
@@ -149,6 +194,9 @@ if (loginForm) {
                             phone:
                                 result.phone || "",
 
+                            role:
+                                result.role || role,
+
                             location:
                                 "India"
 
@@ -156,17 +204,42 @@ if (loginForm) {
                     );
 
 
+                    /* SUCCESS MESSAGE */
+
                     alert(
                         "Login Successful!\nWelcome " +
                         result.username
                     );
 
 
-                    /* =====================================
-                       GO TO FLASK HOME PAGE
-                    ===================================== */
+                    /* =================================================
+                       ROLE-BASED REDIRECT
+                    ================================================= */
 
-                    window.location.href = "/";
+                    if (
+                        result.role === "admin"
+                    ) {
+
+                        window.location.href =
+                            "/admin";
+
+                    }
+
+                    else if (
+                        result.role === "seller"
+                    ) {
+
+                        window.location.href =
+                            "/seller";
+
+                    }
+
+                    else {
+
+                        window.location.href =
+                            "/";
+
+                    }
 
                 }
 
@@ -174,7 +247,7 @@ if (loginForm) {
 
                     alert(
                         result.message ||
-                        "Invalid username or password."
+                        "Invalid username, password, or role."
                     );
 
                 }
@@ -199,6 +272,7 @@ if (loginForm) {
     );
 
 }
+
 
 
 /* =========================================================
@@ -787,8 +861,8 @@ otpBoxes.forEach(
                         event.clipboardData
                             .getData("text") || ""
                     )
-                    .replace(/\D/g, "")
-                    .slice(0, 6);
+                        .replace(/\D/g, "")
+                        .slice(0, 6);
 
 
                 pasted
