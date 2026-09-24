@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Dashboard - NexaCart</title>
+
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='admin_dashboard.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+
+<div class="admin-layout">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="admin-sidebar">
+
+
+        <!-- BRAND -->
+
+        <div class="admin-brand">
+
+            <div class="brand-icon">
+
+                <i class="fa-solid fa-bag-shopping"></i>
+
+            </div>
+
+
+            <div>
+
+                <h2>
+                    Nexa<span>Cart</span>
+                </h2>
+
+                <small>
+                    ADMIN PANEL
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- ADMIN PROFILE -->
+
+        <div class="admin-profile">
+
+            <div class="admin-avatar">
+
+                {{ admin_username[0]|upper }}
+
+            </div>
+
+
+            <div>
+
+                <strong>
+                    {{ admin_username }}
+                </strong>
+
+                <small>
+                    Administrator
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="admin-nav">
+
+
+            <button
+                type="button"
+                class="admin-nav-item active"
+                data-section="dashboard"
+            >
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="admin-nav-item"
+                data-section="sellers"
+            >
+
+                <i class="fa-solid fa-store"></i>
+
+                <span>
+                    Sellers
+                </span>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="admin-nav-item"
+                data-section="users"
+            >
+
+                <i class="fa-solid fa-users"></i>
+
+                <span>
+                    Users
+                </span>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="admin-nav-item"
+                data-section="products"
+            >
+
+                <i class="fa-solid fa-box"></i>
+
+                <span>
+                    Products
+                </span>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="admin-nav-item"
+                data-section="orders"
+            >
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <span>
+                    Orders
+                </span>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="admin-nav-item"
+                data-section="categories"
+            >
+
+                <i class="fa-solid fa-layer-group"></i>
+
+                <span>
+                    Categories
+                </span>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="admin-nav-item"
+                data-section="analytics"
+            >
+
+                <i class="fa-solid fa-chart-pie"></i>
+
+                <span>
+                    Analytics
+                </span>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="admin-nav-item"
+                data-section="settings"
+            >
+
+                <i class="fa-solid fa-gear"></i>
+
+                <span>
+                    Settings
+                </span>
+
+            </button>
+
+
+        </nav>
+
+
+        <!-- SIDEBAR BOTTOM -->
+
+        <div class="sidebar-bottom">
+
+
+            <a
+                href="{{ url_for('home') }}"
+                class="back-store"
+            >
+
+                <i class="fa-solid fa-house"></i>
+
+                Back to Store
+
+            </a>
+
+
+            <a
+                href="{{ url_for('admin_logout') }}"
+                class="logout-link"
+            >
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                Logout
+
+            </a>
+
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="admin-main">
+
+
+        <!-- TOPBAR -->
+
+        <header class="admin-topbar">
+
+
+            <div>
+
+                <span class="top-eyebrow">
+                    NEXACART ADMIN
+                </span>
+
+
+                <h1 id="pageTitle">
+                    Dashboard
+                </h1>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="mobile-menu"
+                id="mobileMenu"
+            >
+
+                <i class="fa-solid fa-bars"></i>
+
+            </button>
+
+
+        </header>
+
+
+
+        <!-- =================================================
+             DASHBOARD SECTION
+        ================================================== -->
+
+        <section
+            class="admin-section active-section"
+            id="dashboard"
+        >
+
+
+            <!-- WELCOME -->
+
+            <div class="welcome-box">
+
+
+                <div>
+
+                    <span>
+                        ADMINISTRATION
+                    </span>
+
+
+                    <h2>
+                        Welcome back,
+                        {{ admin_username }}!
+                    </h2>
+
+
+                    <p>
+                        Manage your NexaCart marketplace
+                        from one place.
+                    </p>
+
+                </div>
+
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+
+            </div>
+
+
+
+            <!-- STATS -->
+
+            <div class="stats-grid">
+
+
+                <!-- TOTAL USERS -->
+
+                <div
+                    class="stat-card clickable-stat-card"
+                    data-section-target="users"
+                    title="View All Users"
+                    role="button"
+                    tabindex="0"
+                >
+
+                    <div class="stat-icon blue">
+
+                        <i class="fa-solid fa-users"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Total Users
+                        </span>
+
+
+                        <h2 id="totalUsers">
+                            {{ total_users }}
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- TOTAL SELLERS -->
+
+                <div
+                    class="stat-card clickable-stat-card"
+                    data-section-target="sellers"
+                    title="View All Sellers"
+                    role="button"
+                    tabindex="0"
+                >
+
+                    <div class="stat-icon purple">
+
+                        <i class="fa-solid fa-store"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Total Sellers
+                        </span>
+
+
+                        <h2 id="totalSellers">
+                            {{ total_sellers }}
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- TOTAL PRODUCTS -->
+
+                <div class="stat-card">
+
+                    <div class="stat-icon orange">
+
+                        <i class="fa-solid fa-box"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Total Products
+                        </span>
+
+
+                        <h2 id="totalProducts">
+                            0
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ACTIVE SELLERS -->
+
+                <div class="stat-card">
+
+                    <div class="stat-icon green">
+
+                        <i class="fa-solid fa-user-check"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Active Sellers
+                        </span>
+
+
+                        <h2 id="activeSellers">
+                            {{ active_sellers }}
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- DASHBOARD GRID -->
+
+            <div class="dashboard-grid">
+
+
+                <!-- SELLER OVERVIEW -->
+
+                <div class="dashboard-card">
+
+
+                    <div class="card-heading">
+
+
+                        <div>
+
+                            <span>
+                                SELLER OVERVIEW
+                            </span>
+
+
+                            <h3>
+                                Seller Status
+                            </h3>
+
+                        </div>
+
+
+                        <i class="fa-solid fa-store"></i>
+
+
+                    </div>
+
+
+                    <div class="status-overview">
+
+
+                        <div>
+
+                            <strong id="activeSellerCount">
+                                {{ active_sellers }}
+                            </strong>
+
+
+                            <span>
+                                Active
+                            </span>
+
+                        </div>
+
+
+                        <div>
+
+                            <strong id="blockedSellerCount">
+                                {{ blocked_sellers }}
+                            </strong>
+
+
+                            <span>
+                                Blocked
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- QUICK ACTION -->
+
+                <div class="dashboard-card quick-card">
+
+
+                    <div class="card-heading">
+
+
+                        <div>
+
+                            <span>
+                                QUICK ACTION
+                            </span>
+
+
+                            <h3>
+                                Manage Sellers
+                            </h3>
+
+                        </div>
+
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="primary-btn"
+                        data-section-target="sellers"
+                    >
+
+                        <i class="fa-solid fa-store"></i>
+
+                        View All Sellers
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             SELLERS SECTION
+        ================================================== -->
+
+        <section
+            class="admin-section"
+            id="sellers"
+        >
+
+
+            <div class="section-heading">
+
+
+                <div>
+
+                    <span>
+                        SELLER MANAGEMENT
+                    </span>
+
+
+                    <h2>
+                        All Sellers
+                    </h2>
+
+
+                    <p>
+                        View and manage every seller
+                        registered on NexaCart.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- SELLER TOOLBAR -->
+
+            <div class="seller-toolbar">
+
+
+                <div class="search-box">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+
+                    <input
+                        type="text"
+                        id="sellerSearch"
+                        placeholder="Search seller..."
+                    >
+
+                </div>
+
+
+                <select id="sellerStatusFilter">
+
+                    <option value="">
+                        All Status
+                    </option>
+
+
+                    <option value="active">
+                        Active
+                    </option>
+
+
+                    <option value="blocked">
+                        Blocked
+                    </option>
+
+                </select>
+
+
+            </div>
+
+
+
+            <!-- SELLER TABLE -->
+
+            <div class="dashboard-card table-card">
+
+
+                <div class="table-wrapper">
+
+
+                    <table>
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Seller
+                                </th>
+
+
+                                <th>
+                                    Email
+                                </th>
+
+
+                                <th>
+                                    Phone
+                                </th>
+
+
+                                <th>
+                                    Products
+                                </th>
+
+
+                                <th>
+                                    Status
+                                </th>
+
+
+                                <th>
+                                    Joined
+                                </th>
+
+
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+
+                        <tbody id="sellersTable">
+
+
+                            {% if sellers %}
+
+
+                                {% for seller in sellers %}
+
+
+                                <tr
+                                    class="seller-row"
+                                    data-seller-id="{{ seller.id }}"
+                                    data-name="{{ seller.name|lower }}"
+                                    data-email="{{ seller.email|lower }}"
+                                    data-phone="{{ seller.phone }}"
+                                    data-status="{{ seller.status }}"
+                                >
+
+
+                                    <!-- SELLER -->
+
+                                    <td>
+
+
+                                        <div class="seller-cell">
+
+
+                                            <div class="seller-table-avatar">
+
+                                                {{ seller.name[0]|upper }}
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <strong>
+                                                    {{ seller.name }}
+                                                </strong>
+
+
+                                                <small>
+                                                    Seller #{{ seller.id }}
+                                                </small>
+
+                                            </div>
+
+
+                                        </div>
+
+
+                                    </td>
+
+
+
+                                    <!-- EMAIL -->
+
+                                    <td>
+
+                                        {{ seller.email }}
+
+                                    </td>
+
+
+
+                                    <!-- PHONE -->
+
+                                    <td>
+
+                                        {{ seller.phone }}
+
+                                    </td>
+
+
+
+                                    <!-- PRODUCTS -->
+
+                                    <td>
+
+                                        0
+
+                                    </td>
+
+
+
+                                    <!-- STATUS -->
+
+                                    <td>
+
+
+                                        {% if seller.status == "active" %}
+
+
+                                            <span
+                                                class="status-badge active"
+                                            >
+                                                Active
+                                            </span>
+
+
+                                        {% else %}
+
+
+                                            <span
+                                                class="status-badge blocked"
+                                            >
+                                                Blocked
+                                            </span>
+
+
+                                        {% endif %}
+
+
+                                    </td>
+
+
+
+                                    <!-- JOINED -->
+
+                                    <td>
+
+
+                                        {% if seller.created_at %}
+
+                                            {{ seller.created_at.strftime('%d %b %Y') }}
+
+                                        {% else %}
+
+                                            -
+
+                                        {% endif %}
+
+
+                                    </td>
+
+
+
+                                    <!-- ACTIONS -->
+
+                                    <td>
+
+
+                                        <div class="table-actions">
+
+
+                                            <!-- VIEW -->
+
+                                            <button
+                                                type="button"
+                                                class="action-btn view-btn"
+                                                title="View Seller"
+                                            >
+
+                                                <i class="fa-solid fa-eye"></i>
+
+                                            </button>
+
+
+
+                                            <!-- BLOCK / ACTIVATE -->
+
+                                            {% if seller.status == "active" %}
+
+
+                                                <form
+                                                    method="POST"
+                                                    action="{{ url_for('admin_change_seller_status', seller_id=seller.id) }}"
+                                                    class="seller-status-form"
+                                                >
+
+                                                    <input
+                                                        type="hidden"
+                                                        name="status"
+                                                        value="blocked"
+                                                    >
+
+
+                                                    <button
+                                                        type="submit"
+                                                        class="action-btn block-btn"
+                                                        title="Block Seller"
+                                                    >
+
+                                                        <i class="fa-solid fa-ban"></i>
+
+                                                    </button>
+
+                                                </form>
+
+
+                                            {% else %}
+
+
+                                                <form
+                                                    method="POST"
+                                                    action="{{ url_for('admin_change_seller_status', seller_id=seller.id) }}"
+                                                    class="seller-status-form"
+                                                >
+
+                                                    <input
+                                                        type="hidden"
+                                                        name="status"
+                                                        value="active"
+                                                    >
+
+
+                                                    <button
+                                                        type="submit"
+                                                        class="action-btn unblock-btn"
+                                                        title="Activate Seller"
+                                                    >
+
+                                                        <i class="fa-solid fa-check"></i>
+
+                                                    </button>
+
+                                                </form>
+
+
+                                            {% endif %}
+
+
+
+                                            <!-- DELETE -->
+
+                                            <button
+                                                type="button"
+                                                class="action-btn delete-btn"
+                                                title="Delete Seller"
+                                            >
+
+                                                <i class="fa-solid fa-trash"></i>
+
+                                            </button>
+
+
+                                        </div>
+
+
+                                    </td>
+
+
+                                </tr>
+
+
+                                {% endfor %}
+
+
+                            {% else %}
+
+
+                                <tr>
+
+                                    <td
+                                        colspan="7"
+                                        class="empty-table"
+                                    >
+
+                                        <i class="fa-solid fa-store"></i>
+
+
+                                        <span>
+                                            No sellers registered yet.
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+
+                            {% endif %}
+
+
+                        </tbody>
+
+
+                    </table>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             USERS SECTION
+        ================================================== -->
+
+        <section
+            class="admin-section"
+            id="users"
+        >
+
+
+            <div class="section-heading">
+
+
+                <div>
+
+                    <span>
+                        USER MANAGEMENT
+                    </span>
+
+
+                    <h2>
+                        All Users
+                    </h2>
+
+
+                    <p>
+                        View all customers registered
+                        on NexaCart.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- USER TABLE -->
+
+            <div class="dashboard-card table-card">
+
+
+                <div class="table-wrapper">
+
+
+                    <table>
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    User
+                                </th>
+
+
+                                <th>
+                                    Email
+                                </th>
+
+
+                                <th>
+                                    Joined
+                                </th>
+
+
+                                <th>
+                                    Status
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+
+                        <tbody>
+
+
+                            {% if users %}
+
+
+                                {% for user in users %}
+
+
+                                <tr>
+
+
+                                    <!-- USER -->
+
+                                    <td>
+
+
+                                        <div class="seller-cell">
+
+
+                                            <div class="seller-table-avatar">
+
+                                                {{ user.username[0]|upper }}
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <strong>
+                                                    {{ user.username }}
+                                                </strong>
+
+
+                                                <small>
+                                                    User #{{ user.id }}
+                                                </small>
+
+                                            </div>
+
+
+                                        </div>
+
+
+                                    </td>
+
+
+
+                                    <!-- EMAIL -->
+
+                                    <td>
+
+                                        {{ user.email }}
+
+                                    </td>
+
+
+
+                                    <!-- JOINED -->
+
+                                    <td>
+
+
+                                        {% if user.created_at %}
+
+                                            {{ user.created_at.strftime('%d %b %Y') }}
+
+                                        {% else %}
+
+                                            -
+
+                                        {% endif %}
+
+
+                                    </td>
+
+
+
+                                    <!-- STATUS -->
+
+                                    <td>
+
+                                        <span
+                                            class="status-badge active"
+                                        >
+                                            Active
+                                        </span>
+
+                                    </td>
+
+
+                                </tr>
+
+
+                                {% endfor %}
+
+
+                            {% else %}
+
+
+                                <tr>
+
+                                    <td
+                                        colspan="4"
+                                        class="empty-table"
+                                    >
+
+                                        <i class="fa-solid fa-users"></i>
+
+
+                                        <span>
+                                            No users registered yet.
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+
+                            {% endif %}
+
+
+                        </tbody>
+
+
+                    </table>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             PRODUCTS SECTION
+        ================================================== -->
+
+        <section
+            class="admin-section"
+            id="products"
+        >
+
+
+            <div class="section-heading">
+
+
+                <span>
+                    PRODUCT MANAGEMENT
+                </span>
+
+
+                <h2>
+                    Products
+                </h2>
+
+
+                <p>
+                    Admin product moderation will be connected
+                    with the seller product system.
+                </p>
+
+
+            </div>
+
+
+            <div class="empty-panel">
+
+
+                <i class="fa-solid fa-box"></i>
+
+
+                <h3>
+                    Product Management
+                </h3>
+
+
+                <p>
+                    Product management will be connected
+                    after the product database is created.
+                </p>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             ORDERS SECTION
+        ================================================== -->
+
+        <section
+            class="admin-section"
+            id="orders"
+        >
+
+
+            <div class="section-heading">
+
+
+                <span>
+                    ORDER MANAGEMENT
+                </span>
+
+
+                <h2>
+                    Orders
+                </h2>
+
+
+                <p>
+                    All marketplace orders will be shown here.
+                </p>
+
+
+            </div>
+
+
+            <div class="empty-panel">
+
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+
+                <h3>
+                    Order Management
+                </h3>
+
+
+                <p>
+                    Customer, seller and delivery order
+                    management will be added here.
+                </p>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             CATEGORIES SECTION
+        ================================================== -->
+
+        <section
+            class="admin-section"
+            id="categories"
+        >
+
+
+            <div class="section-heading">
+
+
+                <span>
+                    CATEGORY MANAGEMENT
+                </span>
+
+
+                <h2>
+                    Categories
+                </h2>
+
+
+                <p>
+                    Manage NexaCart product categories.
+                </p>
+
+
+            </div>
+
+
+            <div class="empty-panel">
+
+
+                <i class="fa-solid fa-layer-group"></i>
+
+
+                <h3>
+                    Category Management
+                </h3>
+
+
+                <p>
+                    Add, edit, activate or deactivate categories.
+                </p>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             ANALYTICS SECTION
+        ================================================== -->
+
+        <section
+            class="admin-section"
+            id="analytics"
+        >
+
+
+            <div class="section-heading">
+
+
+                <span>
+                    MARKETPLACE ANALYTICS
+                </span>
+
+
+                <h2>
+                    Analytics
+                </h2>
+
+
+                <p>
+                    Platform-wide analytics will be displayed here.
+                </p>
+
+
+            </div>
+
+
+            <div class="empty-panel">
+
+
+                <i class="fa-solid fa-chart-pie"></i>
+
+
+                <h3>
+                    Analytics
+                </h3>
+
+
+                <p>
+                    Sales, users, sellers and product analytics
+                    will be connected in the next phase.
+                </p>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             SETTINGS SECTION
+        ================================================== -->
+
+        <section
+            class="admin-section"
+            id="settings"
+        >
+
+
+            <div class="section-heading">
+
+
+                <span>
+                    ADMIN SETTINGS
+                </span>
+
+
+                <h2>
+                    Settings
+                </h2>
+
+
+                <p>
+                    Manage administrator account settings.
+                </p>
+
+
+            </div>
+
+
+            <div class="empty-panel">
+
+
+                <i class="fa-solid fa-gear"></i>
+
+
+                <h3>
+                    Admin Settings
+                </h3>
+
+
+                <p>
+                    Admin profile and password management
+                    will be added here.
+                </p>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+
+<!-- =========================================================
+     SELLER DETAILS MODAL
+========================================================== -->
+
+<div
+    class="modal-overlay"
+    id="sellerModal"
+>
+
+
+    <div class="seller-modal">
+
+
+        <button
+            type="button"
+            class="modal-close"
+            id="closeSellerModal"
+        >
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+
+
+        <!-- MODAL HEADER -->
+
+        <div class="modal-header">
+
+
+            <div
+                class="large-avatar"
+                id="modalAvatar"
+            >
+                S
+            </div>
+
+
+            <div>
+
+
+                <span>
+                    SELLER PROFILE
+                </span>
+
+
+                <h2 id="modalSellerName">
+                    Seller
+                </h2>
+
+
+                <p id="modalSellerEmail">
+                    seller@example.com
+                </p>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- SELLER INFO -->
+
+        <div class="seller-info-grid">
+
+
+            <div>
+
+                <span>
+                    Phone
+                </span>
+
+
+                <strong id="modalSellerPhone">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    Status
+                </span>
+
+
+                <strong id="modalSellerStatus">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    Joined
+                </span>
+
+
+                <strong id="modalSellerJoined">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    Total Products
+                </span>
+
+
+                <strong id="modalProductCount">
+                    0
+                </strong>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- PRODUCTS -->
+
+        <div class="modal-products">
+
+
+            <div class="modal-products-heading">
+
+                <h3>
+                    Seller Products
+                </h3>
+
+            </div>
+
+
+            <div id="modalProductsList">
+
+
+                <div class="no-products">
+
+                    <i class="fa-solid fa-box"></i>
+
+                    <span>
+                        No products added by this seller yet.
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- MODAL ACTIONS -->
+
+        <div class="modal-actions">
+
+
+            <button
+                type="button"
+                class="secondary-btn"
+                id="modalToggleStatus"
+            >
+                Block Seller
+            </button>
+
+
+            <button
+                type="button"
+                class="danger-btn"
+                id="modalDeleteSeller"
+            >
+
+                <i class="fa-solid fa-trash"></i>
+
+                Delete Seller
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     DELETE CONFIRMATION MODAL
+========================================================== -->
+
+<div
+    class="modal-overlay"
+    id="deleteModal"
+>
+
+
+    <div class="confirm-modal">
+
+
+        <div class="warning-icon">
+
+            <i class="fa-solid fa-triangle-exclamation"></i>
+
+        </div>
+
+
+        <h2>
+            Delete Seller?
+        </h2>
+
+
+        <p>
+            Seller deletion will be connected
+            to the seller management backend.
+        </p>
+
+
+        <button
+            type="button"
+            class="cancel-btn"
+            id="cancelDelete"
+        >
+            Cancel
+        </button>
+
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================== -->
+
+<script
+    src="{{ url_for('static', filename='admin_dashboard.js') }}"
+></script>
+
+
+</body>
+
+</html>
