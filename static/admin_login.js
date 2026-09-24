@@ -273,3 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
         usernameInput.focus();
     }
 });
+/* ================================
+   ADMIN REGISTER LINK
+================================ */
+

@@ -825,6 +825,301 @@ def admin_logout():
     session.pop("admin_username", None)
 
     return redirect(url_for("admin_login"))
+#-------------------------------------------------seller-----------------
+@app.route("/seller/register", methods=["GET", "POST"])
+def seller_register():
+
+    if request.method == "POST":
+
+        name = request.form.get(
+            "name",
+            ""
+        ).strip()
+
+        phone = request.form.get(
+            "phone",
+            ""
+        ).strip()
+
+        email = request.form.get(
+            "email",
+            ""
+        ).strip().lower()
+
+        password = request.form.get(
+            "password",
+            ""
+        )
+
+        confirm_password = request.form.get(
+            "confirm_password",
+            ""
+        )
+
+
+        # ==============================
+        # BASIC VALIDATION
+        # ==============================
+
+        if not name or not phone or not email or not password:
+            return render_template(
+                "seller_register.html",
+                error="Please fill all fields."
+            )
+
+
+        if password != confirm_password:
+            return render_template(
+                "seller_register.html",
+                error="Passwords do not match."
+            )
+
+
+        if len(password) < 6:
+            return render_template(
+                "seller_register.html",
+                error="Password must be at least 6 characters."
+            )
+
+
+        # ==============================
+        # DATABASE
+        # ==============================
+
+        conn = get_db_connection()
+
+        cursor = conn.cursor(
+            dictionary=True
+        )
+
+
+        cursor.execute(
+            """
+            SELECT id
+            FROM seller_users
+            WHERE email = %s
+               OR phone = %s
+            """,
+            (
+                email,
+                phone
+            )
+        )
+
+        existing_seller = cursor.fetchone()
+
+
+        if existing_seller:
+
+            cursor.close()
+            conn.close()
+
+            return render_template(
+                "seller_register.html",
+                error="Email or phone number already registered."
+            )
+
+
+        # ==============================
+        # HASH PASSWORD
+        # ==============================
+
+        hashed_password = generate_password_hash(
+            password
+        )
+
+
+        # ==============================
+        # INSERT SELLER
+        # ==============================
+
+        cursor.execute(
+            """
+            INSERT INTO seller_users
+            (
+                name,
+                phone,
+                email,
+                password
+            )
+            VALUES
+            (
+                %s,
+                %s,
+                %s,
+                %s
+            )
+            """,
+            (
+                name,
+                phone,
+                email,
+                hashed_password
+            )
+        )
+
+
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+
+        return redirect(
+            url_for("seller_login")
+        )
+
+
+    return render_template(
+        "seller_register.html"
+    )
+#------------------------------------------seller login
+@app.route("/seller/login", methods=["GET", "POST"])
+def seller_login():
+
+    # Already logged in
+    if session.get("seller_logged_in"):
+
+        return redirect(
+            url_for("seller_dashboard")
+        )
+
+
+    if request.method == "POST":
+
+        email = request.form.get(
+            "email",
+            ""
+        ).strip().lower()
+
+        password = request.form.get(
+            "password",
+            ""
+        )
+
+
+        if not email or not password:
+
+            return render_template(
+                "seller_login.html",
+                error="Please enter email and password."
+            )
+
+
+        conn = get_db_connection()
+
+        cursor = conn.cursor(
+            dictionary=True
+        )
+
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                name,
+                email,
+                phone,
+                password
+            FROM seller_users
+            WHERE email = %s
+            """,
+            (email,)
+        )
+
+        seller = cursor.fetchone()
+
+
+        cursor.close()
+        conn.close()
+
+
+        # ==============================
+        # VERIFY PASSWORD
+        # ==============================
+
+        if (
+            seller
+            and check_password_hash(
+                seller["password"],
+                password
+            )
+        ):
+
+            session["seller_logged_in"] = True
+
+            session["seller_id"] = seller["id"]
+
+            session["seller_name"] = seller["name"]
+
+            session["seller_email"] = seller["email"]
+
+            session["seller_phone"] = seller["phone"]
+
+
+            return redirect(
+                url_for("seller_dashboard")
+            )
+
+
+        return render_template(
+            "seller_login.html",
+            error="Invalid seller email or password."
+        )
+
+
+    return render_template(
+        "seller_login.html"
+    )
+#-------------------------------------------------logout-------------------
+@app.route("/seller/logout")
+def seller_logout():
+
+    session.pop(
+        "seller_logged_in",
+        None
+    )
+
+    session.pop(
+        "seller_id",
+        None
+    )
+
+    session.pop(
+        "seller_name",
+        None
+    )
+
+    session.pop(
+        "seller_email",
+        None
+    )
+
+    session.pop(
+        "seller_phone",
+        None
+    )
+
+
+    return redirect(
+        url_for("seller_login")
+    )
+
+
+
+
+@app.route("/seller/dashboard")
+def seller_dashboard():
+    if not session.get("seller_logged_in"):
+        return redirect(url_for("seller_login"))
+
+    return render_template(
+        "seller_dashboard.html",
+        seller_name=session.get("seller_name", "Seller"),
+        seller_email=session.get("seller_email", "")
+    )
+
+
 # =========================================================
 # RUN APPLICATION
 # =========================================================
