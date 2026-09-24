@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Seller Login - NexaCart</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='seller-login.css') }}">
+</head>
+
+<body>
+
+<div class="page-background">
+    <div class="bg-orb orb-one"></div>
+    <div class="bg-orb orb-two"></div>
+    <div class="bg-grid"></div>
+</div>
+
+
+<main class="seller-page">
+
+    <section class="seller-card">
+
+        <!-- BRAND -->
+        <div class="brand-section">
+
+            <div class="brand-icon">
+                <i class="fa-solid fa-store"></i>
+            </div>
+
+            <div>
+                <span class="brand-small">
+                    NEXACART
+                </span>
+
+                <h1>Seller Portal</h1>
+            </div>
+
+        </div>
+
+
+        <!-- HEADER -->
+        <div class="login-header">
+
+            <span class="login-badge">
+                <i class="fa-solid fa-shield-halved"></i>
+                SELLER ACCESS
+            </span>
+
+            <h2>Welcome Back</h2>
+
+            <p>
+                Login to manage your products, orders,
+                sales and store.
+            </p>
+
+        </div>
+
+
+        <!-- SERVER ERROR -->
+        {% if error %}
+        <div class="error-message" id="serverError">
+
+            <i class="fa-solid fa-circle-exclamation"></i>
+
+            <span>{{ error }}</span>
+
+        </div>
+        {% endif %}
+
+
+        <!-- LOGIN FORM -->
+        <form method="POST"
+              action="{{ url_for('seller_login') }}"
+              id="sellerLoginForm"
+              autocomplete="on">
+
+            <!-- EMAIL -->
+            <div class="form-group">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <div class="input-box">
+
+                    <i class="fa-regular fa-envelope"></i>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter seller email"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- PASSWORD -->
+            <div class="form-group">
+
+                <div class="label-row">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <a href="#" id="forgotPassword">
+                        Forgot password?
+                    </a>
+
+                </div>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        id="passwordToggle"
+                        aria-label="Show password">
+
+                        <i class="fa-regular fa-eye"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- REMEMBER -->
+            <div class="remember-row">
+
+                <label class="remember-label">
+
+                    <input
+                        type="checkbox"
+                        id="rememberMe"
+                    >
+
+                    <span>
+                        Remember me
+                    </span>
+
+                </label>
+
+            </div>
+
+
+            <!-- LOGIN BUTTON -->
+            <button
+                type="submit"
+                class="login-button"
+                id="loginButton">
+
+                <span class="button-content">
+
+                    <i class="fa-solid fa-right-to-bracket"></i>
+
+                    <span>Login to Seller Dashboard</span>
+
+                </span>
+
+                <span class="button-loader" hidden>
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    Signing in...
+                </span>
+
+            </button>
+
+        </form>
+
+
+        <!-- REGISTER -->
+        <div class="register-section">
+
+            <span>
+                Don't have a seller account?
+            </span>
+
+            <a href="{{ url_for('seller_register') }}">
+                Create Seller Account
+            </a>
+
+        </div>
+
+
+        <!-- HOME -->
+        <a
+            href="{{ url_for('home') }}"
+            class="back-home">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Back to NexaCart
+
+        </a>
+
+    </section>
+
+</main>
+
+
+<script src="{{ url_for('static', filename='seller-login.js') }}"></script>
+
+</body>
+</html>

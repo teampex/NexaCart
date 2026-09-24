@@ -1,0 +1,558 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #6d28d9;
+    --primary-dark: #4c1d95;
+    --text: #172033;
+    --muted: #718096;
+    --border: #e5e7eb;
+    --white: #ffffff;
+    --danger: #dc2626;
+}
+
+body {
+    min-height: 100vh;
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f8f7ff 0%,
+            #eef2ff 48%,
+            #f8fafc 100%
+        );
+
+    color: var(--text);
+    overflow-x: hidden;
+}
+
+
+/* =========================================
+   BACKGROUND
+========================================= */
+
+.page-background {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.bg-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(4px);
+    opacity: .55;
+}
+
+.orb-one {
+    width: 380px;
+    height: 380px;
+
+    background: #ddd6fe;
+
+    top: -150px;
+    left: -100px;
+}
+
+.orb-two {
+    width: 430px;
+    height: 430px;
+
+    background: #c7d2fe;
+
+    right: -160px;
+    bottom: -180px;
+}
+
+.bg-grid {
+    position: absolute;
+    inset: 0;
+
+    background-image:
+        linear-gradient(
+            rgba(109, 40, 217, .035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(109, 40, 217, .035) 1px,
+            transparent 1px
+        );
+
+    background-size: 38px 38px;
+}
+
+
+/* =========================================
+   PAGE
+========================================= */
+
+.seller-page {
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 35px 18px;
+
+    position: relative;
+    z-index: 1;
+}
+
+
+/* =========================================
+   CARD
+========================================= */
+
+.seller-card {
+    width: min(470px, 100%);
+
+    background: rgba(255, 255, 255, .94);
+
+    border: 1px solid rgba(255, 255, 255, .8);
+
+    border-radius: 28px;
+
+    padding: 38px;
+
+    box-shadow:
+        0 30px 80px rgba(45, 35, 90, .14),
+        0 8px 25px rgba(45, 35, 90, .06);
+
+    backdrop-filter: blur(18px);
+}
+
+
+/* =========================================
+   BRAND
+========================================= */
+
+.brand-section {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    margin-bottom: 34px;
+}
+
+.brand-icon {
+    width: 54px;
+    height: 54px;
+
+    border-radius: 16px;
+
+    display: grid;
+    place-items: center;
+
+    color: white;
+
+    font-size: 21px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #4f46e5
+        );
+
+    box-shadow:
+        0 10px 24px rgba(109, 40, 217, .25);
+}
+
+.brand-small {
+    display: block;
+
+    font-size: 11px;
+    font-weight: 900;
+
+    letter-spacing: 2px;
+
+    color: var(--primary);
+
+    margin-bottom: 2px;
+}
+
+.brand-section h1 {
+    font-size: 21px;
+    font-weight: 850;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.login-header {
+    margin-bottom: 25px;
+}
+
+.login-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 7px 11px;
+
+    border-radius: 999px;
+
+    background: #f3e8ff;
+
+    color: var(--primary);
+
+    font-size: 10px;
+    font-weight: 850;
+
+    letter-spacing: .8px;
+
+    margin-bottom: 13px;
+}
+
+.login-header h2 {
+    font-size: 31px;
+    line-height: 1.15;
+
+    margin-bottom: 9px;
+}
+
+.login-header p {
+    color: var(--muted);
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================
+   ERROR
+========================================= */
+
+.error-message {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px 14px;
+
+    border-radius: 12px;
+
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+
+    color: var(--danger);
+
+    font-size: 13px;
+    font-weight: 650;
+
+    margin-bottom: 20px;
+}
+
+
+/* =========================================
+   FORM
+========================================= */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 13px;
+    font-weight: 750;
+
+    color: #374151;
+}
+
+.label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.label-row a {
+    color: var(--primary);
+
+    font-size: 12px;
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+.label-row a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================
+   INPUT
+========================================= */
+
+.input-box {
+    height: 54px;
+
+    display: flex;
+    align-items: center;
+
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    background: #fff;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        transform .2s ease;
+}
+
+.input-box:focus-within {
+    border-color: #8b5cf6;
+
+    box-shadow:
+        0 0 0 4px rgba(124, 58, 237, .10);
+
+    transform: translateY(-1px);
+}
+
+.input-box > i {
+    width: 48px;
+
+    text-align: center;
+
+    color: #8b93a7;
+
+    font-size: 15px;
+}
+
+.input-box input {
+    flex: 1;
+
+    height: 100%;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: var(--text);
+
+    font-size: 14px;
+}
+
+.input-box input::placeholder {
+    color: #a1a9b8;
+}
+
+
+/* =========================================
+   PASSWORD TOGGLE
+========================================= */
+
+.password-toggle {
+    width: 48px;
+    height: 100%;
+
+    border: none;
+
+    background: transparent;
+
+    color: #8b93a7;
+
+    cursor: pointer;
+
+    font-size: 15px;
+}
+
+.password-toggle:hover {
+    color: var(--primary);
+}
+
+
+/* =========================================
+   REMEMBER
+========================================= */
+
+.remember-row {
+    margin: 4px 0 21px;
+}
+
+.remember-label {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+
+    margin: 0 !important;
+
+    cursor: pointer;
+
+    color: #667085 !important;
+
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.remember-label input {
+    width: 15px;
+    height: 15px;
+
+    accent-color: var(--primary);
+
+    cursor: pointer;
+}
+
+
+/* =========================================
+   LOGIN BUTTON
+========================================= */
+
+.login-button {
+    width: 100%;
+    height: 55px;
+
+    border: none;
+    border-radius: 14px;
+
+    cursor: pointer;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #4f46e5
+        );
+
+    font-size: 14px;
+    font-weight: 800;
+
+    box-shadow:
+        0 12px 25px rgba(109, 40, 217, .23);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.login-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 16px 30px rgba(109, 40, 217, .29);
+}
+
+.login-button:active {
+    transform: translateY(0);
+}
+
+.button-content,
+.button-loader {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+}
+
+.login-button.loading {
+    opacity: .85;
+    pointer-events: none;
+}
+
+
+/* =========================================
+   REGISTER
+========================================= */
+
+.register-section {
+    margin-top: 25px;
+
+    text-align: center;
+
+    color: #7a8494;
+
+    font-size: 13px;
+}
+
+.register-section a {
+    margin-left: 5px;
+
+    color: var(--primary);
+
+    font-weight: 800;
+
+    text-decoration: none;
+}
+
+.register-section a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================
+   BACK HOME
+========================================= */
+
+.back-home {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 7px;
+
+    margin-top: 22px;
+
+    color: #7a8494;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+.back-home:hover {
+    color: var(--primary);
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 520px) {
+
+    .seller-page {
+        padding: 20px 12px;
+    }
+
+    .seller-card {
+        padding: 28px 21px;
+
+        border-radius: 22px;
+    }
+
+    .login-header h2 {
+        font-size: 27px;
+    }
+
+    .brand-section {
+        margin-bottom: 27px;
+    }
+}

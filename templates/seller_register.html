@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Seller Registration - NexaCart</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='seller-register.css') }}">
+
+</head>
+
+<body>
+
+<div class="seller-register-page">
+
+    <div class="register-card">
+
+        <!-- BRAND -->
+
+        <div class="register-icon">
+            <i class="fa-solid fa-store"></i>
+        </div>
+
+
+        <div class="register-header">
+
+            <span>NEXACART SELLER</span>
+
+            <h1>Create Seller Account</h1>
+
+            <p>
+                Register your seller account and
+                start managing your store.
+            </p>
+
+        </div>
+
+
+        {% if error %}
+
+        <div class="register-error">
+
+            <i class="fa-solid fa-circle-exclamation"></i>
+
+            <span>{{ error }}</span>
+
+        </div>
+
+        {% endif %}
+
+
+        <form
+            method="POST"
+            action="{{ url_for('seller_register') }}"
+            id="sellerRegisterForm"
+            autocomplete="on">
+
+
+            <!-- NAME -->
+
+            <div class="form-group">
+
+                <label for="name">
+                    Full Name
+                </label>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-user"></i>
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter your name"
+                        autocomplete="name"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- PHONE -->
+
+            <div class="form-group">
+
+                <label for="phone">
+                    Phone Number
+                </label>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-phone"></i>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter phone number"
+                        autocomplete="tel"
+                        maxlength="15"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <div class="input-box">
+
+                    <i class="fa-regular fa-envelope"></i>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter email address"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Create password"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        id="passwordToggle">
+
+                        <i class="fa-regular fa-eye"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONFIRM PASSWORD -->
+
+            <div class="form-group">
+
+                <label for="confirm_password">
+                    Confirm Password
+                </label>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        placeholder="Confirm password"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        id="confirmPasswordToggle">
+
+                        <i class="fa-regular fa-eye"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="register-button"
+                id="registerButton">
+
+                <i class="fa-solid fa-user-plus"></i>
+
+                Create Seller Account
+
+            </button>
+
+        </form>
+
+
+        <div class="login-link">
+
+            Already have a seller account?
+
+            <a href="{{ url_for('seller_login') }}">
+                Login here
+            </a>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('home') }}"
+            class="back-home">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Back to NexaCart
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<script src="{{ url_for('static', filename='seller-register.js') }}"></script>
+
+</body>
+</html>
