@@ -1,0 +1,309 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f8f7ff,
+            #eef2ff,
+            #f8fafc
+        );
+
+    color: #172033;
+}
+
+.seller-register-page {
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 30px 15px;
+}
+
+.register-card {
+    width: min(500px, 100%);
+
+    padding: 38px;
+
+    background: rgba(255,255,255,.96);
+
+    border-radius: 28px;
+
+    box-shadow:
+        0 30px 80px rgba(45,35,90,.14),
+        0 8px 25px rgba(45,35,90,.06);
+}
+
+.register-icon {
+    width: 58px;
+    height: 58px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 17px;
+
+    color: white;
+
+    font-size: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #4f46e5
+        );
+
+    box-shadow:
+        0 10px 25px rgba(109,40,217,.25);
+
+    margin-bottom: 22px;
+}
+
+.register-header span {
+    font-size: 11px;
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+
+    color: #6d28d9;
+}
+
+.register-header h1 {
+    margin-top: 7px;
+
+    font-size: 30px;
+
+    line-height: 1.15;
+}
+
+.register-header p {
+    margin-top: 9px;
+
+    color: #718096;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+.register-error {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    margin-top: 22px;
+
+    padding: 12px 14px;
+
+    border-radius: 12px;
+
+    color: #dc2626;
+
+    background: #fef2f2;
+
+    border: 1px solid #fecaca;
+
+    font-size: 13px;
+}
+
+form {
+    margin-top: 25px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #374151;
+
+    font-size: 13px;
+
+    font-weight: 750;
+}
+
+.input-box {
+    height: 53px;
+
+    display: flex;
+    align-items: center;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 14px;
+
+    background: white;
+
+    transition: .2s ease;
+}
+
+.input-box:focus-within {
+    border-color: #8b5cf6;
+
+    box-shadow:
+        0 0 0 4px rgba(124,58,237,.1);
+}
+
+.input-box > i {
+    width: 48px;
+
+    text-align: center;
+
+    color: #8b93a7;
+}
+
+.input-box input {
+    flex: 1;
+
+    height: 100%;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    font-size: 14px;
+
+    color: #172033;
+}
+
+.input-box input::placeholder {
+    color: #a1a9b8;
+}
+
+.password-toggle {
+    width: 48px;
+    height: 100%;
+
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    color: #8b93a7;
+}
+
+.password-toggle:hover {
+    color: #6d28d9;
+}
+
+.register-button {
+    width: 100%;
+
+    height: 55px;
+
+    margin-top: 5px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #4f46e5
+        );
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 12px 25px rgba(109,40,217,.23);
+
+    transition: .2s ease;
+}
+
+.register-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 16px 30px rgba(109,40,217,.28);
+}
+
+.login-link {
+    margin-top: 23px;
+
+    text-align: center;
+
+    color: #718096;
+
+    font-size: 13px;
+}
+
+.login-link a {
+    margin-left: 5px;
+
+    color: #6d28d9;
+
+    font-weight: 800;
+
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+.back-home {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    margin-top: 20px;
+
+    color: #718096;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+.back-home:hover {
+    color: #6d28d9;
+}
+
+@media (max-width: 520px) {
+
+    .register-card {
+        padding: 28px 20px;
+
+        border-radius: 22px;
+    }
+
+    .register-header h1 {
+        font-size: 27px;
+    }
+}

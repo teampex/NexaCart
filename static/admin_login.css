@@ -1545,3 +1545,29 @@ input:focus-visible {
     }
 
 }
+/* ================================
+   ADMIN REGISTER LINK
+================================ */
+
+.register-link {
+    margin-top: 22px;
+    text-align: center;
+
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.register-link a {
+    margin-left: 5px;
+
+    color: #6d28d9;
+    font-weight: 800;
+    text-decoration: none;
+
+    transition: 0.2s ease;
+}
+
+.register-link a:hover {
+    color: #4c1d95;
+    text-decoration: underline;
+}

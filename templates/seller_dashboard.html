@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Register - NexaCart</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='seller_dashboard.css') }}"
+    >
+</head>
+
+<body>
+
+<div class="seller-layout">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="seller-sidebar">
+
+        <div class="seller-brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-bag-shopping"></i>
+            </div>
+
+            <div>
+                <h2>Nexa<span>Cart</span></h2>
+                <small>SELLER CENTER</small>
+            </div>
+        </div>
+
+
+        <!-- Seller profile -->
+
+        <div class="seller-profile">
+
+            <div class="seller-avatar" id="sellerAvatar">
+                S
+            </div>
+
+            <div>
+                <strong id="sellerName">Seller</strong>
+                <small>Seller Account</small>
+            </div>
+
+        </div>
+
+
+        <!-- Sidebar -->
+
+        <nav class="seller-nav">
+
+            <button
+                class="seller-nav-item active"
+                data-section="dashboard"
+            >
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Dashboard</span>
+            </button>
+
+
+            <button
+                class="seller-nav-item"
+                data-section="products"
+            >
+                <i class="fa-solid fa-box"></i>
+                <span>My Products</span>
+            </button>
+
+
+            <button
+                class="seller-nav-item"
+                data-section="add-product"
+            >
+                <i class="fa-solid fa-plus"></i>
+                <span>Add Product</span>
+            </button>
+
+
+            <button
+                class="seller-nav-item"
+                data-section="orders"
+            >
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span>Orders</span>
+            </button>
+
+
+            <button
+                class="seller-nav-item"
+                data-section="customers"
+            >
+                <i class="fa-solid fa-users"></i>
+                <span>Customers</span>
+            </button>
+
+
+            <button
+                class="seller-nav-item"
+                data-section="analytics"
+            >
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Analytics</span>
+            </button>
+
+
+            <button
+                class="seller-nav-item"
+                data-section="settings"
+            >
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </button>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <a href="{{ url_for('home') }}" class="sidebar-link">
+    <i class="fa-solid fa-house"></i>
+    <span>Back to Shopping</span>
+</a>
+
+       <a href="{{ url_for('seller_logout') }}" class="sidebar-link logout-link">
+    <i class="fa-solid fa-right-from-bracket"></i>
+    <span>Logout</span>
+</a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="seller-main">
+
+
+        <!-- TOP BAR -->
+
+        <header class="seller-topbar">
+
+            <div class="mobile-brand">
+                <i class="fa-solid fa-bag-shopping"></i>
+                Nexa<span>Cart</span>
+            </div>
+
+
+            <div class="seller-search">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                    type="text"
+                    id="globalSearch"
+                    placeholder="Search anything..."
+                >
+
+            </div>
+
+
+            <div class="top-seller">
+
+                <div class="notification">
+                    <i class="fa-regular fa-bell"></i>
+                    <span>2</span>
+                </div>
+
+                <div class="mini-avatar" id="topAvatar">
+                    S
+                </div>
+
+                <div class="top-seller-name">
+
+                    <strong id="topSellerName">
+                        Seller
+                    </strong>
+
+                    <small>Seller</small>
+
+                </div>
+
+                <i class="fa-solid fa-chevron-down"></i>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= DASHBOARD ================= -->
+
+        <section
+            class="seller-section active-section"
+            id="dashboard"
+        >
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        SELLER CENTER
+                    </span>
+
+                    <h1>Dashboard</h1>
+
+                    <p>
+                        Welcome back,
+                        <strong id="dashboardSellerName">
+                            Seller
+                        </strong>!
+                        Here's your store overview.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="primary-btn"
+                    data-open-section="add-product"
+                >
+                    <i class="fa-solid fa-plus"></i>
+                    Add New Product
+                </button>
+
+            </div>
+
+
+            <!-- STAT CARDS -->
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon blue">
+                        <i class="fa-solid fa-box"></i>
+                    </div>
+
+                    <div>
+                        <span>Total Products</span>
+                        <h2 id="totalProducts">0</h2>
+                        <small class="positive">
+                            <i class="fa-solid fa-arrow-up"></i>
+                            Store listings
+                        </small>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon purple">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </div>
+
+                    <div>
+                        <span>Total Orders</span>
+                        <h2>12</h2>
+                        <small class="positive">
+                            <i class="fa-solid fa-arrow-up"></i>
+                            8% this month
+                        </small>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon green">
+                        ₹
+                    </div>
+
+                    <div>
+                        <span>Total Sales</span>
+                        <h2>₹45,800</h2>
+                        <small class="positive">
+                            <i class="fa-solid fa-arrow-up"></i>
+                            18% this month
+                        </small>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon orange">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+
+                    <div>
+                        <span>Revenue</span>
+                        <h2>₹32,600</h2>
+                        <small class="positive">
+                            <i class="fa-solid fa-arrow-up"></i>
+                            15% this month
+                        </small>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DASHBOARD LOWER -->
+
+            <div class="dashboard-grid">
+
+                <div class="dashboard-card">
+
+                    <div class="card-title">
+
+                        <h3>Sales Overview</h3>
+
+                        <select>
+                            <option>Last 7 Days</option>
+                            <option>Last 30 Days</option>
+                            <option>This Year</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="sales-chart">
+
+                        <div class="chart-bar" style="height:35%">
+                            <span>Mon</span>
+                        </div>
+
+                        <div class="chart-bar" style="height:55%">
+                            <span>Tue</span>
+                        </div>
+
+                        <div class="chart-bar" style="height:43%">
+                            <span>Wed</span>
+                        </div>
+
+                        <div class="chart-bar" style="height:70%">
+                            <span>Thu</span>
+                        </div>
+
+                        <div class="chart-bar" style="height:57%">
+                            <span>Fri</span>
+                        </div>
+
+                        <div class="chart-bar" style="height:82%">
+                            <span>Sat</span>
+                        </div>
+
+                        <div class="chart-bar" style="height:94%">
+                            <span>Sun</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard-card">
+
+                    <div class="card-title">
+
+                        <h3>Quick Actions</h3>
+
+                    </div>
+
+
+                    <div class="quick-actions">
+
+                        <button
+                            data-open-section="add-product"
+                            class="quick-action primary"
+                        >
+                            <i class="fa-solid fa-plus"></i>
+                            Add Product
+                        </button>
+
+
+                        <button
+                            data-open-section="products"
+                            class="quick-action"
+                        >
+                            <i class="fa-solid fa-box"></i>
+                            Manage Products
+                        </button>
+
+
+                        <button
+                            data-open-section="orders"
+                            class="quick-action"
+                        >
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            View Orders
+                        </button>
+
+
+                        <a
+                            href="home.html"
+                            class="quick-action"
+                        >
+                            <i class="fa-solid fa-store"></i>
+                            Open Store
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RECENT PRODUCTS -->
+
+            <div class="dashboard-card recent-card">
+
+                <div class="card-title">
+
+                    <h3>Recent Products</h3>
+
+                    <button
+                        data-open-section="products"
+                        class="text-btn"
+                    >
+                        View All →
+                    </button>
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="recentProducts">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= PRODUCTS ================= -->
+
+        <section
+            class="seller-section"
+            id="products"
+        >
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        STORE MANAGEMENT
+                    </span>
+
+                    <h1>My Products</h1>
+
+                    <p>
+                        Manage your product listings and inventory.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="primary-btn"
+                    data-open-section="add-product"
+                >
+                    <i class="fa-solid fa-plus"></i>
+                    Add Product
+                </button>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <div class="product-filters">
+
+                    <div class="search-field">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        <input
+                            id="productSearch"
+                            placeholder="Search products..."
+                        >
+
+                    </div>
+
+                    
+                    <select id="categoryFilter">
+
+    <option value="">All Categories</option>
+
+    <option>Electronics</option>
+    <option>Mobile Phones</option>
+    <option>Laptops &amp; Computers</option>
+    <option>Tablets</option>
+    <option>Audio &amp; Headphones</option>
+    <option>Cameras &amp; Photography</option>
+    <option>Televisions</option>
+    <option>Home Appliances</option>
+    <option>Kitchen Appliances</option>
+    <option>Furniture</option>
+    <option>Home &amp; Decor</option>
+    <option>Fashion – Men</option>
+    <option>Fashion – Women</option>
+    <option>Footwear</option>
+    <option>Watches</option>
+    <option>Jewellery &amp; Accessories</option>
+    <option>Beauty &amp; Personal Care</option>
+    <option>Sports &amp; Fitness</option>
+    <option>Toys &amp; Games</option>
+    <option>Books</option>
+    <option>Groceries</option>
+    <option>Baby Products</option>
+    <option>Automotive Accessories</option>
+    <option>Pet Supplies</option>
+
+</select>
+
+                <div class="product-count">
+
+                    <span id="productCount">
+                        0
+                    </span>
+                    Products
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="productsTable">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= ADD PRODUCT ================= -->
+
+        <section
+            class="seller-section"
+            id="add-product"
+        >
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        PRODUCT MANAGEMENT
+                    </span>
+
+                    <h1>Add New Product</h1>
+
+                    <p>
+                        Add a new product to your NexaCart store.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="add-product-grid">
+
+
+                <div class="dashboard-card">
+
+                    <form id="addProductForm">
+
+                        <div class="form-grid">
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    Product Name *
+                                </label>
+
+                                <input
+                                    id="productName"
+                                    required
+                                    placeholder="Enter product name"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    Category *
+                                </label>
+
+                                <select id="productCategory" required>
+
+                                    <option value="">
+                                        Select category
+                                    </option>
+
+                                    <option>Electronics</option>
+                                    <option>Fashion</option>
+                                    <option>Shoes</option>
+                                    <option>Bags</option>
+                                    <option>Beauty</option>
+                                    <option>Gaming</option>
+                                    <option>Sports</option>
+                                    <option>Books</option>
+                                    <option>Home & Living</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    Price *
+                                </label>
+
+                                <input
+                                    id="productPrice"
+                                    type="number"
+                                    min="1"
+                                    required
+                                    placeholder="₹ Enter price"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    Stock Quantity *
+                                </label>
+
+                                <input
+                                    id="productStock"
+                                    type="number"
+                                    min="0"
+                                    required
+                                    placeholder="Enter stock"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group full">
+
+                                <label>
+                                    Product Description
+                                </label>
+
+                                <textarea
+                                    id="productDescription"
+                                    placeholder="Write product description..."
+                                ></textarea>
+
+                            </div>
+
+
+                            <div class="form-group full">
+
+                                <label>
+                                    Product Image
+                                </label>
+
+                                <div class="image-upload">
+
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+
+                                    <p>
+                                        Upload product image
+                                    </p>
+
+                                    <input
+                                        type="file"
+                                        id="productImage"
+                                        accept="image/*"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="primary-btn"
+                        >
+
+                            <i class="fa-solid fa-plus"></i>
+
+                            Add Product
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                <!-- PREVIEW -->
+
+                <div class="dashboard-card">
+
+                    <div class="card-title">
+
+                        <h3>Product Preview</h3>
+
+                    </div>
+
+
+                    <div class="product-preview">
+
+                        <img
+                            id="previewImage"
+                            src="https://placehold.co/600x400?text=Product+Preview"
+                        >
+
+                        <h3 id="previewName">
+                            Your Product
+                        </h3>
+
+                        <strong id="previewPrice">
+                            ₹0
+                        </strong>
+
+                        <p id="previewDescription">
+                            Product description will appear here.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= ORDERS ================= -->
+
+        <section
+            class="seller-section"
+            id="orders"
+        >
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        ORDER MANAGEMENT
+                    </span>
+
+                    <h1>Orders</h1>
+
+                    <p>
+                        Track customer orders and delivery status.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div>
+                        <span>Total Orders</span>
+                        <h2>12</h2>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div>
+                        <span>Processing</span>
+                        <h2>5</h2>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div>
+                        <span>Delivered</span>
+                        <h2>6</h2>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div>
+                        <span>Total Sales</span>
+                        <h2>₹45,800</h2>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-card large-card">
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            <tr>
+                                <td>#ORD001</td>
+                                <td>Priya Sharma</td>
+                                <td>₹1,299</td>
+                                <td>
+                                    <span class="status delivered">
+                                        Delivered
+                                    </span>
+                                </td>
+                                <td>28 Sep 2026</td>
+                                <td>
+                                    <button
+                                        class="small-btn"
+                                        onclick="alert('Order details')"
+                                    >
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td>#ORD002</td>
+                                <td>Rahul Verma</td>
+                                <td>₹2,499</td>
+                                <td>
+                                    <span class="status processing">
+                                        Processing
+                                    </span>
+                                </td>
+                                <td>27 Sep 2026</td>
+                                <td>
+                                    <button
+                                        class="small-btn"
+                                        onclick="alert('Order details')"
+                                    >
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td>#ORD003</td>
+                                <td>Sneha Patel</td>
+                                <td>₹1,799</td>
+                                <td>
+                                    <span class="status shipped">
+                                        Shipped
+                                    </span>
+                                </td>
+                                <td>26 Sep 2026</td>
+                                <td>
+                                    <button
+                                        class="small-btn"
+                                        onclick="alert('Order details')"
+                                    >
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= CUSTOMERS ================= -->
+
+        <section
+            class="seller-section"
+            id="customers"
+        >
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        CUSTOMER MANAGEMENT
+                    </span>
+
+                    <h1>Customers</h1>
+
+                    <p>
+                        View customers who purchased from your store.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div>
+                        <span>Total Customers</span>
+                        <h2>128</h2>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div>
+                        <span>New This Month</span>
+                        <h2>24</h2>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div>
+                        <span>Average Order</span>
+                        <h2>₹3,840</h2>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div>
+                        <span>Returning</span>
+                        <h2>78%</h2>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-card large-card">
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Customer</th>
+                                <th>Email</th>
+                                <th>Orders</th>
+                                <th>Total Spent</th>
+                                <th>Last Order</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>Priya Sharma</td>
+                                <td>priya@example.com</td>
+                                <td>5</td>
+                                <td>₹8,420</td>
+                                <td>28 Sep 2026</td>
+                            </tr>
+
+                            <tr>
+                                <td>Rahul Verma</td>
+                                <td>rahul@example.com</td>
+                                <td>3</td>
+                                <td>₹5,699</td>
+                                <td>27 Sep 2026</td>
+                            </tr>
+
+                            <tr>
+                                <td>Sneha Patel</td>
+                                <td>sneha@example.com</td>
+                                <td>4</td>
+                                <td>₹7,120</td>
+                                <td>26 Sep 2026</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= ANALYTICS ================= -->
+
+        <section
+            class="seller-section"
+            id="analytics"
+        >
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        STORE ANALYTICS
+                    </span>
+
+                    <h1>Analytics</h1>
+
+                    <p>
+                        Understand your store performance.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="secondary-btn"
+                    onclick="alert('Report generated successfully!')"
+                >
+                    <i class="fa-solid fa-download"></i>
+                    Generate Report
+                </button>
+
+            </div>
+
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <span>Total Sales</span>
+                    <h2>₹45,800</h2>
+                    <small class="positive">↗ 18%</small>
+                </div>
+
+                <div class="stat-card">
+                    <span>Revenue</span>
+                    <h2>₹32,600</h2>
+                    <small class="positive">↗ 15%</small>
+                </div>
+
+                <div class="stat-card">
+                    <span>Orders</span>
+                    <h2>12</h2>
+                    <small class="positive">↗ 8%</small>
+                </div>
+
+                <div class="stat-card">
+                    <span>Rating</span>
+                    <h2>4.8/5</h2>
+                    <small class="positive">↗ 0.2</small>
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-grid">
+
+                <div class="dashboard-card">
+
+                    <div class="card-title">
+                        <h3>Sales Trend</h3>
+                    </div>
+
+                    <div class="sales-chart">
+
+                        <div class="chart-bar" style="height:35%">
+                            <span>Mon</span>
+                        </div>
+
+                        <div class="chart-bar" style="height:55%">
+                            <span>Tue</span>
+                        </div>
+
+                        <div class="chart-bar" style="height:45%">
+                            <span>Wed</span>
+                        </div>
+
+                        <div class="chart-bar" style="height:68%">
+                            <span>Thu</span>
+                        </div>
+
+                        <div class="chart-bar" style="height:58%">
+                            <span>Fri</span>
+                        </div>
+
+                        <div class="chart-bar" style="height:82%">
+                            <span>Sat</span>
+                        </div>
+
+                        <div class="chart-bar" style="height:95%">
+                            <span>Sun</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard-card">
+
+                    <div class="card-title">
+                        <h3>Top Categories</h3>
+                    </div>
+
+                    <div class="category-stat">
+                        <span>Electronics</span>
+                        <strong>42%</strong>
+                    </div>
+
+                    <div class="category-stat">
+                        <span>Fashion</span>
+                        <strong>26%</strong>
+                    </div>
+
+                    <div class="category-stat">
+                        <span>Home & Living</span>
+                        <strong>18%</strong>
+                    </div>
+
+                    <div class="category-stat">
+                        <span>Others</span>
+                        <strong>14%</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= SETTINGS ================= -->
+
+        <section
+            class="seller-section"
+            id="settings"
+        >
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        STORE SETTINGS
+                    </span>
+
+                    <h1>Settings</h1>
+
+                    <p>
+                        Manage your seller account and store preferences.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="settings-grid">
+
+
+                <div class="dashboard-card">
+
+                    <h3>Store Information</h3>
+
+                    <form id="settingsForm">
+
+                        <div class="form-group">
+
+                            <label>
+                                Store Name
+                            </label>
+
+                            <input
+                                value="NexaCart Seller Store"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Seller Email
+                            </label>
+
+                            <input
+                                id="sellerEmail"
+                                value="seller@nexacart.com"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Store Description
+                            </label>
+
+                            <textarea>
+Your trusted NexaCart store.
+                            </textarea>
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="primary-btn"
+                        >
+                            Save Changes
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                <div class="dashboard-card">
+
+                    <h3>Preferences</h3>
+
+
+                    <div class="setting-row">
+
+                        <div>
+
+                            <strong>
+                                Order Notifications
+                            </strong>
+
+                            <small>
+                                Receive alerts for new orders
+                            </small>
+
+                        </div>
+
+                        <button class="toggle active">
+                            <span></span>
+                        </button>
+
+                    </div>
+
+
+                    <div class="setting-row">
+
+                        <div>
+
+                            <strong>
+                                Low Stock Alerts
+                            </strong>
+
+                            <small>
+                                Get notified when stock is low
+                            </small>
+
+                        </div>
+
+                        <button class="toggle active">
+                            <span></span>
+                        </button>
+
+                    </div>
+
+
+                    <div class="setting-row">
+
+                        <div>
+
+                            <strong>
+                                Store Visibility
+                            </strong>
+
+                            <small>
+                                Show products to customers
+                            </small>
+
+                        </div>
+
+                        <button class="toggle active">
+                            <span></span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="{{ url_for('static', filename='seller_dashboard.js') }}"></script>
+
+</body>
+</html>
