@@ -543,13 +543,9 @@ const otpBoxes =
     );
 
 
-let generatedOTP = "";
-
 let otpInterval = null;
 
-let otpSeconds = 30;
-
-let currentPhone = "";
+let otpSeconds = 60;
 
 
 /* =========================================================
@@ -590,55 +586,6 @@ if (otpLoginTrigger) {
 
 
 /* =========================================================
-   GENERATE OTP
-========================================================= */
-
-function generateOTP() {
-
-    generatedOTP =
-        Math.floor(
-            100000 +
-            Math.random() * 900000
-        ).toString();
-
-
-    console.log(
-        "NexaCart Demo OTP:",
-        generatedOTP
-    );
-
-
-    /*
-       DEMO ONLY
-
-       Real SMS ke liye backend +
-       SMS service/API required.
-    */
-
-
-    alert(
-        "Demo OTP: " +
-        generatedOTP
-    );
-
-}
-
-
-/* =========================================================
-   MASK PHONE
-========================================================= */
-
-function maskPhone(phone) {
-
-    return (
-        "******" +
-        phone.slice(-4)
-    );
-
-}
-
-
-/* =========================================================
    START TIMER
 ========================================================= */
 
@@ -649,7 +596,7 @@ function startTimer() {
     );
 
 
-    otpSeconds = 30;
+    otpSeconds = 60;
 
     resendOtpBtn.disabled =
         true;
@@ -732,7 +679,7 @@ if (sendOtpBtn) {
 
     sendOtpBtn.addEventListener(
         "click",
-        function () {
+        async function () {
 
             const phone =
                 otpPhone.value
@@ -773,43 +720,27 @@ if (sendOtpBtn) {
             }
 
 
-            currentPhone = phone;
+            sendOtpBtn.disabled = true;
+            try {
+                const response = await fetch("/api/send-login-otp", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ phone })
+                });
+                const result = await response.json();
+                if (!response.ok || !result.success) throw new Error(result.message || "Could not send the code.");
 
-
-            /* Generate demo OTP */
-
-            generateOTP();
-
-
-            /* Mask number */
-
-            maskedPhone.textContent =
-                maskPhone(phone);
-
-
-            /* Change screen */
-
-            phoneStep.hidden =
-                true;
-
-            otpStep.hidden =
-                false;
-
-
-            clearOTPBoxes();
-
-
-            startTimer();
-
-
-            setTimeout(
-                function () {
-
-                    otpBoxes[0].focus();
-
-                },
-                150
-            );
+                maskedPhone.textContent = `${result.delivery.method} to ${result.delivery.destination}`;
+                phoneStep.hidden = true;
+                otpStep.hidden = false;
+                clearOTPBoxes();
+                startTimer();
+                setTimeout(() => otpBoxes[0]?.focus(), 150);
+            } catch (error) {
+                alert(error.message);
+            } finally {
+                sendOtpBtn.disabled = false;
+            }
 
         }
     );
@@ -946,7 +877,7 @@ if (verifyOtpBtn) {
 
     verifyOtpBtn.addEventListener(
         "click",
-        function () {
+        async function () {
 
             const enteredOTP =
                 getEnteredOTP();
@@ -994,199 +925,22 @@ if (verifyOtpBtn) {
             }
 
 
-            if (
-                enteredOTP !== generatedOTP
-            ) {
-
-                otpBoxes.forEach(
-                    function (box) {
-
-                        box.classList.add(
-                            "otp-error"
-                        );
-
-                    }
-                );
-
-
-                setTimeout(
-                    function () {
-
-                        otpBoxes.forEach(
-                            function (box) {
-
-                                box.classList.remove(
-                                    "otp-error"
-                                );
-
-                            }
-                        );
-
-                    },
-                    500
-                );
-
-
-                alert(
-                    "Invalid OTP. Please try again."
-                );
-
-                return;
-
+            verifyOtpBtn.disabled = true;
+            try {
+                const response = await fetch("/api/verify-login-otp", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ otp: enteredOTP })
+                });
+                const result = await response.json();
+                if (!response.ok || !result.success) throw new Error(result.message || "Code verification failed.");
+                otpPanel.classList.add("otp-success");
+                window.location.href = result.next_url || "/";
+            } catch (error) {
+                alert(error.message);
+            } finally {
+                verifyOtpBtn.disabled = false;
             }
-
-
-            /* ================= SUCCESS ================= */
-
-            otpPanel.classList.add(
-                "otp-success"
-            );
-
-
-            /* =================================================
-               FIND REGISTERED USER USING PHONE NUMBER
-            ================================================= */
-
-            let savedUser = null;
-
-
-            const storedUser =
-                localStorage.getItem(
-                    "nexacartUser"
-                );
-
-
-            if (storedUser) {
-
-                try {
-
-                    savedUser =
-                        JSON.parse(
-                            storedUser
-                        );
-
-                }
-
-                catch (error) {
-
-                    savedUser = null;
-
-                }
-
-            }
-
-
-            /* =================================================
-               CHECK REGISTERED PHONE
-            ================================================= */
-
-            if (
-                !savedUser ||
-                !savedUser.phone
-            ) {
-
-                alert(
-                    "No registered account found with this phone number."
-                );
-
-
-                otpPanel.classList.remove(
-                    "otp-success"
-                );
-
-                return;
-
-            }
-
-
-            /* Remove spaces / +91 / non-numbers */
-
-            const registeredPhone =
-                savedUser.phone
-                    .replace(/\D/g, "")
-                    .slice(-10);
-
-
-            const enteredPhone =
-                currentPhone
-                    .replace(/\D/g, "")
-                    .slice(-10);
-
-
-            /* =================================================
-               PHONE MATCH
-            ================================================= */
-
-            if (
-                registeredPhone !== enteredPhone
-            ) {
-
-                alert(
-                    "This phone number is not registered with NexaCart."
-                );
-
-
-                otpPanel.classList.remove(
-                    "otp-success"
-                );
-
-                return;
-
-            }
-
-
-            /* =================================================
-               USERNAME FROM REGISTERED ACCOUNT
-            ================================================= */
-
-            const username =
-                savedUser.username;
-
-
-            /* Save username separately */
-
-            localStorage.setItem(
-                "nexacartUsername",
-                username
-            );
-
-
-            /* Keep complete registered user data */
-
-            localStorage.setItem(
-                "nexacartUser",
-                JSON.stringify({
-
-                    ...savedUser,
-
-                    phone:
-                        savedUser.phone
-
-                })
-            );
-
-
-            /* =================================================
-               OTP LOGIN SUCCESS
-            ================================================= */
-
-            alert(
-                "OTP Verified Successfully! 🎉\nWelcome " +
-                username
-            );
-
-
-            setTimeout(
-                function () {
-
-                    /* Flask Home route */
-
-                    window.location.href =
-                        "/";
-
-                },
-                700
-            );
 
         }
     );
@@ -1213,16 +967,8 @@ if (resendOtpBtn) {
             }
 
 
-            generateOTP();
-
-
             clearOTPBoxes();
-
-
-            startTimer();
-
-
-            otpBoxes[0].focus();
+            sendOtpBtn.click();
 
         }
     );
