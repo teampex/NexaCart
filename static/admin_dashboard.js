@@ -1,32 +1,60 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const navItems = document.querySelectorAll(".admin-nav-item");
-    const sections = document.querySelectorAll(".admin-section");
+    // =========================================================
+    // NEXACART ADMIN DASHBOARD
+    // =========================================================
+    //
+    // This JavaScript does NOT use any API.
+    //
+    // Seller and User actions are handled through normal
+    // HTML forms that submit directly to Flask routes.
+    //
+    // Example routes:
+    //
+    // POST /admin/seller/<id>/status
+    // POST /admin/seller/<id>/delete
+    // POST /admin/user/<id>/status
+    // POST /admin/user/<id>/delete
+    //
+    // There is no fetch(), XMLHttpRequest(), or /api/... here.
+    // =========================================================
 
-    const pageTitle = document.getElementById("pageTitle");
 
-    const sellerSearch = document.getElementById("sellerSearch");
+    // =========================================================
+    // ELEMENT REFERENCES
+    // =========================================================
+
+    const navItems =
+        document.querySelectorAll(".admin-nav-item");
+
+    const sections =
+        document.querySelectorAll(".admin-section");
+
+    const pageTitle =
+        document.getElementById("pageTitle");
+
+    const sellerSearch =
+        document.getElementById("sellerSearch");
+
     const sellerStatusFilter =
         document.getElementById("sellerStatusFilter");
 
     const sellersTable =
         document.getElementById("sellersTable");
 
-    const sellerModal =
-        document.getElementById("sellerModal");
+    const mobileMenu =
+        document.getElementById("mobileMenu");
 
-    const deleteModal =
-        document.getElementById("deleteModal");
-
-    let sellers = [];
-    let selectedSeller = null;
+    const sidebar =
+        document.querySelector(".admin-sidebar");
 
 
     // =========================================================
-    // NAVIGATION
+    // PAGE TITLES
     // =========================================================
 
     const titles = {
+
         dashboard: "Dashboard",
         sellers: "Sellers",
         users: "Users",
@@ -35,21 +63,35 @@ document.addEventListener("DOMContentLoaded", () => {
         categories: "Categories",
         analytics: "Analytics",
         settings: "Settings"
+
     };
 
 
+    // =========================================================
+    // SECTION NAVIGATION
+    // =========================================================
+    //
+    // Opens the selected dashboard section and updates
+    // the active sidebar item and page title.
+    // =========================================================
+
     function openSection(sectionId) {
 
+        // Update the active sidebar navigation item
         navItems.forEach(item => {
+
+            const itemSection =
+                item.dataset.section;
 
             item.classList.toggle(
                 "active",
-                item.dataset.section === sectionId
+                itemSection === sectionId
             );
 
         });
 
 
+        // Show only the selected section
         sections.forEach(section => {
 
             section.classList.toggle(
@@ -60,596 +102,304 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
 
-        pageTitle.textContent =
-            titles[sectionId] || "Dashboard";
+        // Update the page title
+        if (pageTitle) {
+
+            pageTitle.textContent =
+                titles[sectionId] || "Dashboard";
+
+        }
+
+
+        // Close the mobile sidebar after selecting a section
+        if (
+            window.innerWidth <= 900 &&
+            sidebar
+        ) {
+
+            sidebar.classList.remove(
+                "mobile-open"
+            );
+
+        }
 
     }
 
 
+    // =========================================================
+    // SIDEBAR NAVIGATION EVENTS
+    // =========================================================
+
     navItems.forEach(item => {
 
-        item.addEventListener("click", () => {
+        item.addEventListener(
+            "click",
+            () => {
 
-            openSection(item.dataset.section);
+                const sectionId =
+                    item.dataset.section;
 
-        });
+                if (!sectionId) {
+                    return;
+                }
+
+                openSection(sectionId);
+
+            }
+        );
 
     });
 
+
+    // =========================================================
+    // INTERNAL SECTION BUTTONS
+    // =========================================================
+    //
+    // Any button or link containing:
+    //
+    // data-section-target="sellers"
+    //
+    // can open the corresponding dashboard section.
+    // =========================================================
 
     document
         .querySelectorAll("[data-section-target]")
         .forEach(button => {
 
-            button.addEventListener("click", () => {
+            button.addEventListener(
+                "click",
+                () => {
 
-                openSection(
-                    button.dataset.sectionTarget
-                );
+                    const sectionId =
+                        button.dataset.sectionTarget;
 
-            });
+                    if (!sectionId) {
+                        return;
+                    }
+
+                    openSection(sectionId);
+
+                }
+            );
 
         });
 
 
     // =========================================================
-    // LOAD DASHBOARD STATS
+    // MOBILE SIDEBAR
+    // =========================================================
+    //
+    // Toggles the sidebar when the mobile menu button
+    // is clicked.
     // =========================================================
 
-    async function loadStats() {
+    if (mobileMenu && sidebar) {
 
-        try {
+        mobileMenu.addEventListener(
+            "click",
+            () => {
 
-            const response =
-                await fetch("/api/admin/stats");
+                sidebar.classList.toggle(
+                    "mobile-open"
+                );
 
-            const data =
-                await response.json();
-
-            if (!data.success) {
-                return;
             }
-
-
-            const stats = data.stats;
-
-
-            document.getElementById("totalUsers")
-                .textContent =
-                stats.total_users;
-
-
-            document.getElementById("totalSellers")
-                .textContent =
-                stats.total_sellers;
-
-
-            document.getElementById("totalProducts")
-                .textContent =
-                stats.total_products;
-
-
-            document.getElementById("activeSellers")
-                .textContent =
-                stats.active_sellers;
-
-
-            document.getElementById("activeSellerCount")
-                .textContent =
-                stats.active_sellers;
-
-
-            document.getElementById("blockedSellerCount")
-                .textContent =
-                stats.blocked_sellers;
-
-        } catch (error) {
-
-            console.error(
-                "Stats error:",
-                error
-            );
-
-        }
+        );
 
     }
 
 
     // =========================================================
-    // LOAD SELLERS
+    // SELLER ROW HELPER
+    // =========================================================
+    //
+    // Returns all seller rows currently rendered in the table.
     // =========================================================
 
-    async function loadSellers() {
+    function getSellerRows() {
 
-        try {
-
-            const response =
-                await fetch("/api/admin/sellers");
-
-            const data =
-                await response.json();
-
-            if (!data.success) {
-
-                sellersTable.innerHTML = `
-                    <tr>
-                        <td colspan="7">
-                            Unable to load sellers.
-                        </td>
-                    </tr>
-                `;
-
-                return;
-            }
-
-
-            sellers = data.sellers;
-
-            renderSellers();
-
-        } catch (error) {
-
-            console.error(
-                "Seller loading error:",
-                error
-            );
-
-            sellersTable.innerHTML = `
-                <tr>
-                    <td colspan="7">
-                        Server error while loading sellers.
-                    </td>
-                </tr>
-            `;
-
+        if (!sellersTable) {
+            return [];
         }
+
+
+        return Array.from(
+            sellersTable.querySelectorAll(
+                "tr.seller-row"
+            )
+        );
 
     }
 
 
     // =========================================================
-    // RENDER SELLERS
+    // SELLER SEARCH AND STATUS FILTER
+    // =========================================================
+    //
+    // Filters the seller rows that are already present in the
+    // HTML table.
+    //
+    // No database request or API request is made here.
     // =========================================================
 
-    function renderSellers() {
+    function filterSellers() {
 
         const search =
-            sellerSearch.value
-                .trim()
-                .toLowerCase();
+            sellerSearch
+                ? sellerSearch.value
+                    .trim()
+                    .toLowerCase()
+                : "";
+
 
         const status =
-            sellerStatusFilter.value;
+            sellerStatusFilter
+                ? sellerStatusFilter.value
+                    .trim()
+                    .toLowerCase()
+                : "";
 
 
-        const filtered =
-            sellers.filter(seller => {
-
-                const matchesSearch =
-                    seller.name
-                        .toLowerCase()
-                        .includes(search) ||
-
-                    seller.email
-                        .toLowerCase()
-                        .includes(search) ||
-
-                    seller.phone
-                        .toLowerCase()
-                        .includes(search);
+        const rows =
+            getSellerRows();
 
 
-                const matchesStatus =
-                    !status ||
-                    seller.status === status;
+        let visibleCount = 0;
 
 
-                return matchesSearch &&
-                       matchesStatus;
+        // Check every seller row
+        rows.forEach(row => {
 
-            });
+            const name =
+                (
+                    row.dataset.name || ""
+                ).toLowerCase();
 
 
-        if (filtered.length === 0) {
+            const email =
+                (
+                    row.dataset.email || ""
+                ).toLowerCase();
 
-            sellersTable.innerHTML = `
-                <tr>
-                    <td colspan="7" class="empty-table">
+
+            const phone =
+                (
+                    row.dataset.phone || ""
+                ).toLowerCase();
+
+
+            const rowStatus =
+                (
+                    row.dataset.status || ""
+                ).toLowerCase();
+
+
+            // Check whether the row matches the search text
+            const matchesSearch =
+                !search ||
+                name.includes(search) ||
+                email.includes(search) ||
+                phone.includes(search);
+
+
+            // Check whether the row matches the selected status
+            const matchesStatus =
+                !status ||
+                rowStatus === status;
+
+
+            // A row is visible only when both conditions match
+            const visible =
+                matchesSearch &&
+                matchesStatus;
+
+
+            row.style.display =
+                visible
+                    ? ""
+                    : "none";
+
+
+            if (visible) {
+                visibleCount++;
+            }
+
+        });
+
+
+        // Display an empty message when no seller matches
+        updateSellerEmptyMessage(
+            visibleCount,
+            rows.length
+        );
+
+    }
+
+
+    // =========================================================
+    // SELLER EMPTY SEARCH MESSAGE
+    // =========================================================
+    //
+    // Displays "No sellers found" when the search/filter
+    // hides all available seller rows.
+    // =========================================================
+
+    function updateSellerEmptyMessage(
+        visibleCount,
+        totalCount
+    ) {
+
+        // Remove any previously generated empty message
+        const existing =
+            document.getElementById(
+                "sellerFilterEmpty"
+            );
+
+
+        if (existing) {
+            existing.remove();
+        }
+
+
+        // Create the empty message only when:
+        // 1. Sellers exist
+        // 2. Search/filter is active
+        // 3. No seller matches
+        if (
+            totalCount > 0 &&
+            visibleCount === 0 &&
+            sellersTable
+        ) {
+
+            const row =
+                document.createElement("tr");
+
+
+            row.id =
+                "sellerFilterEmpty";
+
+
+            row.innerHTML = `
+
+                <td
+                    colspan="7"
+                    class="empty-table"
+                >
+
+                    <i
+                        class="fa-solid fa-magnifying-glass"
+                    ></i>
+
+                    <span>
                         No sellers found.
-                    </td>
-                </tr>
+                    </span>
+
+                </td>
+
             `;
 
-            return;
-        }
 
-
-        sellersTable.innerHTML =
-            filtered.map(seller => {
-
-                const initials =
-                    seller.name
-                        .charAt(0)
-                        .toUpperCase();
-
-
-                const date =
-                    seller.created_at
-                        ? new Date(
-                            seller.created_at
-                          ).toLocaleDateString(
-                            "en-IN"
-                          )
-                        : "-";
-
-
-                return `
-
-                    <tr>
-
-                        <td>
-
-                            <div class="seller-cell">
-
-                                <div class="table-avatar">
-                                    ${initials}
-                                </div>
-
-                                <div>
-
-                                    <strong>
-                                        ${escapeHtml(
-                                            seller.name
-                                        )}
-                                    </strong>
-
-                                    <small>
-                                        Seller #${seller.id}
-                                    </small>
-
-                                </div>
-
-                            </div>
-
-                        </td>
-
-
-                        <td>
-                            ${escapeHtml(
-                                seller.email
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${escapeHtml(
-                                seller.phone
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${seller.product_count || 0}
-                        </td>
-
-
-                        <td>
-
-                            <span
-                                class="status-badge
-                                ${seller.status}"
-                            >
-                                ${seller.status}
-                            </span>
-
-                        </td>
-
-
-                        <td>
-                            ${date}
-                        </td>
-
-
-                        <td>
-
-                            <div class="action-buttons">
-
-                                <button
-                                    class="icon-btn view-btn"
-                                    data-id="${seller.id}"
-                                    title="View Seller"
-                                >
-                                    <i class="fa-solid fa-eye"></i>
-                                </button>
-
-
-                                <button
-                                    class="icon-btn
-                                    ${seller.status === "active"
-                                        ? "block-btn"
-                                        : "activate-btn"}"
-                                    data-id="${seller.id}"
-                                    title="${
-                                        seller.status === "active"
-                                        ? "Block Seller"
-                                        : "Activate Seller"
-                                    }"
-                                >
-                                    <i class="fa-solid ${
-                                        seller.status === "active"
-                                        ? "fa-ban"
-                                        : "fa-check"
-                                    }"></i>
-                                </button>
-
-
-                                <button
-                                    class="icon-btn delete-btn"
-                                    data-id="${seller.id}"
-                                    title="Delete Seller"
-                                >
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-            }).join("");
-
-
-        attachSellerActions();
-
-    }
-
-
-    // =========================================================
-    // SELLER ACTIONS
-    // =========================================================
-
-    function attachSellerActions() {
-
-        document
-            .querySelectorAll(".view-btn")
-            .forEach(button => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        openSeller(
-                            Number(button.dataset.id)
-                        );
-
-                    }
-                );
-
-            });
-
-
-        document
-            .querySelectorAll(".block-btn, .activate-btn")
-            .forEach(button => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        const seller =
-                            sellers.find(
-                                s =>
-                                s.id ===
-                                Number(button.dataset.id)
-                            );
-
-
-                        if (!seller) {
-                            return;
-                        }
-
-
-                        changeSellerStatus(
-                            seller.id,
-                            seller.status === "active"
-                                ? "blocked"
-                                : "active"
-                        );
-
-                    }
-                );
-
-            });
-
-
-        document
-            .querySelectorAll(".delete-btn")
-            .forEach(button => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        selectedSeller =
-                            sellers.find(
-                                s =>
-                                s.id ===
-                                Number(button.dataset.id)
-                            );
-
-
-                        if (selectedSeller) {
-
-                            deleteModal.classList.add(
-                                "show"
-                            );
-
-                        }
-
-                    }
-                );
-
-            });
-
-    }
-
-
-    // =========================================================
-    // VIEW SELLER
-    // =========================================================
-
-    async function openSeller(sellerId) {
-
-        try {
-
-            const response =
-                await fetch(
-                    `/api/admin/sellers/${sellerId}`
-                );
-
-            const data =
-                await response.json();
-
-
-            if (!data.success) {
-
-                alert(data.message);
-
-                return;
-
-            }
-
-
-            selectedSeller = data.seller;
-
-
-            const seller =
-                data.seller;
-
-
-            document.getElementById(
-                "modalAvatar"
-            ).textContent =
-                seller.name
-                    .charAt(0)
-                    .toUpperCase();
-
-
-            document.getElementById(
-                "modalSellerName"
-            ).textContent =
-                seller.name;
-
-
-            document.getElementById(
-                "modalSellerEmail"
-            ).textContent =
-                seller.email;
-
-
-            document.getElementById(
-                "modalSellerPhone"
-            ).textContent =
-                seller.phone;
-
-
-            document.getElementById(
-                "modalSellerStatus"
-            ).textContent =
-                seller.status;
-
-
-            document.getElementById(
-                "modalSellerJoined"
-            ).textContent =
-                seller.created_at
-                    ? new Date(
-                        seller.created_at
-                      ).toLocaleDateString(
-                        "en-IN"
-                      )
-                    : "-";
-
-
-            document.getElementById(
-                "modalProductCount"
-            ).textContent =
-                data.products.length;
-
-
-            document.getElementById(
-                "modalToggleStatus"
-            ).textContent =
-                seller.status === "active"
-                    ? "Block Seller"
-                    : "Activate Seller";
-
-
-            const productsList =
-                document.getElementById(
-                    "modalProductsList"
-                );
-
-
-            if (data.products.length === 0) {
-
-                productsList.innerHTML = `
-                    <div class="no-products">
-                        No products added by this seller.
-                    </div>
-                `;
-
-            } else {
-
-                productsList.innerHTML =
-                    data.products.map(product => {
-
-                        return `
-
-                            <div class="modal-product">
-
-                                <div>
-
-                                    <strong>
-                                        ${escapeHtml(
-                                            product.name
-                                        )}
-                                    </strong>
-
-                                    <small>
-                                        Stock:
-                                        ${product.stock ?? 0}
-                                    </small>
-
-                                </div>
-
-                                <strong>
-                                    ₹${Number(
-                                        product.price || 0
-                                    ).toLocaleString("en-IN")}
-                                </strong>
-
-                            </div>
-
-                        `;
-
-                    }).join("");
-
-            }
-
-
-            sellerModal.classList.add("show");
-
-        } catch (error) {
-
-            console.error(error);
-
-            alert(
-                "Unable to load seller details."
-            );
+            sellersTable.appendChild(row);
 
         }
 
@@ -657,278 +407,195 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =========================================================
-    // CHANGE STATUS
+    // SELLER SEARCH EVENT
     // =========================================================
 
-    async function changeSellerStatus(
-        sellerId,
-        status
-    ) {
+    if (sellerSearch) {
 
-        try {
-
-            const response =
-                await fetch(
-                    `/api/admin/sellers/${sellerId}/status`,
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body: JSON.stringify({
-                            status: status
-                        })
-                    }
-                );
-
-
-            const data =
-                await response.json();
-
-
-            if (!data.success) {
-
-                alert(data.message);
-
-                return;
-
-            }
-
-
-            await loadStats();
-            await loadSellers();
-
-        } catch (error) {
-
-            console.error(error);
-
-            alert(
-                "Unable to update seller status."
-            );
-
-        }
+        sellerSearch.addEventListener(
+            "input",
+            filterSellers
+        );
 
     }
 
 
     // =========================================================
-    // DELETE SELLER
+    // SELLER STATUS FILTER EVENT
     // =========================================================
 
-    async function deleteSeller(
-        deleteProducts
-    ) {
+    if (sellerStatusFilter) {
 
-        if (!selectedSeller) {
-            return;
-        }
-
-
-        try {
-
-            const response =
-                await fetch(
-                    `/api/admin/sellers/${selectedSeller.id}/delete`,
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body: JSON.stringify({
-                            delete_products:
-                                deleteProducts
-                        })
-                    }
-                );
-
-
-            const data =
-                await response.json();
-
-
-            if (!data.success) {
-
-                alert(data.message);
-
-                return;
-
-            }
-
-
-            deleteModal.classList.remove(
-                "show"
-            );
-
-            sellerModal.classList.remove(
-                "show"
-            );
-
-
-            selectedSeller = null;
-
-
-            await loadStats();
-            await loadSellers();
-
-
-            alert(
-                "Seller deleted successfully."
-            );
-
-        } catch (error) {
-
-            console.error(error);
-
-            alert(
-                "Unable to delete seller."
-            );
-
-        }
+        sellerStatusFilter.addEventListener(
+            "change",
+            filterSellers
+        );
 
     }
 
 
     // =========================================================
-    // MODAL CONTROLS
+    // SELLER DELETE CONFIRMATION
+    // =========================================================
+    //
+    // The actual delete operation is performed by Flask.
+    //
+    // JavaScript only asks the administrator for confirmation
+    // before allowing the form submission.
     // =========================================================
 
-    document
-        .getElementById("closeSellerModal")
-        .addEventListener(
-            "click",
-            () => {
-
-                sellerModal.classList.remove(
-                    "show"
-                );
-
-            }
+    const sellerDeleteForms =
+        document.querySelectorAll(
+            'form[data-confirm-delete-seller]'
         );
 
 
-    document
-        .getElementById("cancelDelete")
-        .addEventListener(
-            "click",
-            () => {
+    sellerDeleteForms.forEach(form => {
 
-                deleteModal.classList.remove(
-                    "show"
-                );
+        form.addEventListener(
+            "submit",
+            event => {
 
-            }
-        );
-
-
-    document
-        .getElementById("keepProductsBtn")
-        .addEventListener(
-            "click",
-            () => {
-
-                deleteSeller(false);
-
-            }
-        );
-
-
-    document
-        .getElementById("deleteProductsBtn")
-        .addEventListener(
-            "click",
-            () => {
-
-                deleteSeller(true);
-
-            }
-        );
-
-
-    document
-        .getElementById("modalDeleteSeller")
-        .addEventListener(
-            "click",
-            () => {
-
-                if (selectedSeller) {
-
-                    deleteModal.classList.add(
-                        "show"
+                const confirmed =
+                    window.confirm(
+                        "Are you sure you want to delete this seller?"
                     );
 
+
+                if (!confirmed) {
+
+                    event.preventDefault();
+
                 }
 
             }
         );
 
+    });
 
-    document
-        .getElementById("modalToggleStatus")
-        .addEventListener(
-            "click",
-            () => {
 
-                if (!selectedSeller) {
-                    return;
+    // =========================================================
+    // USER DELETE CONFIRMATION
+    // =========================================================
+    //
+    // The actual user deletion is performed by Flask.
+    //
+    // JavaScript only handles the confirmation dialog.
+    // =========================================================
+
+    const userDeleteForms =
+        document.querySelectorAll(
+            'form[data-confirm-delete-user]'
+        );
+
+
+    userDeleteForms.forEach(form => {
+
+        form.addEventListener(
+            "submit",
+            event => {
+
+                const confirmed =
+                    window.confirm(
+                        "Are you sure you want to delete this user?"
+                    );
+
+
+                if (!confirmed) {
+
+                    event.preventDefault();
+
                 }
 
+            }
+        );
+
+    });
+
+
+    // =========================================================
+    // BLOCK / ACTIVATE CONFIRMATION
+    // =========================================================
+    //
+    // The actual status change is performed by Flask.
+    //
+    // JavaScript only displays a confirmation dialog before
+    // the normal POST form is submitted.
+    // =========================================================
+
+    const statusForms =
+        document.querySelectorAll(
+            'form[data-confirm-status]'
+        );
+
+
+    statusForms.forEach(form => {
+
+        form.addEventListener(
+            "submit",
+            event => {
 
                 const newStatus =
-                    selectedSeller.status === "active"
-                        ? "blocked"
-                        : "active";
+                    (
+                        form.dataset.confirmStatus || ""
+                    ).toLowerCase();
 
 
-                changeSellerStatus(
-                    selectedSeller.id,
-                    newStatus
-                );
+                let message;
 
 
-                sellerModal.classList.remove(
-                    "show"
-                );
+                if (newStatus === "blocked") {
+
+                    message =
+                        "Are you sure you want to block this account?";
+
+                } else if (newStatus === "active") {
+
+                    message =
+                        "Are you sure you want to activate this account?";
+
+                } else {
+
+                    message =
+                        "Are you sure you want to change this account status?";
+
+                }
+
+
+                const confirmed =
+                    window.confirm(message);
+
+
+                if (!confirmed) {
+
+                    event.preventDefault();
+
+                }
 
             }
         );
 
+    });
 
-    sellerModal.addEventListener(
-        "click",
+
+    // =========================================================
+    // ESCAPE KEY
+    // =========================================================
+    //
+    // Pressing Escape closes the mobile sidebar.
+    // =========================================================
+
+    document.addEventListener(
+        "keydown",
         event => {
 
             if (
-                event.target ===
-                sellerModal
+                event.key === "Escape" &&
+                sidebar
             ) {
 
-                sellerModal.classList.remove(
-                    "show"
-                );
-
-            }
-
-        }
-    );
-
-
-    deleteModal.addEventListener(
-        "click",
-        event => {
-
-            if (
-                event.target ===
-                deleteModal
-            ) {
-
-                deleteModal.classList.remove(
-                    "show"
+                sidebar.classList.remove(
+                    "mobile-open"
                 );
 
             }
@@ -938,42 +605,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =========================================================
-    // SEARCH / FILTER
+    // INITIALIZE SELLER FILTER
     // =========================================================
 
-    sellerSearch.addEventListener(
-        "input",
-        renderSellers
-    );
-
-
-    sellerStatusFilter.addEventListener(
-        "change",
-        renderSellers
-    );
+    filterSellers();
 
 
     // =========================================================
-    // HTML ESCAPE
+    // INITIALIZE DEFAULT SECTION
+    // =========================================================
+    //
+    // If a section is already marked as active in the HTML,
+    // keep it active.
+    //
+    // Otherwise, open the Dashboard section by default.
     // =========================================================
 
-    function escapeHtml(value) {
+    const currentActiveSection =
+        document.querySelector(
+            ".admin-section.active-section"
+        );
 
-        return String(value ?? "")
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#039;");
+
+    if (currentActiveSection) {
+
+        openSection(
+            currentActiveSection.id
+        );
+
+    } else {
+
+        openSection("dashboard");
 
     }
-
-
-    // =========================================================
-    // INITIAL LOAD
-    // =========================================================
-
-    loadStats();
-    loadSellers();
 
 });

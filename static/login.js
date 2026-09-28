@@ -14,6 +14,25 @@ const loginTrigger =
 const loginForm =
     document.getElementById("loginForm");
 
+
+/* Send seller and admin choices to their dedicated login pages. */
+document
+    .querySelectorAll('input[name="role"]')
+    .forEach(function (roleInput) {
+
+        roleInput.addEventListener(
+            "change",
+            function () {
+
+                if (this.value === "seller") {
+                    window.location.href = "/seller/login";
+                } else if (this.value === "admin") {
+                    window.location.href = "/admin/login";
+                }
+            }
+        );
+    });
+
 const registerForm =
     document.getElementById("registerForm");
 

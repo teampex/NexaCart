@@ -11,10 +11,15 @@ from flask import (
 import mysql.connector
 from mysql.connector import Error
 
+import os
+from uuid import uuid4
+
 from werkzeug.security import (
     generate_password_hash,
     check_password_hash
 )
+
+from werkzeug.utils import secure_filename
 
 
 # =========================================================
@@ -24,6 +29,119 @@ from werkzeug.security import (
 app = Flask(__name__)
 
 app.secret_key = "nexacart-secret-key"
+
+
+# =========================================================
+# PRODUCT IMAGE UPLOAD SETTINGS
+# =========================================================
+
+ALLOWED_IMAGE_EXTENSIONS = {
+    "png",
+    "jpg",
+    "jpeg",
+    "webp"
+}
+
+
+def allowed_image(filename):
+    return (
+        "." in filename
+        and filename.rsplit(".", 1)[1].lower()
+        in ALLOWED_IMAGE_EXTENSIONS
+    )
+
+
+def save_product_image(image):
+    if not image or not image.filename:
+        return None
+
+    if not allowed_image(image.filename):
+        raise ValueError(
+            "Only PNG, JPG, JPEG and WEBP images are allowed."
+        )
+
+    upload_folder = os.path.join(
+        app.root_path,
+        "static",
+        "uploads",
+        "products"
+    )
+
+    # Create the upload folder automatically.
+    os.makedirs(
+        upload_folder,
+        exist_ok=True
+    )
+
+    original_name = secure_filename(
+        image.filename
+    )
+
+    extension = original_name.rsplit(
+        ".",
+        1
+    )[1].lower()
+
+    # Use a unique filename so different sellers cannot overwrite images.
+    filename = (
+        f"product_{uuid4().hex}.{extension}"
+    )
+
+    image.save(
+        os.path.join(
+            upload_folder,
+            filename
+        )
+    )
+
+    # Store the path relative to the static folder.
+    return (
+        f"uploads/products/{filename}"
+    )
+
+
+def product_image_url(image_path):
+    """Return a valid static URL for current and legacy product image paths."""
+    if not image_path:
+        return ""
+
+    image_path = str(image_path).strip().replace("\\", "/")
+
+    if image_path.startswith(("http://", "https://")):
+        return image_path
+
+    # Older records may contain a full path or repeat the static/ prefix.
+    static_marker = "/static/"
+    if static_marker in image_path:
+        image_path = image_path.split(static_marker, 1)[1]
+    elif image_path.startswith("static/"):
+        image_path = image_path[len("static/"):]
+
+    image_path = image_path.lstrip("/")
+
+    # Some old rows saved only the uploaded filename.
+    if "/" not in image_path:
+        image_path = f"uploads/products/{image_path}"
+
+    # If an old path is stale, try the uploaded products directory by basename.
+    candidate = os.path.join(
+        app.root_path,
+        "static",
+        *image_path.split("/")
+    )
+    if not os.path.isfile(candidate):
+        basename = os.path.basename(image_path)
+        upload_candidate = os.path.join(
+            app.root_path,
+            "static",
+            "uploads",
+            "products",
+            basename
+        )
+        if os.path.isfile(upload_candidate):
+            image_path = f"uploads/products/{basename}"
+
+    return url_for("static", filename=image_path)
 
 
 # =========================================================
@@ -57,19 +175,100 @@ def inject_user():
 # HOME
 # =========================================================
 
+# =========================================================
+# HOME
+# =========================================================
+
 @app.route("/")
 def home():
 
+    conn = None
+    cursor = None
+    products = []
+    home_products = []
+
+    try:
+
+        conn = get_db_connection()
+
+        cursor = conn.cursor(
+            dictionary=True
+        )
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                seller_id,
+                name,
+                category,
+                price,
+                description,
+                stock,
+                image,
+                status,
+                created_at
+            FROM products
+            WHERE status = 'active'
+            ORDER BY id DESC
+            """
+        )
+
+        products = cursor.fetchall()
+        home_products = [
+            {
+                "name": product["name"],
+                "price": float(product["price"] or 0),
+                "oldPrice": 0,
+                "rating": 0,
+                "reviews": 0,
+                "badge": "",
+                "image": product_image_url(product["image"]),
+            }
+            for product in products
+        ]
+
+        print("----------------------------------------")
+        print("HOME PRODUCTS LOADED")
+        print("Total Products:", len(products))
+        print("----------------------------------------")
+
+    except Error as error:
+
+        print("----------------------------------------")
+        print("HOME PRODUCT ERROR")
+        print(error)
+        print("----------------------------------------")
+
+        products = []
+
+    finally:
+
+        if cursor:
+            try:
+                cursor.close()
+            except Exception:
+                pass
+
+        if conn:
+            try:
+                if conn.is_connected():
+                    conn.close()
+            except Exception:
+                pass
+
     return render_template(
-        "home.html"
+        "home.html",
+        products=products,
+        home_products=home_products
     )
 
 
 @app.route("/home")
 def home_page():
 
-    return render_template(
-        "home.html"
+    return redirect(
+        url_for("home")
     )
 
 
@@ -95,42 +294,39 @@ def login():
             "login.html"
         )
 
-
     db = None
     cursor = None
+    data = request.get_json(
+        silent=True
+    )
 
     try:
-
-        data = request.get_json(
-            silent=True
-        )
-
 
         if data:
 
             username = data.get(
-                "username"
+                "username",
+                ""
             )
 
             password = data.get(
-                "password"
+                "password",
+                ""
             )
 
         else:
 
             username = request.form.get(
-                "username"
+                "username",
+                ""
             )
 
             password = request.form.get(
-                "password"
+                "password",
+                ""
             )
 
-
-        if username:
-
-            username = username.strip()
-
+        username = username.strip()
 
         if not username or not password:
 
@@ -144,7 +340,6 @@ def login():
                     )
                 }), 400
 
-
             return render_template(
                 "login.html",
                 error=(
@@ -153,9 +348,7 @@ def login():
                 )
             )
 
-
         db = get_db_connection()
-
 
         if not db.is_connected():
 
@@ -168,7 +361,6 @@ def login():
                     )
                 }), 500
 
-
             return render_template(
                 "login.html",
                 error=(
@@ -176,11 +368,9 @@ def login():
                 )
             )
 
-
         cursor = db.cursor(
             dictionary=True
         )
-
 
         cursor.execute(
             """
@@ -189,16 +379,15 @@ def login():
                 username,
                 email,
                 phone,
-                password_hash
+                password_hash,
+                status
             FROM users
             WHERE username = %s
             """,
             (username,)
         )
 
-
         user = cursor.fetchone()
-
 
         if user is None:
 
@@ -212,7 +401,6 @@ def login():
                     )
                 }), 401
 
-
             return render_template(
                 "login.html",
                 error=(
@@ -221,14 +409,30 @@ def login():
                 )
             )
 
+        if user["status"] == "blocked":
 
-        password_valid = check_password_hash(
+            if data:
+
+                return jsonify({
+                    "success": False,
+                    "message": (
+                        "Your account has been "
+                        "blocked by admin."
+                    )
+                }), 403
+
+            return render_template(
+                "login.html",
+                error=(
+                    "Your account has been "
+                    "blocked by admin."
+                )
+            )
+
+        if not check_password_hash(
             user["password_hash"],
             password
-        )
-
-
-        if not password_valid:
+        ):
 
             if data:
 
@@ -240,7 +444,6 @@ def login():
                     )
                 }), 401
 
-
             return render_template(
                 "login.html",
                 error=(
@@ -249,17 +452,9 @@ def login():
                 )
             )
 
-
-        # -------------------------------------------------
-        # CUSTOMER SESSION
-        # -------------------------------------------------
-
         session["user_id"] = user["id"]
-
         session["username"] = user["username"]
-
         session["email"] = user["email"]
-
 
         print("----------------------------------------")
         print("USER LOGIN SUCCESSFUL")
@@ -267,7 +462,6 @@ def login():
         print("Username:", user["username"])
         print("Email   :", user["email"])
         print("----------------------------------------")
-
 
         if data:
 
@@ -278,11 +472,9 @@ def login():
                 "user_id": user["id"]
             }), 200
 
-
         return redirect(
             url_for("home")
         )
-
 
     except Error as error:
 
@@ -290,7 +482,6 @@ def login():
         print("MYSQL LOGIN ERROR")
         print(error)
         print("----------------------------------------")
-
 
         if data:
 
@@ -301,12 +492,10 @@ def login():
                 )
             }), 500
 
-
         return render_template(
             "login.html",
             error="Database error occurred."
         )
-
 
     except Exception as error:
 
@@ -315,22 +504,17 @@ def login():
         print(error)
         print("----------------------------------------")
 
-
         if data:
 
             return jsonify({
                 "success": False,
-                "message": (
-                    "Something went wrong."
-                )
+                "message": "Something went wrong."
             }), 500
-
 
         return render_template(
             "login.html",
             error="Something went wrong."
         )
-
 
     finally:
 
@@ -340,7 +524,6 @@ def login():
                 cursor.close()
             except Exception:
                 pass
-
 
         if db:
 
@@ -365,65 +548,59 @@ def register():
 
     db = None
     cursor = None
+    data = request.get_json(
+        silent=True
+    )
 
     try:
-
-        data = request.get_json(
-            silent=True
-        )
-
 
         if data:
 
             username = data.get(
-                "username"
+                "username",
+                ""
             )
 
             email = data.get(
-                "email"
+                "email",
+                ""
             )
 
             phone = data.get(
-                "phone"
+                "phone",
+                ""
             )
 
             password = data.get(
-                "password"
+                "password",
+                ""
             )
 
         else:
 
             username = request.form.get(
-                "username"
+                "username",
+                ""
             )
 
             email = request.form.get(
-                "email"
+                "email",
+                ""
             )
 
             phone = request.form.get(
-                "phone"
+                "phone",
+                ""
             )
 
             password = request.form.get(
-                "password"
+                "password",
+                ""
             )
 
-
-        if username:
-
-            username = username.strip()
-
-
-        if email:
-
-            email = email.strip().lower()
-
-
-        if phone:
-
-            phone = phone.strip()
-
+        username = username.strip()
+        email = email.strip().lower()
+        phone = phone.strip()
 
         if (
             not username
@@ -434,14 +611,10 @@ def register():
 
             return jsonify({
                 "success": False,
-                "message": (
-                    "Please fill all fields."
-                )
+                "message": "Please fill all fields."
             }), 400
 
-
         db = get_db_connection()
-
 
         if not db.is_connected():
 
@@ -452,9 +625,7 @@ def register():
                 )
             }), 500
 
-
         cursor = db.cursor()
-
 
         cursor.execute(
             """
@@ -469,9 +640,7 @@ def register():
             )
         )
 
-
         existing_user = cursor.fetchone()
-
 
         if existing_user:
 
@@ -483,11 +652,9 @@ def register():
                 )
             }), 409
 
-
         password_hash = generate_password_hash(
             password
         )
-
 
         cursor.execute(
             """
@@ -514,11 +681,9 @@ def register():
             )
         )
 
-
         new_user_id = cursor.lastrowid
 
         db.commit()
-
 
         print("----------------------------------------")
         print("NEW USER REGISTERED")
@@ -526,8 +691,8 @@ def register():
         print("Username:", username)
         print("Email   :", email)
         print("Phone   :", phone)
+        print("Status  : active")
         print("----------------------------------------")
-
 
         return jsonify({
             "success": True,
@@ -538,7 +703,6 @@ def register():
             "username": username
         }), 201
 
-
     except Error as error:
 
         if db:
@@ -548,12 +712,10 @@ def register():
             except Exception:
                 pass
 
-
         print("----------------------------------------")
         print("MYSQL REGISTRATION ERROR")
         print(error)
         print("----------------------------------------")
-
 
         return jsonify({
             "success": False,
@@ -561,7 +723,6 @@ def register():
                 "Database error occurred."
             )
         }), 500
-
 
     except Exception as error:
 
@@ -572,20 +733,15 @@ def register():
             except Exception:
                 pass
 
-
         print("----------------------------------------")
         print("REGISTRATION ERROR")
         print(error)
         print("----------------------------------------")
 
-
         return jsonify({
             "success": False,
-            "message": (
-                "Something went wrong."
-            )
+            "message": "Something went wrong."
         }), 500
-
 
     finally:
 
@@ -595,7 +751,6 @@ def register():
                 cursor.close()
             except Exception:
                 pass
-
 
         if db:
 
@@ -620,7 +775,6 @@ def profile():
         return redirect(
             url_for("login")
         )
-
 
     return render_template(
         "profile.html"
@@ -661,16 +815,13 @@ def check_session():
             )
         })
 
-
     return jsonify({
         "logged_in": False
     })
 
 
 # =========================================================
-# =========================================================
 # ADMIN SYSTEM
-# =========================================================
 # =========================================================
 
 
@@ -690,7 +841,6 @@ def admin_register():
             "admin_register.html"
         )
 
-
     conn = None
     cursor = None
 
@@ -701,30 +851,25 @@ def admin_register():
             ""
         ).strip()
 
-
         email = request.form.get(
             "email",
             ""
         ).strip().lower()
-
 
         phone = request.form.get(
             "phone",
             ""
         ).strip()
 
-
         password = request.form.get(
             "password",
             ""
         )
 
-
         confirm_password = request.form.get(
             "confirm_password",
             ""
         )
-
 
         if (
             not username
@@ -739,16 +884,12 @@ def admin_register():
                 error="Please fill all fields."
             )
 
-
         if password != confirm_password:
 
             return render_template(
                 "admin_register.html",
-                error=(
-                    "Passwords do not match."
-                )
+                error="Passwords do not match."
             )
-
 
         if len(password) < 6:
 
@@ -760,14 +901,11 @@ def admin_register():
                 )
             )
 
-
         conn = get_db_connection()
-
 
         cursor = conn.cursor(
             dictionary=True
         )
-
 
         cursor.execute(
             """
@@ -784,9 +922,7 @@ def admin_register():
             )
         )
 
-
         existing_admin = cursor.fetchone()
-
 
         if existing_admin:
 
@@ -798,11 +934,9 @@ def admin_register():
                 )
             )
 
-
         hashed_password = generate_password_hash(
             password
         )
-
 
         cursor.execute(
             """
@@ -829,14 +963,11 @@ def admin_register():
             )
         )
 
-
         conn.commit()
-
 
         return redirect(
             url_for("admin_login")
         )
-
 
     except Error as error:
 
@@ -847,18 +978,15 @@ def admin_register():
             except Exception:
                 pass
 
-
         print("----------------------------------------")
         print("ADMIN REGISTER ERROR")
         print(error)
         print("----------------------------------------")
 
-
         return render_template(
             "admin_register.html",
             error="Database error occurred."
         )
-
 
     finally:
 
@@ -868,7 +996,6 @@ def admin_register():
                 cursor.close()
             except Exception:
                 pass
-
 
         if conn:
 
@@ -899,13 +1026,11 @@ def admin_login():
             url_for("admin_dashboard")
         )
 
-
     if request.method == "GET":
 
         return render_template(
             "admin_login.html"
         )
-
 
     conn = None
     cursor = None
@@ -917,12 +1042,10 @@ def admin_login():
             ""
         ).strip()
 
-
         password = request.form.get(
             "password",
             ""
         )
-
 
         if not username or not password:
 
@@ -934,14 +1057,11 @@ def admin_login():
                 )
             )
 
-
         conn = get_db_connection()
-
 
         cursor = conn.cursor(
             dictionary=True
         )
-
 
         cursor.execute(
             """
@@ -955,9 +1075,7 @@ def admin_login():
             (username,)
         )
 
-
         admin = cursor.fetchone()
-
 
         if (
             admin
@@ -968,18 +1086,14 @@ def admin_login():
         ):
 
             session["admin_logged_in"] = True
-
             session["admin_id"] = admin["id"]
-
             session["admin_username"] = (
                 admin["username"]
             )
 
-
             return redirect(
                 url_for("admin_dashboard")
             )
-
 
         return render_template(
             "admin_login.html",
@@ -989,7 +1103,6 @@ def admin_login():
             )
         )
 
-
     except Error as error:
 
         print("----------------------------------------")
@@ -997,12 +1110,10 @@ def admin_login():
         print(error)
         print("----------------------------------------")
 
-
         return render_template(
             "admin_login.html",
             error="Database error occurred."
         )
-
 
     finally:
 
@@ -1012,7 +1123,6 @@ def admin_login():
                 cursor.close()
             except Exception:
                 pass
-
 
         if conn:
 
@@ -1051,7 +1161,6 @@ def admin_dashboard():
             url_for("admin_login")
         )
 
-
     conn = None
     cursor = None
 
@@ -1059,15 +1168,9 @@ def admin_dashboard():
 
         conn = get_db_connection()
 
-
         cursor = conn.cursor(
             dictionary=True
         )
-
-
-        # =================================================
-        # GET ALL SELLERS
-        # =================================================
 
         cursor.execute(
             """
@@ -1078,20 +1181,12 @@ def admin_dashboard():
                 email,
                 status,
                 created_at
-
             FROM seller_users
-
             ORDER BY id DESC
             """
         )
 
-
         sellers = cursor.fetchall()
-
-
-        # =================================================
-        # GET ALL USERS
-        # =================================================
 
         cursor.execute(
             """
@@ -1100,21 +1195,14 @@ def admin_dashboard():
                 username,
                 email,
                 phone,
+                status,
                 created_at
-
             FROM users
-
             ORDER BY id DESC
             """
         )
 
-
         users = cursor.fetchall()
-
-
-        # =================================================
-        # TOTAL SELLERS
-        # =================================================
 
         cursor.execute(
             """
@@ -1123,15 +1211,7 @@ def admin_dashboard():
             """
         )
 
-
-        total_sellers = (
-            cursor.fetchone()["total"]
-        )
-
-
-        # =================================================
-        # ACTIVE SELLERS
-        # =================================================
+        total_sellers = cursor.fetchone()["total"]
 
         cursor.execute(
             """
@@ -1141,15 +1221,7 @@ def admin_dashboard():
             """
         )
 
-
-        active_sellers = (
-            cursor.fetchone()["total"]
-        )
-
-
-        # =================================================
-        # BLOCKED SELLERS
-        # =================================================
+        active_sellers = cursor.fetchone()["total"]
 
         cursor.execute(
             """
@@ -1159,44 +1231,52 @@ def admin_dashboard():
             """
         )
 
+        blocked_sellers = cursor.fetchone()["total"]
 
-        blocked_sellers = (
-            cursor.fetchone()["total"]
+        cursor.execute(
+            """
+            SELECT COUNT(*) AS total
+            FROM users
+            """
         )
 
+        total_users = cursor.fetchone()["total"]
 
-        # =================================================
-        # TOTAL USERS
-        # =================================================
+        cursor.execute(
+            """
+            SELECT COUNT(*) AS total
+            FROM users
+            WHERE status = 'active'
+            """
+        )
 
-        total_users = len(users)
+        active_users = cursor.fetchone()["total"]
 
+        cursor.execute(
+            """
+            SELECT COUNT(*) AS total
+            FROM users
+            WHERE status = 'blocked'
+            """
+        )
 
-        # =================================================
-        # RENDER ADMIN DASHBOARD
-        # =================================================
+        blocked_users = cursor.fetchone()["total"]
 
         return render_template(
             "admin_dashboard.html",
-
             admin_username=session.get(
                 "admin_username",
                 "Admin"
             ),
-
             sellers=sellers,
-
             users=users,
-
             total_sellers=total_sellers,
-
             active_sellers=active_sellers,
-
             blocked_sellers=blocked_sellers,
-
-            total_users=total_users
+            total_users=total_users,
+            active_users=active_users,
+            blocked_users=blocked_users
         )
-
 
     except Error as error:
 
@@ -1205,30 +1285,22 @@ def admin_dashboard():
         print(error)
         print("----------------------------------------")
 
-
         return render_template(
             "admin_dashboard.html",
-
             admin_username=session.get(
                 "admin_username",
                 "Admin"
             ),
-
             sellers=[],
-
             users=[],
-
             total_sellers=0,
-
             active_sellers=0,
-
             blocked_sellers=0,
-
             total_users=0,
-
+            active_users=0,
+            blocked_users=0,
             error="Database error occurred."
         )
-
 
     finally:
 
@@ -1238,7 +1310,6 @@ def admin_dashboard():
                 cursor.close()
             except Exception:
                 pass
-
 
         if conn:
 
@@ -1252,7 +1323,7 @@ def admin_dashboard():
 
 
 # =========================================================
-# ADMIN - VIEW SINGLE SELLER
+# ADMIN VIEW SELLER
 # =========================================================
 
 @app.route(
@@ -1266,7 +1337,6 @@ def admin_view_seller(seller_id):
             url_for("admin_login")
         )
 
-
     conn = None
     cursor = None
 
@@ -1274,11 +1344,9 @@ def admin_view_seller(seller_id):
 
         conn = get_db_connection()
 
-
         cursor = conn.cursor(
             dictionary=True
         )
-
 
         cursor.execute(
             """
@@ -1289,17 +1357,13 @@ def admin_view_seller(seller_id):
                 email,
                 status,
                 created_at
-
             FROM seller_users
-
             WHERE id = %s
             """,
             (seller_id,)
         )
 
-
         seller = cursor.fetchone()
-
 
         if not seller:
 
@@ -1307,38 +1371,66 @@ def admin_view_seller(seller_id):
                 url_for("admin_dashboard")
             )
 
+        cursor.execute(
+            """
+            SELECT
+                id,
+                username,
+                email,
+                phone,
+                status,
+                created_at
+            FROM users
+            ORDER BY id DESC
+            """
+        )
+
+        users = cursor.fetchall()
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                name,
+                phone,
+                email,
+                status,
+                created_at
+            FROM seller_users
+            ORDER BY id DESC
+            """
+        )
+
+        sellers = cursor.fetchall()
 
         return render_template(
             "admin_dashboard.html",
-
             admin_username=session.get(
                 "admin_username",
                 "Admin"
             ),
-
-            sellers=[seller],
-
-            users=[],
-
-            total_sellers=1,
-
-            active_sellers=(
-                1
-                if seller["status"] == "active"
-                else 0
+            sellers=sellers,
+            users=users,
+            total_sellers=len(sellers),
+            active_sellers=sum(
+                1 for item in sellers
+                if item["status"] == "active"
             ),
-
-            blocked_sellers=(
-                1
-                if seller["status"] == "blocked"
-                else 0
+            blocked_sellers=sum(
+                1 for item in sellers
+                if item["status"] == "blocked"
             ),
-
-            total_users=0,
-
+            total_users=len(users),
+            active_users=sum(
+                1 for item in users
+                if item["status"] == "active"
+            ),
+            blocked_users=sum(
+                1 for item in users
+                if item["status"] == "blocked"
+            ),
             selected_seller_id=seller_id
         )
-
 
     except Error as error:
 
@@ -1347,11 +1439,9 @@ def admin_view_seller(seller_id):
         print(error)
         print("----------------------------------------")
 
-
         return redirect(
             url_for("admin_dashboard")
         )
-
 
     finally:
 
@@ -1361,7 +1451,6 @@ def admin_view_seller(seller_id):
                 cursor.close()
             except Exception:
                 pass
-
 
         if conn:
 
@@ -1375,7 +1464,7 @@ def admin_view_seller(seller_id):
 
 
 # =========================================================
-# ADMIN - VIEW SINGLE USER
+# ADMIN VIEW USER
 # =========================================================
 
 @app.route(
@@ -1389,7 +1478,6 @@ def admin_view_user(user_id):
             url_for("admin_login")
         )
 
-
     conn = None
     cursor = None
 
@@ -1397,11 +1485,9 @@ def admin_view_user(user_id):
 
         conn = get_db_connection()
 
-
         cursor = conn.cursor(
             dictionary=True
         )
-
 
         cursor.execute(
             """
@@ -1410,18 +1496,15 @@ def admin_view_user(user_id):
                 username,
                 email,
                 phone,
+                status,
                 created_at
-
             FROM users
-
             WHERE id = %s
             """,
             (user_id,)
         )
 
-
         user = cursor.fetchone()
-
 
         if not user:
 
@@ -1429,12 +1512,6 @@ def admin_view_user(user_id):
                 url_for("admin_dashboard")
             )
 
-
-        # -----------------------------------------------
-        # Currently dashboard user section is table based.
-        # Store selected user so HTML/JS can use it later.
-        # -----------------------------------------------
-
         cursor.execute(
             """
             SELECT
@@ -1442,17 +1519,14 @@ def admin_view_user(user_id):
                 username,
                 email,
                 phone,
+                status,
                 created_at
-
             FROM users
-
             ORDER BY id DESC
             """
         )
 
-
         users = cursor.fetchall()
-
 
         cursor.execute(
             """
@@ -1463,83 +1537,42 @@ def admin_view_user(user_id):
                 email,
                 status,
                 created_at
-
             FROM seller_users
-
             ORDER BY id DESC
             """
         )
 
-
         sellers = cursor.fetchall()
-
-
-        cursor.execute(
-            """
-            SELECT COUNT(*) AS total
-            FROM seller_users
-            """
-        )
-
-
-        total_sellers = (
-            cursor.fetchone()["total"]
-        )
-
-
-        cursor.execute(
-            """
-            SELECT COUNT(*) AS total
-            FROM seller_users
-            WHERE status = 'active'
-            """
-        )
-
-
-        active_sellers = (
-            cursor.fetchone()["total"]
-        )
-
-
-        cursor.execute(
-            """
-            SELECT COUNT(*) AS total
-            FROM seller_users
-            WHERE status = 'blocked'
-            """
-        )
-
-
-        blocked_sellers = (
-            cursor.fetchone()["total"]
-        )
-
 
         return render_template(
             "admin_dashboard.html",
-
             admin_username=session.get(
                 "admin_username",
                 "Admin"
             ),
-
             sellers=sellers,
-
             users=users,
-
-            total_sellers=total_sellers,
-
-            active_sellers=active_sellers,
-
-            blocked_sellers=blocked_sellers,
-
+            total_sellers=len(sellers),
+            active_sellers=sum(
+                1 for item in sellers
+                if item["status"] == "active"
+            ),
+            blocked_sellers=sum(
+                1 for item in sellers
+                if item["status"] == "blocked"
+            ),
             total_users=len(users),
-
+            active_users=sum(
+                1 for item in users
+                if item["status"] == "active"
+            ),
+            blocked_users=sum(
+                1 for item in users
+                if item["status"] == "blocked"
+            ),
             selected_user=user,
-
             selected_user_id=user_id
         )
-
 
     except Error as error:
 
@@ -1548,11 +1581,9 @@ def admin_view_user(user_id):
         print(error)
         print("----------------------------------------")
 
-
         return redirect(
             url_for("admin_dashboard")
         )
-
 
     finally:
 
@@ -1562,7 +1593,6 @@ def admin_view_user(user_id):
                 cursor.close()
             except Exception:
                 pass
-
 
         if conn:
 
@@ -1576,7 +1606,7 @@ def admin_view_user(user_id):
 
 
 # =========================================================
-# ADMIN - BLOCK / UNBLOCK SELLER
+# ADMIN BLOCK / UNBLOCK SELLER
 # =========================================================
 
 @app.route(
@@ -1593,12 +1623,10 @@ def admin_change_seller_status(
             url_for("admin_login")
         )
 
-
     status = request.form.get(
         "status",
         ""
     ).strip().lower()
-
 
     if status not in [
         "active",
@@ -1609,7 +1637,6 @@ def admin_change_seller_status(
             url_for("admin_dashboard")
         )
 
-
     conn = None
     cursor = None
 
@@ -1617,16 +1644,12 @@ def admin_change_seller_status(
 
         conn = get_db_connection()
 
-
         cursor = conn.cursor()
-
 
         cursor.execute(
             """
             UPDATE seller_users
-
             SET status = %s
-
             WHERE id = %s
             """,
             (
@@ -1635,21 +1658,11 @@ def admin_change_seller_status(
             )
         )
 
-
         conn.commit()
-
-
-        print("----------------------------------------")
-        print("SELLER STATUS UPDATED")
-        print("Seller ID:", seller_id)
-        print("Status   :", status)
-        print("----------------------------------------")
-
 
         return redirect(
             url_for("admin_dashboard")
         )
-
 
     except Error as error:
 
@@ -1660,17 +1673,14 @@ def admin_change_seller_status(
             except Exception:
                 pass
 
-
         print("----------------------------------------")
         print("CHANGE SELLER STATUS ERROR")
         print(error)
         print("----------------------------------------")
 
-
         return redirect(
             url_for("admin_dashboard")
         )
-
 
     finally:
 
@@ -1680,7 +1690,6 @@ def admin_change_seller_status(
                 cursor.close()
             except Exception:
                 pass
-
 
         if conn:
 
@@ -1694,7 +1703,7 @@ def admin_change_seller_status(
 
 
 # =========================================================
-# ADMIN - DELETE SELLER
+# ADMIN DELETE SELLER
 # =========================================================
 
 @app.route(
@@ -1711,7 +1720,6 @@ def admin_delete_seller(
             url_for("admin_login")
         )
 
-
     conn = None
     cursor = None
 
@@ -1719,9 +1727,7 @@ def admin_delete_seller(
 
         conn = get_db_connection()
 
-
         cursor = conn.cursor()
-
 
         cursor.execute(
             """
@@ -1731,32 +1737,11 @@ def admin_delete_seller(
             (seller_id,)
         )
 
-
-        deleted_rows = cursor.rowcount
-
-
         conn.commit()
-
-
-        if deleted_rows == 0:
-
-            print("----------------------------------------")
-            print("SELLER NOT FOUND")
-            print("Seller ID:", seller_id)
-            print("----------------------------------------")
-
-        else:
-
-            print("----------------------------------------")
-            print("SELLER DELETED")
-            print("Seller ID:", seller_id)
-            print("----------------------------------------")
-
 
         return redirect(
             url_for("admin_dashboard")
         )
-
 
     except Error as error:
 
@@ -1767,17 +1752,14 @@ def admin_delete_seller(
             except Exception:
                 pass
 
-
         print("----------------------------------------")
         print("DELETE SELLER ERROR")
         print(error)
         print("----------------------------------------")
 
-
         return redirect(
             url_for("admin_dashboard")
         )
-
 
     finally:
 
@@ -1788,6 +1770,179 @@ def admin_delete_seller(
             except Exception:
                 pass
 
+        if conn:
+
+            try:
+
+                if conn.is_connected():
+                    conn.close()
+
+            except Exception:
+                pass
+
+
+# =========================================================
+# ADMIN BLOCK / UNBLOCK USER
+# =========================================================
+
+@app.route(
+    "/admin/user/<int:user_id>/status",
+    methods=["POST"]
+)
+def admin_change_user_status(
+    user_id
+):
+
+    if not admin_required():
+
+        return redirect(
+            url_for("admin_login")
+        )
+
+    status = request.form.get(
+        "status",
+        ""
+    ).strip().lower()
+
+    if status not in [
+        "active",
+        "blocked"
+    ]:
+
+        return redirect(
+            url_for("admin_dashboard")
+        )
+
+    conn = None
+    cursor = None
+
+    try:
+
+        conn = get_db_connection()
+
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            UPDATE users
+            SET status = %s
+            WHERE id = %s
+            """,
+            (
+                status,
+                user_id
+            )
+        )
+
+        conn.commit()
+
+        return redirect(
+            url_for("admin_dashboard")
+        )
+
+    except Error as error:
+
+        if conn:
+
+            try:
+                conn.rollback()
+            except Exception:
+                pass
+
+        print("----------------------------------------")
+        print("CHANGE USER STATUS ERROR")
+        print(error)
+        print("----------------------------------------")
+
+        return redirect(
+            url_for("admin_dashboard")
+        )
+
+    finally:
+
+        if cursor:
+
+            try:
+                cursor.close()
+            except Exception:
+                pass
+
+        if conn:
+
+            try:
+
+                if conn.is_connected():
+                    conn.close()
+
+            except Exception:
+                pass
+
+
+# =========================================================
+# ADMIN DELETE USER
+# =========================================================
+
+@app.route(
+    "/admin/user/<int:user_id>/delete",
+    methods=["POST"]
+)
+def admin_delete_user(user_id):
+
+    if not admin_required():
+
+        return redirect(
+            url_for("admin_login")
+        )
+
+    conn = None
+    cursor = None
+
+    try:
+
+        conn = get_db_connection()
+
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            DELETE FROM users
+            WHERE id = %s
+            """,
+            (user_id,)
+        )
+
+        conn.commit()
+
+        return redirect(
+            url_for("admin_dashboard")
+        )
+
+    except Error as error:
+
+        if conn:
+
+            try:
+                conn.rollback()
+            except Exception:
+                pass
+
+        print("----------------------------------------")
+        print("DELETE USER ERROR")
+        print(error)
+        print("----------------------------------------")
+
+        return redirect(
+            url_for("admin_dashboard")
+        )
+
+    finally:
+
+        if cursor:
+
+            try:
+                cursor.close()
+            except Exception:
+                pass
 
         if conn:
 
@@ -1812,18 +1967,15 @@ def admin_logout():
         None
     )
 
-
     session.pop(
         "admin_id",
         None
     )
 
-
     session.pop(
         "admin_username",
         None
     )
-
 
     return redirect(
         url_for("admin_login")
@@ -1831,9 +1983,7 @@ def admin_logout():
 
 
 # =========================================================
-# =========================================================
 # SELLER SYSTEM
-# =========================================================
 # =========================================================
 
 
@@ -1853,7 +2003,6 @@ def seller_register():
             "seller_register.html"
         )
 
-
     conn = None
     cursor = None
 
@@ -1864,30 +2013,25 @@ def seller_register():
             ""
         ).strip()
 
-
         phone = request.form.get(
             "phone",
             ""
         ).strip()
-
 
         email = request.form.get(
             "email",
             ""
         ).strip().lower()
 
-
         password = request.form.get(
             "password",
             ""
         )
 
-
         confirm_password = request.form.get(
             "confirm_password",
             ""
         )
-
 
         if (
             not name
@@ -1901,14 +2045,12 @@ def seller_register():
                 error="Please fill all fields."
             )
 
-
         if password != confirm_password:
 
             return render_template(
                 "seller_register.html",
                 error="Passwords do not match."
             )
-
 
         if len(password) < 6:
 
@@ -1920,20 +2062,16 @@ def seller_register():
                 )
             )
 
-
         conn = get_db_connection()
-
 
         cursor = conn.cursor(
             dictionary=True
         )
 
-
         cursor.execute(
             """
             SELECT id
             FROM seller_users
-
             WHERE email = %s
                OR phone = %s
             """,
@@ -1943,9 +2081,7 @@ def seller_register():
             )
         )
 
-
         existing_seller = cursor.fetchone()
-
 
         if existing_seller:
 
@@ -1957,15 +2093,9 @@ def seller_register():
                 )
             )
 
-
         hashed_password = generate_password_hash(
             password
         )
-
-
-        # -------------------------------------------------
-        # NEW SELLER = ACTIVE
-        # -------------------------------------------------
 
         cursor.execute(
             """
@@ -1977,7 +2107,6 @@ def seller_register():
                 password,
                 status
             )
-
             VALUES
             (
                 %s,
@@ -1995,12 +2124,9 @@ def seller_register():
             )
         )
 
-
         new_seller_id = cursor.lastrowid
 
-
         conn.commit()
-
 
         print("----------------------------------------")
         print("NEW SELLER REGISTERED")
@@ -2011,11 +2137,9 @@ def seller_register():
         print("Status   : active")
         print("----------------------------------------")
 
-
         return redirect(
             url_for("seller_login")
         )
-
 
     except Error as error:
 
@@ -2026,18 +2150,15 @@ def seller_register():
             except Exception:
                 pass
 
-
         print("----------------------------------------")
         print("SELLER REGISTER ERROR")
         print(error)
         print("----------------------------------------")
 
-
         return render_template(
             "seller_register.html",
             error="Database error occurred."
         )
-
 
     finally:
 
@@ -2047,7 +2168,6 @@ def seller_register():
                 cursor.close()
             except Exception:
                 pass
-
 
         if conn:
 
@@ -2078,13 +2198,11 @@ def seller_login():
             url_for("seller_dashboard")
         )
 
-
     if request.method == "GET":
 
         return render_template(
             "seller_login.html"
         )
-
 
     conn = None
     cursor = None
@@ -2096,12 +2214,10 @@ def seller_login():
             ""
         ).strip().lower()
 
-
         password = request.form.get(
             "password",
             ""
         )
-
 
         if not email or not password:
 
@@ -2113,14 +2229,11 @@ def seller_login():
                 )
             )
 
-
         conn = get_db_connection()
-
 
         cursor = conn.cursor(
             dictionary=True
         )
-
 
         cursor.execute(
             """
@@ -2131,17 +2244,13 @@ def seller_login():
                 phone,
                 password,
                 status
-
             FROM seller_users
-
             WHERE email = %s
             """,
             (email,)
         )
 
-
         seller = cursor.fetchone()
-
 
         if not seller:
 
@@ -2153,11 +2262,6 @@ def seller_login():
                 )
             )
 
-
-        # -------------------------------------------------
-        # BLOCKED SELLER
-        # -------------------------------------------------
-
         if seller["status"] == "blocked":
 
             return render_template(
@@ -2167,11 +2271,6 @@ def seller_login():
                     "been blocked by admin."
                 )
             )
-
-
-        # -------------------------------------------------
-        # PASSWORD CHECK
-        # -------------------------------------------------
 
         if not check_password_hash(
             seller["password"],
@@ -2186,26 +2285,15 @@ def seller_login():
                 )
             )
 
-
-        # -------------------------------------------------
-        # SELLER SESSION
-        # -------------------------------------------------
-
         session["seller_logged_in"] = True
-
         session["seller_id"] = seller["id"]
-
         session["seller_name"] = seller["name"]
-
         session["seller_email"] = seller["email"]
-
         session["seller_phone"] = seller["phone"]
-
 
         return redirect(
             url_for("seller_dashboard")
         )
-
 
     except Error as error:
 
@@ -2214,12 +2302,10 @@ def seller_login():
         print(error)
         print("----------------------------------------")
 
-
         return render_template(
             "seller_login.html",
             error="Database error occurred."
         )
-
 
     finally:
 
@@ -2229,7 +2315,6 @@ def seller_login():
                 cursor.close()
             except Exception:
                 pass
-
 
         if conn:
 
@@ -2254,36 +2339,291 @@ def seller_logout():
         None
     )
 
-
     session.pop(
         "seller_id",
         None
     )
-
 
     session.pop(
         "seller_name",
         None
     )
 
-
     session.pop(
         "seller_email",
         None
     )
-
 
     session.pop(
         "seller_phone",
         None
     )
 
-
     return redirect(
         url_for("seller_login")
     )
 
 
+# =========================================================
+# SELLER ADD PRODUCT
+# =========================================================
+
+
+# =========================================================
+# SELLER - ADD PRODUCT
+# =========================================================
+
+@app.route(
+    "/seller/add-product",
+    methods=["GET", "POST"]
+)
+def seller_add_product():
+
+    if not session.get(
+        "seller_logged_in"
+    ):
+        return redirect(
+            url_for("seller_login")
+        )
+
+    # GET requests return to the dashboard.
+    if request.method == "GET":
+
+        return redirect(
+            url_for("seller_dashboard")
+        )
+
+    conn = None
+    cursor = None
+
+    try:
+
+        # Current HTML uses name="name".
+        product_name = request.form.get(
+            "name",
+            ""
+        ).strip()
+
+        # Support the older field name as well.
+        if not product_name:
+
+            product_name = request.form.get(
+                "product_name",
+                ""
+            ).strip()
+
+        category = request.form.get(
+            "category",
+            ""
+        ).strip()
+
+        price = request.form.get(
+            "price",
+            ""
+        ).strip()
+
+        stock = request.form.get(
+            "stock",
+            "0"
+        ).strip()
+
+        description = request.form.get(
+            "description",
+            ""
+        ).strip()
+
+        if not product_name:
+
+            return redirect(
+                url_for("seller_dashboard")
+            )
+
+        if not category:
+
+            category = "General"
+
+        try:
+
+            price_value = float(
+                price
+            )
+
+            stock_value = int(
+                stock
+            )
+
+        except (
+            TypeError,
+            ValueError
+        ):
+
+            return redirect(
+                url_for("seller_dashboard")
+            )
+
+        if price_value < 0:
+
+            return redirect(
+                url_for("seller_dashboard")
+            )
+
+        if stock_value < 0:
+
+            return redirect(
+                url_for("seller_dashboard")
+            )
+
+        # -------------------------------------------------
+        # PRODUCT IMAGE
+        # -------------------------------------------------
+
+        image_path = None
+
+        image = request.files.get(
+            "image"
+        )
+
+        if image and image.filename:
+
+            image_path = save_product_image(
+                image
+            )
+
+        # -------------------------------------------------
+        # DATABASE INSERT
+        # -------------------------------------------------
+
+        conn = get_db_connection()
+
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            INSERT INTO products
+            (
+                seller_id,
+                name,
+                category,
+                price,
+                stock,
+                description,
+                image,
+                status
+            )
+            VALUES
+            (
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                'active'
+            )
+            """,
+            (
+                session["seller_id"],
+                product_name,
+                category,
+                price_value,
+                stock_value,
+                description,
+                image_path
+            )
+        )
+
+        conn.commit()
+
+        print("----------------------------------------")
+        print("PRODUCT ADDED SUCCESSFULLY")
+        print("Product ID:", cursor.lastrowid)
+        print("Seller ID :", session["seller_id"])
+        print("Name      :", product_name)
+        print("Image     :", image_path)
+        print("----------------------------------------")
+
+        return redirect(
+            url_for("seller_dashboard")
+        )
+
+    except ValueError as error:
+
+        if conn:
+
+            try:
+                conn.rollback()
+            except Exception:
+                pass
+
+        print("----------------------------------------")
+        print("PRODUCT IMAGE ERROR")
+        print(error)
+        print("----------------------------------------")
+
+        return redirect(
+            url_for("seller_dashboard")
+        )
+
+    except Error as error:
+
+        if conn:
+
+            try:
+                conn.rollback()
+            except Exception:
+                pass
+
+        print("----------------------------------------")
+        print("ADD PRODUCT MYSQL ERROR")
+        print(error)
+        print("----------------------------------------")
+
+        return redirect(
+            url_for("seller_dashboard")
+        )
+
+    except Exception as error:
+
+        if conn:
+
+            try:
+                conn.rollback()
+            except Exception:
+                pass
+
+        print("----------------------------------------")
+        print("ADD PRODUCT ERROR")
+        print(error)
+        print("----------------------------------------")
+
+        return redirect(
+            url_for("seller_dashboard")
+        )
+
+    finally:
+
+        if cursor:
+
+            try:
+                cursor.close()
+            except Exception:
+                pass
+
+        if conn:
+
+            try:
+
+                if conn.is_connected():
+                    conn.close()
+
+            except Exception:
+                pass
+
+
+# =========================================================
+# SELLER DASHBOARD
+# =========================================================
 # =========================================================
 # SELLER DASHBOARD
 # =========================================================
@@ -2299,19 +2639,98 @@ def seller_dashboard():
             url_for("seller_login")
         )
 
+    seller_id = session.get(
+        "seller_id"
+    )
+
+    if not seller_id:
+
+        return redirect(
+            url_for("seller_login")
+        )
+
+    conn = None
+    cursor = None
+
+    products = []
+
+    try:
+
+        conn = get_db_connection()
+
+        cursor = conn.cursor(
+            dictionary=True
+        )
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                seller_id,
+                name,
+                category,
+                price,
+                stock,
+                description,
+                image,
+                status,
+                created_at
+            FROM products
+            WHERE seller_id = %s
+            ORDER BY id DESC
+            """,
+            (
+                seller_id,
+            )
+        )
+
+        products = cursor.fetchall()
+
+        print("----------------------------------------")
+        print("SELLER PRODUCTS LOADED")
+        print("Seller ID:", seller_id)
+        print("Products :", len(products))
+        print("----------------------------------------")
+
+    except Error as error:
+
+        print("----------------------------------------")
+        print("SELLER PRODUCTS LOAD ERROR")
+        print(error)
+        print("----------------------------------------")
+
+        products = []
+
+    finally:
+
+        if cursor:
+
+            try:
+                cursor.close()
+            except Exception:
+                pass
+
+        if conn:
+
+            try:
+
+                if conn.is_connected():
+                    conn.close()
+
+            except Exception:
+                pass
 
     return render_template(
         "seller_dashboard.html",
-
         seller_name=session.get(
             "seller_name",
             "Seller"
         ),
-
         seller_email=session.get(
             "seller_email",
             ""
-        )
+        ),
+        products=products
     )
 
 
@@ -2328,7 +2747,6 @@ if __name__ == "__main__":
     print("Host    : localhost")
     print("Port    : 5000")
     print("----------------------------------------")
-
 
     app.run(
         debug=True,

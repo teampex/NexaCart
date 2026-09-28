@@ -759,6 +759,21 @@ img {
     transition: .35s ease;
 }
 
+.product-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    font-size: 28px;
+}
+
+.home-product-category {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 8px;
+}
+
 .product-card:hover .product-image img {
     transform: scale(1.05);
 }

@@ -122,8 +122,6 @@
                     <i class="fa-solid fa-chevron-down account-chevron"></i>
                 </button>
 
-                
-</div>
                 <div class="account-dropdown" id="accountDropdown" hidden>
                     <div class="account-dropdown-user"><strong id="dropdownUsername">Welcome!</strong><small id="dropdownEmail"></small></div>
                     <a href="{{ url_for('profile') }}" id="myProfileBtn" class="profile-link">
@@ -541,31 +539,17 @@
 <section class="products-section" id="products">
 
     <div class="section-heading">
-
         <div>
+            <p class="section-label">JUST FOR YOU</p>
             <h2>Trending Products</h2>
         </div>
-
-        <a href="products.html">
-            View All
-            <i class="fa-solid fa-arrow-right"></i>
-        </a>
-
     </div>
 
-
     <div class="product-grid" id="productGrid">
-
-        <!-- Products are loaded by JavaScript -->
-
+        <!-- Products are rendered from the active products in the database. -->
     </div>
 
 </section>
-
-
-<!-- =====================================================
-     SERVICE STRIP
-===================================================== -->
 
 <section class="service-section">
 
@@ -579,7 +563,6 @@
         </div>
 
     </div>
-
 
     <div class="service-item">
 
@@ -784,6 +767,7 @@
 </div>
 
 
+<script id="homeProductsData" type="application/json">{{ home_products|default([], true)|tojson }}</script>
 <script src="{{ url_for('static', filename='home.js') }}"></script>
 
 </body>

@@ -1,18 +1,8 @@
 /* NexaCart home interactions. Keeps index.html/login page untouched. */
-const products = [
-    { name: "Premium Backpack", price: 3499, oldPrice: 4999, discount: "-30%", rating: 4.8, reviews: 88, badge: "sale", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=700&q=85" },
-    { name: "White Sneakers", price: 5299, oldPrice: 6999, discount: "-24%", rating: 4.7, reviews: 72, badge: "sale", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=700&q=85" },
-    { name: "Classic Watch", price: 8999, oldPrice: 11999, discount: "-26%", rating: 4.9, reviews: 54, badge: "sale", image: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=700&q=85" },
-    { name: "Leather Handbag", price: 4799, oldPrice: 6499, discount: "-26%", rating: 4.8, reviews: 46, badge: "sale", image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=700&q=85" },
-    { name: "Wireless Headphones", price: 6499, oldPrice: 8999, discount: "-28%", rating: 4.8, reviews: 91, badge: "sale", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=700&q=85" },
-    { name: "Smart Laptop", price: 54999, oldPrice: 62999, discount: "", rating: 4.9, reviews: 63, badge: "NEW", image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=700&q=85" },
-    { name: "Minimal Sneakers", price: 4199, oldPrice: 5499, discount: "-23%", rating: 4.7, reviews: 41, badge: "sale", image: "https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?auto=format&fit=crop&w=700&q=85" },
-    { name: "Urban Sunglasses", price: 1999, oldPrice: 2799, discount: "-28%", rating: 4.6, reviews: 35, badge: "sale", image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=700&q=85" },
-    { name: "Smart Watch Pro", price: 7499, oldPrice: 9999, discount: "", rating: 4.8, reviews: 88, badge: "NEW", image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=700&q=85" },
-    { name: "Everyday Hoodie", price: 2499, oldPrice: 3499, discount: "-29%", rating: 4.7, reviews: 29, badge: "sale", image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=700&q=85" },
-    { name: "Aether Earbuds", price: 3299, oldPrice: 4499, discount: "-27%", rating: 4.8, reviews: 67, badge: "sale", image: "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=700&q=85" },
-    { name: "Urban Travel Bag", price: 3999, oldPrice: 5499, discount: "-27%", rating: 4.7, reviews: 31, badge: "sale", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=700&q=85" }
-];
+const homeProductsData = document.getElementById("homeProductsData");
+const products = homeProductsData
+    ? JSON.parse(homeProductsData.textContent || "[]")
+    : [];
 
 const $ = id => document.getElementById(id);
 const productGrid = $("productGrid"), cartCountElement = $("cartCount"), wishlistCountElement = $("wishlistCount");
@@ -41,7 +31,7 @@ function renderProducts(list = products) {
     list.forEach(product => {
         const card = document.createElement("article"); card.className = "product-card"; card.dataset.product = product.name;
         const wished = wishlist.has(product.name);
-        card.innerHTML = `<div class="product-image">${product.badge ? `<span class="product-badge ${product.badge === "NEW" ? "new" : ""}">${product.badge}</span>` : ""}<button class="product-wishlist ${wished ? "active" : ""}" data-action="wishlist" data-name="${product.name}" aria-label="${wished ? "Remove from" : "Add to"} wishlist"><i class="${wished ? "fa-solid" : "fa-regular"} fa-heart"></i></button><img src="${product.image}" alt="${product.name}" loading="lazy"></div><div class="product-info"><h3 class="product-name">${product.name}</h3><div class="price-row"><span class="current-price">${formatPrice(product.price)}</span><span class="old-price">${formatPrice(product.oldPrice)}</span></div><div class="rating"><span class="rating-stars">${stars(product.rating)}</span><span>(${product.reviews})</span></div><div class="product-actions"><button class="add-cart-btn" data-action="add-cart" data-name="${product.name}"><i class="fa-solid fa-bag-shopping"></i> Add to Cart</button><button class="quick-view-btn" data-action="quick-view" data-name="${product.name}" aria-label="View ${product.name}"><i class="fa-regular fa-eye"></i></button></div></div>`;
+        card.innerHTML = `<div class="product-image">${product.badge ? `<span class="product-badge ${product.badge === "NEW" ? "new" : ""}">${product.badge}</span>` : ""}<button class="product-wishlist ${wished ? "active" : ""}" data-action="wishlist" data-name="${product.name}" aria-label="${wished ? "Remove from" : "Add to"} wishlist"><i class="${wished ? "fa-solid" : "fa-regular"} fa-heart"></i></button>${product.image ? `<img src="${product.image}" alt="${product.name}" loading="lazy">` : `<div class="product-image-placeholder" aria-label="No product image available"><i class="fa-regular fa-image" aria-hidden="true"></i></div>`}</div><div class="product-info"><h3 class="product-name">${product.name}</h3><div class="price-row"><span class="current-price">${formatPrice(product.price)}</span>${product.oldPrice ? `<span class="old-price">${formatPrice(product.oldPrice)}</span>` : ""}</div><div class="rating"><span class="rating-stars">${stars(product.rating)}</span><span>(${product.reviews})</span></div><div class="product-actions"><button class="add-cart-btn" data-action="add-cart" data-name="${product.name}"><i class="fa-solid fa-bag-shopping"></i> Add to Cart</button><button class="quick-view-btn" data-action="quick-view" data-name="${product.name}" aria-label="View ${product.name}"><i class="fa-regular fa-eye"></i></button></div></div>`;
         productGrid.appendChild(card);
     });
 }
