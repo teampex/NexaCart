@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Order confirmed | NexaCart</title>
+    <style>
+        *{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#1d2939;font:16px Arial,sans-serif}main{width:min(700px,92%);margin:8vh auto;background:#fff;border-radius:18px;padding:38px;box-shadow:0 15px 45px #182b4812;text-align:center}.check{width:72px;height:72px;display:grid;place-items:center;margin:auto;border-radius:50%;background:#e3f8eb;color:#17934f;font-size:38px}h1{margin:20px 0 8px}.muted{color:#667085;line-height:1.6}.number{display:block;margin:22px 0;padding:15px;background:#f5f7fa;border-radius:10px;font-size:19px;letter-spacing:1px}.items{margin:20px 0;text-align:left;border-top:1px solid #e8ebf0}.item{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #e8ebf0}.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:25px}a{padding:12px 18px;border-radius:9px;background:#165dca;color:#fff;text-decoration:none}a.secondary{background:#edf2fa;color:#24324c}
+    </style>
+</head>
+<body>
+<main>
+    <div class="check">✓</div>
+    <h1>Order placed successfully</h1>
+    <p class="muted">Thanks, {{ order.customer_name }}. Your order is confirmed.<br>
+        {% if order.payment_method.startswith('DEMO_') %}Demo payment succeeded. No real payment was collected.{% else %}Payment method: Cash on Delivery.{% endif %}</p>
+    <strong class="number">Order {{ order.order_number }}</strong>
+    <div class="items">
+        {% for item in order["items"] %}<div class="item"><span>{{ item.product_name }} × {{ item.quantity }}</span><strong>{{ item.fulfillment_status }}</strong></div>{% endfor %}
+    </div>
+    <p class="muted">Total: ₹{{ "{:,.2f}".format(order.total) }} · Status: {{ order.status }}</p>
+    <div class="actions"><form method="post" action="{{ url_for('track_order') }}"><input type="hidden" name="order_number" value="{{ order.order_number }}"><input type="hidden" name="phone" value="{{ order.phone }}"><button type="submit">Track this order</button></form><a class="secondary" href="{{ url_for('home') }}">Continue shopping</a></div>
+</main>
+</body>
+</html>

@@ -48,7 +48,7 @@
     <div class="top-right">
         <span>Help & Support</span>
         <span class="divider">|</span>
-        <span>Track Order</span>
+        <a href="{{ url_for('track_order') }}">Track Order</a>
     </div>
 
 </div>
@@ -80,9 +80,9 @@
                 Brands
                 <i class="fa-solid fa-chevron-down"></i>
             </a>
-            <a href="{{ url_for('admin_login') }}" class="admin-nav-link">
-    <i class="fa-solid fa-user-shield"></i>
-    Admin Login
+            <a href="{{ url_for('track_order') }}" class="orders-nav-link">
+    <i class="fa-solid fa-box"></i>
+    My Orders
 </a>
            
         </nav>
@@ -127,6 +127,7 @@
                     <a href="{{ url_for('profile') }}" id="myProfileBtn" class="profile-link">
                   <i class="fa-regular fa-id-card"></i> My Profile
                      </a>
+                    <a href="{{ url_for('track_order') }}" class="profile-link"><i class="fa-solid fa-box"></i> My Orders</a>
                     <button type="button" id="dropdownWishlistBtn"><i class="fa-regular fa-heart"></i> My Wishlist</button>
                     <button type="button" id="dropdownCartBtn"><i class="fa-solid fa-bag-shopping"></i> My Cart</button>
                        <a href="{{ url_for('login') }}" id="dropdownLoginLink">
@@ -149,7 +150,6 @@
 
 </header>
 
-
 <!-- =====================================================
      MOBILE MENU
 ===================================================== -->
@@ -167,9 +167,9 @@
     <i class="fa-regular fa-user"></i>
     Login
 </a>
-<a href="{{ url_for('admin_login') }}" class="mobile-admin-login">
-    <i class="fa-solid fa-user-shield"></i>
-    Admin Login
+<a href="{{ url_for('track_order') }}" class="mobile-orders-link">
+    <i class="fa-solid fa-box"></i>
+    My Orders
 </a>
 
 </div>
@@ -284,7 +284,7 @@
             <h2>Find your favourites</h2>
         </div>
 
-        <a href="products.html">
+        <a href="{{ url_for('products_page') }}">
             View All
             <i class="fa-solid fa-arrow-right"></i>
         </a>
@@ -768,7 +768,8 @@
 
 
 <script id="homeProductsData" type="application/json">{{ home_products|default([], true)|tojson }}</script>
-<script src="{{ url_for('static', filename='home.js') }}"></script>
+<script src="{{ url_for('static', filename='home.js', v='session-fix-1') }}"></script>
+<script src="{{ url_for('static', filename='cart-db.js') }}"></script>
 
 </body>
 </html>

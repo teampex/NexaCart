@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Seller orders | NexaCart</title>
+    <style>
+        *{box-sizing:border-box}body{margin:0;background:#f4f6fa;color:#202b3b;font:15px Arial,sans-serif}header{display:flex;justify-content:space-between;padding:18px 6%;background:#fff;border-bottom:1px solid #e5e8ee}header a{color:#263b5a;text-decoration:none}main{width:min(1000px,92%);margin:35px auto}article{background:#fff;border:1px solid #e2e7ee;border-radius:13px;padding:20px;margin:14px 0}.head{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.muted{color:#6c7686;font-size:13px;line-height:1.6}.badge{color:#135ebc;font-weight:700}.delivery{padding:12px;background:#f6f8fb;border-radius:9px;margin:14px 0}form{display:flex;gap:8px}select,button{padding:10px;border:1px solid #cbd3df;border-radius:7px}button{background:#1764cb;color:white;border:0;cursor:pointer}
+    </style>
+</head>
+<body>
+<header><a href="{{ url_for('seller_dashboard') }}">← Seller dashboard</a><a href="{{ url_for('seller_logout') }}">Log out</a></header>
+<main><h1>Orders for your products</h1>
+    {% if items %}
+        {% for item in items %}
+        <article>
+            <div class="head"><div><strong>{{ item.product_name }} × {{ item.quantity }}</strong><div class="muted">Order {{ item.order_number }} · {{ item.created_at.strftime('%d %b %Y, %I:%M %p') }}</div></div><span class="badge">{{ item.fulfillment_status }}</span></div>
+            <div class="delivery"><strong>Ship to {{ item.customer_name }}</strong><div>{{ item.address }}, {{ item.city }}, {{ item.state }} {{ item.pincode }}</div><div>Phone: {{ item.phone }}</div></div>
+            <div class="head"><span class="muted">{{ item.payment_method }} · {{ item.payment_status }}</span>
+                {% if item.fulfillment_status == 'Placed' %}<form method="post" action="{{ url_for('seller_update_order_status', item_id=item.item_id) }}"><select name="status"><option>Processing</option></select><button>Update</button></form>
+                {% elif item.fulfillment_status == 'Processing' %}<form method="post" action="{{ url_for('seller_update_order_status', item_id=item.item_id) }}"><select name="status"><option>Shipped</option></select><button>Update</button></form>
+                {% elif item.fulfillment_status == 'Shipped' %}<form method="post" action="{{ url_for('seller_update_order_status', item_id=item.item_id) }}"><select name="status"><option>Delivered</option></select><button>Update</button></form>{% endif %}
+            </div>
+        </article>
+        {% endfor %}
+    {% else %}<article>No orders for your products yet.</article>{% endif %}
+</main>
+</body>
+</html>

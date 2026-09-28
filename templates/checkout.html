@@ -1,88 +1,73 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>NexaCart | Checkout</title>
-    <link rel="stylesheet" href="checkout.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checkout | NexaCart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='checkout.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        .payment-option { display:flex; align-items:center; gap:12px; margin:10px 0; padding:14px; border:1px solid #d8dce0; border-radius:11px; cursor:pointer; }
+        .payment-option:has(input:checked) { border-color:#1265d8; background:#f4f7ff; }
+        .payment-option span { display:block; flex:1; }.payment-option small { display:block; color:#69727d; margin-top:4px; }
+        .demo-note { color:#875700; font-size:12px; }
+        .place-order { width: 100%; min-height: 52px; border: 0; border-radius: 10px; background: #1265d8; color: white; font-size: 16px; font-weight: 800; cursor: pointer; }
+        .checkout-item img { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; }
+        .checkout-item { display: flex; align-items: center; gap: 12px; margin: 12px 0; }
+        .checkout-item-info { flex: 1; }
+        .checkout-item h4, .checkout-item p { margin: 3px 0; }
+        .checkout-error { color: #a40000; padding: 16px; }
+        @media(max-width: 850px) { main { grid-template-columns: 1fr; } }
+    </style>
 </head>
-
 <body>
-    <header><a class="logo" href="home.html">Nexa<span>Cart.</span></a><span><i class="fa-solid fa-lock"></i> Secure
-            Checkout</span></header>
+    <header>
+        <a class="logo" href="{{ url_for('home') }}">Nexa<span>Cart.</span></a>
+        <span><i class="fa-solid fa-box"></i> Secure checkout</span>
+    </header>
     <main>
         <section class="left">
             <div class="title">
-                <div><small>NEXACART CHECKOUT</small>
-                    <h1>Complete your order</h1>
-                </div><a href="home.html">← Continue shopping</a>
+                <div><small>NEXACART CHECKOUT</small><h1>Place your order</h1></div>
+                <a href="{{ url_for('home') }}">← Continue shopping</a>
             </div>
             <form id="checkoutForm">
                 <section class="card">
-                    <h2><b>1</b> Contact</h2>
-                    <p>We'll use this for order updates.</p>
-                    <input id="email" placeholder="Email or mobile phone number" required>
-                </section>
-                <section class="card">
-                    <h2><b>2</b> Delivery</h2>
+                    <h2><b>1</b> Contact and delivery</h2>
                     <p>Where should we deliver your order?</p>
-                    <select id="country">
-                        <option>India</option>
-                    </select>
-                    <div class="grid2"><input id="firstName" placeholder="First name" required><input id="lastName"
-                            placeholder="Last name" required></div>
-                    <input id="address" placeholder="Address" required><input id="apartment"
-                        placeholder="Apartment, suite, etc. (optional)">
-                    <div class="grid3"><input id="city" placeholder="City" required><select id="state" required>
-                           <input type="text" name="state" placeholder="state">
-                        </select><input id="pin" maxlength="6" inputmode="numeric" placeholder="PIN code" required>
+                    <input id="customerName" value="{{ customer.name }}" placeholder="Full name" maxlength="160" required>
+                    <input id="email" type="email" value="{{ customer.email }}" placeholder="Email address" maxlength="255" required>
+                    <input id="phone" type="tel" value="{{ customer.phone }}" placeholder="10-digit mobile number" maxlength="10" inputmode="numeric" required>
+                    <input id="address" placeholder="House number, street, area" maxlength="500" required>
+                    <div class="grid3">
+                        <input id="city" placeholder="City" maxlength="120" required>
+                        <input id="state" placeholder="State" maxlength="120" required>
+                        <input id="pincode" placeholder="PIN code" maxlength="6" inputmode="numeric" required>
                     </div>
-                    <input id="phone" maxlength="10" inputmode="numeric" placeholder="Phone" required>
-                    <label class="check"><input id="saveInfo" type="checkbox" checked> Save this information for next
-                        time</label>
                 </section>
                 <section class="card">
-                    <h2><b>3</b> Shipping method</h2><label class="ship"><input type="radio" checked>
-                        <span><strong>Standard Delivery</strong><small>3–7 business
-                                days</small></span><em>FREE</em></label>
+                    <h2><b>2</b> Payment</h2>
+                    <label class="payment-option"><input type="radio" name="payment" value="COD" checked><span><strong>Cash on Delivery</strong><small>Pay when your order arrives.</small></span></label>
+                    <label class="payment-option"><input type="radio" name="payment" value="DEMO_UPI"><span><strong>UPI</strong><small>Demo checkout</small></span><i class="fa-solid fa-mobile-screen"></i></label>
+                    <label class="payment-option"><input type="radio" name="payment" value="DEMO_CARD"><span><strong>Card</strong><small>Demo checkout</small></span><i class="fa-regular fa-credit-card"></i></label>
+                    <p class="demo-note">UPI and card are demo options only. No real payment is collected.</p>
                 </section>
-                <section class="card">
-                    <h2><b>4</b> Payment</h2>
-                    <p>All transactions are secure and encrypted.</p>
-                    <label class="pay active" data-method="razorpay"><input name="payment" type="radio" value="razorpay"
-                            checked><span><strong>Razorpay Secure</strong><small>UPI, Card, Net Banking,
-                                Wallets</small></span><i>UPI VISA MC</i></label>
-                    <div class="note" id="rzNote">🔒 You'll be redirected to Razorpay to complete your purchase.</div>
-                    <label class="pay" data-method="cod"><input name="payment" type="radio"
-                            value="cod"><span><strong>Cash on Delivery (COD)</strong><small>Pay when your order
-                                arrives</small></span></label>
-                    <button class="paybtn" id="payBtn">Pay now →</button>
-                    <div class="security">🔒 Secure checkout</div>
-                </section>
+                <button class="place-order" id="placeOrder" type="submit">Place Order</button>
+                <div id="checkoutMessage" class="checkout-error" role="alert" hidden></div>
             </form>
         </section>
         <aside>
-            <div class="sticky"><small>YOUR BAG</small>
+            <div class="sticky">
+                <small>YOUR BAG</small>
                 <h2>Order summary <span id="count">(0)</span></h2>
-                <div id="items"></div>
+                <div id="checkoutItems"></div>
                 <div class="line"><span>Subtotal</span><strong id="subtotal">₹0</strong></div>
-                <div class="line"><span>Shipping</span><strong>FREE</strong></div>
+                <div class="line"><span>Delivery</span><strong id="shipping">₹0</strong></div>
                 <div class="total"><span>Total</span><strong id="total">₹0</strong></div>
-                <div class="trust">🚚 Fast delivery<br>🛡 Secure checkout<br>↩ Easy returns</div>
             </div>
         </aside>
     </main>
-    <div id="success" class="modal" hidden>
-        <div class="success">
-            <div class="ok">✓</div><small>ORDER CONFIRMED</small>
-            <h2>Thank you for your order!</h2>
-            <p>Your order has been placed successfully.</p><strong id="orderNo"></strong><button
-                onclick="location.href='home.html'">Continue Shopping</button>
-        </div>
-    </div>
-    <script src="checkout.js"></script>
+    <a href="{{ url_for('track_order') }}" style="display:block;text-align:center;margin:0 0 24px;color:#1265d8">Track an order</a>
+    <script src="{{ url_for('static', filename='checkout.js') }}" defer></script>
 </body>
-
 </html>

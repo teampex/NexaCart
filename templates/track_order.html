@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Track order | NexaCart</title>
+    <style>
+        *{box-sizing:border-box}body{margin:0;background:#f3f6fb;color:#1d2939;font:15px Arial,sans-serif}header{padding:18px 6%;background:white}header a{color:#1e3554;text-decoration:none;font-weight:700}main{width:min(760px,92%);margin:38px auto}.panel{background:white;padding:25px;border-radius:14px;box-shadow:0 8px 28px #1d293910;margin-bottom:18px}h1{margin-top:0}label{display:block;margin:15px 0 6px}input{width:100%;padding:13px;border:1px solid #d2d8e2;border-radius:8px;font-size:16px}button{padding:13px 18px;border:0;border-radius:8px;background:#1764cb;color:white;font-weight:700;cursor:pointer;margin-top:14px}.error{color:#a32222}.status{font-weight:700;color:#1764cb}.order-item{padding:13px 0;border-bottom:1px solid #e9edf3}.step{display:inline-block;margin:12px 6px 0 0;padding:8px 11px;border-radius:30px;background:#edf0f5;color:#718096;font-size:12px}.step.active{background:#e5f5eb;color:#177346}
+    </style>
+</head>
+<body>
+<header><a href="{{ url_for('home') }}">NexaCart</a></header>
+<main>
+    <section class="panel">
+        <h1>Track your order</h1>
+        <form method="post">
+            <label for="order_number">Order number</label><input id="order_number" name="order_number" placeholder="NC…" required>
+            <label for="phone">Phone number used at checkout</label><input id="phone" name="phone" inputmode="numeric" maxlength="10" required>
+            <button type="submit">Find order</button>
+        </form>
+        {% if error %}<p class="error">{{ error }}</p>{% endif %}
+    </section>
+    {% if order %}
+    <section class="panel">
+        <h2>Order {{ order.order_number }}</h2>
+        <p>Status: <span class="status">{{ order.status }}</span> · Total ₹{{ "{:,.2f}".format(order.total) }}</p>
+        <div>
+            {% for status in ['Placed', 'Processing', 'Shipped', 'Delivered'] %}
+                <span class="step {% if order.status == status or (status == 'Placed' and order.status != 'Cancelled') or (status == 'Processing' and order.status in ['Shipped', 'Delivered']) or (status == 'Shipped' and order.status == 'Delivered') %}active{% endif %}">{{ status }}</span>
+            {% endfor %}
+        </div>
+        {% for item in order["items"] %}<div class="order-item"><strong>{{ item.product_name }} × {{ item.quantity }}</strong><br><span>Status: {{ item.fulfillment_status }}</span></div>{% endfor %}
+        <p>Delivering to {{ order.address }}, {{ order.city }}, {{ order.state }} {{ order.pincode }}</p>
+    </section>
+    {% endif %}
+</main>
+</body>
+</html>

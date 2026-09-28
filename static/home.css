@@ -759,6 +759,17 @@ img {
     transition: .35s ease;
 }
 
+.top-right a {
+    color: inherit;
+    text-decoration: none;
+}
+.top-right a:hover {
+    text-decoration: underline;
+}
+
+
+.product-image > a { display: block; width: 100%; height: 100%; }
+
 .product-image-placeholder {
     width: 100%;
     height: 100%;
@@ -846,6 +857,8 @@ img {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.product-name a { color: inherit; text-decoration: none; }
 
 .price-row {
     margin-top: 5px;
@@ -1661,10 +1674,10 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
  .panel-footer { padding:15px; }
 }
 /* ================================
-   ADMIN LOGIN NAV LINK
+   CUSTOMER ORDERS NAV LINKS
 ================================ */
 
-.admin-nav-link {
+.orders-nav-link {
     display: inline-flex;
     align-items: center;
     gap: 7px;
@@ -1674,14 +1687,15 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
     transition: 0.25s ease;
 }
 
-.admin-nav-link i {
+.orders-nav-link i {
     font-size: 14px;
 }
 
-.admin-nav-link:hover {
+.orders-nav-link:hover {
     color: #4c1d95;
     transform: translateY(-1px);
-}.mobile-admin-login {
+}
+.mobile-orders-link {
     display: flex;
     align-items: center;
     gap: 10px;

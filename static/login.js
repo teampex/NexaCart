@@ -147,7 +147,7 @@ if (loginForm) {
 
                 const response =
                     await fetch(
-                        "/login",
+                        `${window.location.pathname}${window.location.search}`,
                         {
                             method: "POST",
 
@@ -256,7 +256,7 @@ if (loginForm) {
                     else {
 
                         window.location.href =
-                            "/";
+                            result.next_url || "/";
 
                     }
 

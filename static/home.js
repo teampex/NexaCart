@@ -7,12 +7,10 @@ const products = homeProductsData
 const $ = id => document.getElementById(id);
 const productGrid = $("productGrid"), cartCountElement = $("cartCount"), wishlistCountElement = $("wishlistCount");
 const toast = $("toast"), toastMessage = $("toastMessage");
-const CART_KEY = "nexacart_cart_v1", WISH_KEY = "nexacart_wishlist_v1";
-let cart = readJSON(CART_KEY, {}), wishlist = new Set(readJSON(WISH_KEY, []));
+let cart = {}, wishlist = new Set();
 let toastTimer;
 
-function readJSON(key, fallback) { try { const value = JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch { return fallback; } }
-function persist() { try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); localStorage.setItem(WISH_KEY, JSON.stringify([...wishlist])); } catch { /* Storage may be disabled; current session still works. */ } }
+function persist() { /* Cart and wishlist are stored in MySQL. */ }
 function formatPrice(price) { return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(price); }
 function productByName(name) { return products.find(p => p.name === name); }
 function cartQuantity() { return Object.values(cart).reduce((sum, qty) => sum + Number(qty || 0), 0); }
@@ -31,7 +29,7 @@ function renderProducts(list = products) {
     list.forEach(product => {
         const card = document.createElement("article"); card.className = "product-card"; card.dataset.product = product.name;
         const wished = wishlist.has(product.name);
-        card.innerHTML = `<div class="product-image">${product.badge ? `<span class="product-badge ${product.badge === "NEW" ? "new" : ""}">${product.badge}</span>` : ""}<button class="product-wishlist ${wished ? "active" : ""}" data-action="wishlist" data-name="${product.name}" aria-label="${wished ? "Remove from" : "Add to"} wishlist"><i class="${wished ? "fa-solid" : "fa-regular"} fa-heart"></i></button>${product.image ? `<img src="${product.image}" alt="${product.name}" loading="lazy">` : `<div class="product-image-placeholder" aria-label="No product image available"><i class="fa-regular fa-image" aria-hidden="true"></i></div>`}</div><div class="product-info"><h3 class="product-name">${product.name}</h3><div class="price-row"><span class="current-price">${formatPrice(product.price)}</span>${product.oldPrice ? `<span class="old-price">${formatPrice(product.oldPrice)}</span>` : ""}</div><div class="rating"><span class="rating-stars">${stars(product.rating)}</span><span>(${product.reviews})</span></div><div class="product-actions"><button class="add-cart-btn" data-action="add-cart" data-name="${product.name}"><i class="fa-solid fa-bag-shopping"></i> Add to Cart</button><button class="quick-view-btn" data-action="quick-view" data-name="${product.name}" aria-label="View ${product.name}"><i class="fa-regular fa-eye"></i></button></div></div>`;
+        card.innerHTML = `<div class="product-image">${product.badge ? `<span class="product-badge ${product.badge === "NEW" ? "new" : ""}">${product.badge}</span>` : ""}<button class="product-wishlist ${wished ? "active" : ""}" data-action="wishlist" data-name="${product.name}" aria-label="${wished ? "Remove from" : "Add to"} wishlist"><i class="${wished ? "fa-solid" : "fa-regular"} fa-heart"></i></button><a href="${product.detailUrl}" aria-label="View ${product.name}">${product.image ? `<img src="${product.image}" alt="${product.name}" loading="lazy">` : `<div class="product-image-placeholder" aria-label="No product image available"><i class="fa-regular fa-image" aria-hidden="true"></i></div>`}</a></div><div class="product-info"><h3 class="product-name"><a href="${product.detailUrl}">${product.name}</a></h3><div class="price-row"><span class="current-price">${formatPrice(product.price)}</span>${product.oldPrice ? `<span class="old-price">${formatPrice(product.oldPrice)}</span>` : ""}</div><div class="rating"><span class="rating-stars">${stars(product.rating)}</span><span>(${product.reviews})</span></div><div class="product-actions"><button class="add-cart-btn" data-action="add-cart" data-name="${product.name}"><i class="fa-solid fa-bag-shopping"></i> Add to Cart</button><button class="quick-view-btn" data-action="quick-view" data-name="${product.name}" aria-label="View ${product.name}"><i class="fa-regular fa-eye"></i></button></div></div>`;
         productGrid.appendChild(card);
     });
 }
@@ -76,33 +74,21 @@ function renderWishlist() {
     items.forEach(p => { const row = document.createElement("div"); row.className = "wishlist-item"; row.innerHTML = `<img src="${p.image}" alt="${p.name}"><div><h3>${p.name}</h3><strong class="cart-item-price">${formatPrice(p.price)}</strong><div class="wishlist-item-actions"><button data-action="wish-add-cart" data-name="${p.name}">Add to Cart</button><button class="remove-wish" data-action="remove-wish" data-name="${p.name}">Remove</button></div></div>`; container.appendChild(row); }); updateCounts();
 }
 
-/* Account detection supports common login form storage conventions without changing login/index.html. */
-function getLoggedInUser() {
-    const stores = [localStorage, sessionStorage];
-    const keys = ["loggedInUser", "currentUser", "userData", "user", "nexacart_user", "authUser", "loginUser", "loggedUser"];
-    for (const store of stores) for (const key of keys) {
-        try {
-            const raw = store.getItem(key); if (!raw) continue; let data; try { data = JSON.parse(raw); } catch { data = raw; }
-            if (data && typeof data === "object") {
-                if (data.user && typeof data.user === "object") data = data.user;
-                if (data.isLoggedIn === false || data.loggedIn === false) continue;
-                const name = data.name || data.username || data.fullName || data.displayName || data.firstName || data.email;
-                if (name) return { name: String(name), email: String(data.email || data.userEmail || "") };
-            } else if (typeof data === "string" && data.trim() && !["true", "false", "1"].includes(data.trim().toLowerCase()) && /name|user|email/i.test(key)) return { name: data.trim(), email: "" };
-        } catch { }
-    }
-    // Some projects store simple username/email values separately.
-    for (const store of stores) for (const key of ["username", "userName", "name", "email"]) { try { const val = store.getItem(key); if (val && val.trim()) return { name: val.trim(), email: key.toLowerCase() === "email" ? val.trim() : "" }; } catch { } }
-    return null;
-}
-function updateAccountUI() {
-    const user = getLoggedInUser(), label = $("accountLabel"), welcome = $("dropdownUsername"), email = $("dropdownEmail"), loginLink = $("dropdownLoginLink"), logout = $("logoutBtn"), mobileLogin = $("mobileLoginLink");
+/* Use the Flask session as the source of truth for login state. */
+async function updateAccountUI() {
+    let user = null;
+    try {
+        const response = await fetch("/check-session", { credentials: "same-origin", cache: "no-store" });
+        const currentSession = await response.json();
+        if (currentSession.logged_in) user = { name: currentSession.username || "Customer", email: currentSession.email || "" };
+    } catch { }
+    const label = $("accountLabel"), welcome = $("dropdownUsername"), email = $("dropdownEmail"), loginLink = $("dropdownLoginLink"), logout = $("logoutBtn"), mobileLogin = $("mobileLoginLink");
     if (label) label.textContent = user ? user.name.split(" ")[0] : "Login";
     if (welcome) welcome.textContent = user ? `Hi, ${user.name}` : "Welcome, Guest";
     if (email) email.textContent = user?.email || (user ? "Signed in" : "Sign in to your account");
     if (loginLink) loginLink.hidden = !!user;
     if (logout) logout.hidden = !user;
-    if (mobileLogin) { mobileLogin.innerHTML = user ? `<i class="fa-regular fa-user"></i> ${user.name}` : `<i class="fa-regular fa-user"></i> Login`; }
+    if (mobileLogin) mobileLogin.hidden = !!user;
     if ($("profileName")) $("profileName").textContent = user?.name || "Guest";
     if ($("profileEmail")) $("profileEmail").textContent = user?.email || (user ? "Signed in to NexaCart" : "You are browsing as a guest");
     if ($("profileStatus")) $("profileStatus").textContent = user ? "Logged in" : "Guest";
@@ -136,7 +122,7 @@ $("checkoutBtn")?.addEventListener("click", () => {
         return;
     }
 
-    window.location.href = "checkout.html";
+    window.location.href = "/checkout";
 });
 
 $("accountBtn")?.addEventListener("click", () => { const dd = $("accountDropdown"), open = dd.hidden; dd.hidden = !open; $("accountBtn").setAttribute("aria-expanded", String(open)); });
@@ -147,11 +133,7 @@ $("dropdownCartBtn")?.addEventListener("click", () => { renderCart(); openPanel(
 document.querySelectorAll("[data-close-profile]").forEach(b => b.addEventListener("click", closeProfile));
 $("profileModal")?.addEventListener("click", e => { if (e.target === $("profileModal")) closeProfile(); });
 $("logoutBtn")?.addEventListener("click", () => {
-    // Remove only likely authentication/session keys; preserve cart, wishlist and unrelated app data.
-    const authKeys = ["loggedInUser", "currentUser", "userData", "user", "nexacart_user", "authUser", "loginUser", "loggedUser", "username", "userName", "isLoggedIn", "loggedIn"];
-    [localStorage, sessionStorage].forEach(store => authKeys.forEach(key => { try { store.removeItem(key); } catch { } }));
-    showToast("Logged out successfully"); updateAccountUI(); $("accountDropdown").hidden = true;
-    setTimeout(() => { window.location.href = "home.html"; }, 450);
+    window.location.href = "/logout";
 });
 
 $("searchInput")?.addEventListener("input", e => renderProducts(products.filter(p => p.name.toLowerCase().includes(e.target.value.trim().toLowerCase()))));
@@ -168,74 +150,3 @@ const revealObserver = new MutationObserver(observeReveal); if (productGrid) rev
 
 renderProducts(); renderCart(); renderWishlist(); updateCounts(); updateAccountUI(); observeReveal();
 console.log("NexaCart homepage loaded successfully 🚀");
-const savedUsername = localStorage.getItem("nexacartUsername");
-
-const loginButton = document.querySelector(".login-btn");
-const userMenu = document.querySelector(".user-menu");
-const usernameDisplay = document.getElementById("accountLabel");
-const dropdownUsername = document.getElementById("dropdownUsername");
-
-if (savedUsername) {
-
-    // Login button hide
-    if (loginButton) {
-        loginButton.style.display = "flex";
-    }
-
-    // Logged-in user show
-    if (userMenu) {
-        userMenu.style.display = "block";
-    }
-
-    // Username show
-    if (usernameDisplay) {
-        usernameDisplay.textContent = savedUsername;
-    }
-
-    if (dropdownUsername) {
-        dropdownUsername.textContent = savedUsername;
-    }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    const username = localStorage.getItem("nexacartUsername");
-    if (username) {
-        document.getElementById("accountLabel").textContent = username;
-        document.getElementById("dropdownUsername").textContent = username;
-
-        document.getElementById("dropdownLoginLink").hidden = true;
-        document.getElementById("logoutBtn").hidden = false;
-    }
-
-    document.getElementById("logoutBtn").onclick = () => {
-        localStorage.removeItem("nexacartUsername");
-        location.reload();
-    };
-});
-
-document.addEventListener("click", function (e) {
-    if (e.target.closest(".dropdown-item")) {
-        const item = e.target.closest(".dropdown-item");
-
-        if (item.textContent.includes("My Profile")) {
-            window.location.href = "profile.html";
-        }
-    }
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const myProfileBtn =
-        document.getElementById("myProfileBtn");
-
-    if (myProfileBtn) {
-
-        myProfileBtn.addEventListener("click", function () {
-
-            window.location.href = "profile.html";
-
-        });
-
-    }
-
-});
