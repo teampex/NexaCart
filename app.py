@@ -1,12 +1,4 @@
-from flask import (
-    Flask,
-    render_template,
-    request,
-    jsonify,
-    session,
-    redirect,
-    url_for,
-    abort
+from flask import ( Flask,render_template,request,jsonify,session,redirect,url_for,abort
 )
 
 import mysql.connector
@@ -16,12 +8,9 @@ import os
 import re
 import hmac
 import hashlib
+import importlib
 import secrets
 import smtplib
-import base64
-import urllib.error
-import urllib.parse
-import urllib.request
 import time
 from email.message import EmailMessage
 from uuid import uuid4
@@ -34,12 +23,16 @@ from werkzeug.security import (
 
 from werkzeug.utils import secure_filename
 
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    pass
 
+# =========================================================
+# PROJECT MAP (Roman Hindi)
+#
+# 1. Database: get_db_connection() MySQL "nexacart" se connect karta hai.
+# 2. Customer: home, products, cart, checkout, login, register aur orders.
+# 3. AI: get_home_recommendations() saved .pkl model se suggestions laata hai.
+# 4. Admin: users/sellers/products ko manage karta hai.
+# 5. Seller: product add karta hai aur received orders ka status badalta hai.
+# =========================================================
 
 # =========================================================
 # FLASK APP
@@ -50,6 +43,22 @@ app = Flask(__name__)
 app.secret_key = "nexacart-secret-key"
 app.permanent_session_lifetime = timedelta(days=30)
 LOGIN_OTP_STORE = {}
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # Keep local .env configuration working even if python-dotenv is absent.
+    env_path = os.path.join(os.path.dirname(__file__), ".env")
+    if os.path.isfile(env_path):
+        with open(env_path, encoding="utf-8") as env_file:
+            for line in env_file:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                key, value = line.split("=", 1)
+                value = value.strip().strip('"').strip("'")
+                os.environ.setdefault(key.strip(), value)
 
 
 # =========================================================
@@ -170,6 +179,7 @@ def product_image_url(image_path):
 # =========================================================
 
 def get_db_connection():
+    # Har database query se pehle isi function se MySQL connection banta hai.
 
     return mysql.connector.connect(
         host="localhost",
@@ -185,6 +195,7 @@ def get_db_connection():
 
 @app.context_processor
 def inject_user():
+    # Ye data har HTML template ko automatically milta hai.
 
     return {
         "logged_in": "user_id" in session,
@@ -193,7 +204,8 @@ def inject_user():
 
 
 def require_customer_login(next_url=None, json_response=False):
-    """Remember the requested local URL and send unauthenticated customers to login."""
+    # Login na hone par intended page save hota hai. Login ke baad user
+    # Home ki jagah isi saved page, jaise /checkout ya /orders, par jaata hai.
     if session.get("user_id"):
         return None
     session["next_after_login"] = next_url or request.full_path.rstrip("?")
@@ -204,15 +216,11 @@ def require_customer_login(next_url=None, json_response=False):
 
 
 def get_cart_key():
-    # Keep using a cart token created by an earlier app version, if present.
+    # Guest/customer cart ko identify karne ke liye browser session mein unique key.
     session.permanent = True
     if not session.get("cart_key"):
         session["cart_key"] = session.get("cart_token") or uuid4().hex
     return session["cart_key"]
-
-
-def normalize_phone(phone):
-    return re.sub(r"\D", "", str(phone or ""))[-10:]
 
 
 def masked_email(email):
@@ -220,30 +228,6 @@ def masked_email(email):
     if not separator:
         return "your registered email"
     return f"{local[:1]}***@{domain}"
-
-
-def send_login_sms(phone, code):
-    account_sid = os.getenv("TWILIO_ACCOUNT_SID", "").strip()
-    auth_token = os.getenv("TWILIO_AUTH_TOKEN", "").strip()
-    from_number = os.getenv("TWILIO_FROM_NUMBER", "").strip()
-    if not all((account_sid, auth_token, from_number)):
-        raise RuntimeError("SMS delivery is not configured")
-
-    to_number = phone if phone.startswith("+") else f"+91{normalize_phone(phone)}"
-    endpoint = f"https://api.twilio.com/2010-04-01/Accounts/{account_sid}/Messages.json"
-    payload = urllib.parse.urlencode({
-        "To": to_number,
-        "From": from_number,
-        "Body": f"Your NexaCart login code is {code}. It expires in 5 minutes.",
-    }).encode()
-    credentials = base64.b64encode(f"{account_sid}:{auth_token}".encode()).decode()
-    req = urllib.request.Request(endpoint, data=payload, headers={
-        "Authorization": f"Basic {credentials}",
-        "Content-Type": "application/x-www-form-urlencoded",
-    })
-    with urllib.request.urlopen(req, timeout=12) as response:
-        if response.status >= 300:
-            raise RuntimeError(f"SMS provider returned HTTP {response.status}")
 
 
 def send_login_email(email, code):
@@ -273,107 +257,61 @@ def send_login_email(email, code):
             server.send_message(message)
 
 
-@app.route("/api/send-login-otp", methods=["POST"])
-def send_login_otp():
-    data = request.get_json(silent=True) or {}
-    entered_phone = re.sub(r"\s+", "", str(data.get("phone", "")))
-    normalized = normalize_phone(entered_phone)
-    if len(normalized) != 10:
-        return jsonify({"success": False, "message": "Enter a valid 10-digit phone number."}), 400
+def get_home_recommendations(products, browsing_categories=None, purchase_history=None):
+    # AI section: saved .pkl model load hota hai; ismein training nahi hoti.
+    # Model browsing categories aur prior orders ke basis par product names deta hai.
+    if not products:
+        return []
 
-    last_sent = session.get("otp_sent_at", 0)
-    now = int(time.time())
-    if now - int(last_sent) < 60:
-        return jsonify({"success": False, "message": "Please wait before requesting another code."}), 429
-
-    conn = cursor = None
     try:
-        for stale_ref, stale_record in list(LOGIN_OTP_STORE.items()):
-            if now > stale_record.get("expires_at", 0):
-                LOGIN_OTP_STORE.pop(stale_ref, None)
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute("""SELECT id, username, email, phone, status FROM users
-                          WHERE RIGHT(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(phone, '+', ''), ' ', ''), '-', ''), '(', ''), ')', ''), 10) = %s""",
-                       (normalized,))
-        user = next((row for row in cursor.fetchall() if normalize_phone(row.get("phone")) == normalized), None)
-        if not user or user.get("status") == "blocked":
-            return jsonify({"success": False, "message": "No active account was found for this phone number."}), 404
+        recommender = importlib.import_module("models.recommendation_model")
+        results = recommender.recommend_for_website(
+            customer_id=session.get("user_id", "NEW_CUSTOMER"),
+            browsing_categories=browsing_categories or [],
+            purchase_history=purchase_history or [],
+            n=5,
+        )
+    except Exception:
+        # AI is optional: a missing dependency/model must not break the storefront.
+        app.logger.exception("Product recommendations are unavailable")
+        return []
 
-        code = f"{secrets.randbelow(1_000_000):06d}"
-        secret = secrets.token_hex(16)
-        code_hash = hmac.new(secret.encode(), code.encode(), hashlib.sha256).hexdigest()
-        delivery = None
-        try:
-            send_login_sms(user["phone"], code)
-            delivery = {"method": "SMS", "destination": f"ending in {normalized[-4:]}"}
-        except Exception:
-            app.logger.exception("OTP SMS delivery failed; trying registered email fallback")
-            try:
-                send_login_email(user["email"], code)
-                delivery = {"method": "email", "destination": masked_email(user["email"])}
-            except Exception as email_error:
-                app.logger.exception("OTP email fallback failed: %s", email_error)
-                return jsonify({"success": False,
-                                "message": "SMS delivery failed and email fallback is unavailable. Check TWILIO_* and SMTP_* settings in .env; no code was sent."}), 503
+    def normalized_name(value):
+        # "Smart Watch", "smart-watch" aur "smartwatch" ko ek jaisa banata hai.
+        return re.sub(r"[^a-z0-9]", "", str(value or "").casefold())
 
-        otp_ref = secrets.token_urlsafe(24)
-        # Keep the verifier server-side; Flask's default cookie session is signed, not encrypted.
-        LOGIN_OTP_STORE[otp_ref] = {
-            "user_id": user["id"], "username": user["username"], "email": user["email"],
-            "phone": user["phone"], "hash": code_hash, "secret": secret,
-            "expires_at": now + 300, "attempts": 0,
-        }
-        session["login_otp_ref"] = otp_ref
-        session["otp_sent_at"] = now
-        return jsonify({"success": True, "delivery": delivery, "expires_in": 300}), 200
-    except Error as error:
-        app.logger.exception("Could not find user for OTP login: %s", error)
-        return jsonify({"success": False, "message": "Could not look up your account. Please try again."}), 500
-    finally:
-        if cursor:
-            cursor.close()
-        if conn:
-            try:
-                if conn.is_connected():
-                    conn.close()
-            except Exception:
-                pass
+    products_by_name = {
+        normalized_name(item["name"]): item
+        for item in products
+    }
 
+    def matching_catalog_product(model_product_name):
+        # Model ke product name ko seller ke live MySQL product se match karta hai.
+        model_name = normalized_name(model_product_name)
+        if not model_name:
+            return None
 
-@app.route("/api/verify-login-otp", methods=["POST"])
-def verify_login_otp():
-    data = request.get_json(silent=True) or {}
-    submitted = str(data.get("otp", "")).strip()
-    otp_ref = session.get("login_otp_ref")
-    record = LOGIN_OTP_STORE.get(otp_ref)
-    now = int(time.time())
-    if not re.fullmatch(r"\d{6}", submitted) or not record:
-        return jsonify({"success": False, "message": "Request a new code and enter all 6 digits."}), 400
-    if now > int(record.get("expires_at", 0)):
-        LOGIN_OTP_STORE.pop(otp_ref, None)
-        session.pop("login_otp_ref", None)
-        return jsonify({"success": False, "message": "That code has expired. Please request another one."}), 400
-    if int(record.get("attempts", 0)) >= 5:
-        LOGIN_OTP_STORE.pop(otp_ref, None)
-        session.pop("login_otp_ref", None)
-        return jsonify({"success": False, "message": "Too many incorrect attempts. Request a new code."}), 429
+        exact_match = products_by_name.get(model_name)
+        if exact_match:
+            return exact_match
 
-    expected = record["hash"]
-    actual = hmac.new(record["secret"].encode(), submitted.encode(), hashlib.sha256).hexdigest()
-    if not hmac.compare_digest(expected, actual):
-        record["attempts"] = int(record.get("attempts", 0)) + 1
-        LOGIN_OTP_STORE[otp_ref] = record
-        return jsonify({"success": False, "message": "Invalid code. Please try again."}), 401
+        # The trained dataset calls some items "Smartphone" and "Smartwatch",
+        # while seller listings may use the shorter names "phone" and "watch".
+        for catalog_name, catalog_product in products_by_name.items():
+            if len(catalog_name) >= 3 and (
+                catalog_name in model_name or model_name in catalog_name
+            ):
+                return catalog_product
+        return None
 
-    session["user_id"] = record["user_id"]
-    session["username"] = record["username"]
-    session["email"] = record["email"]
-    LOGIN_OTP_STORE.pop(otp_ref, None)
-    session.pop("login_otp_ref", None)
-    session.pop("otp_sent_at", None)
-    return jsonify({"success": True, "username": record["username"],
-                    "next_url": session.pop("next_after_login", None) or url_for("home")}), 200
+    recommendations = []
+    seen = set()
+    for result in results:
+        product = matching_catalog_product(result.get("product"))
+        if product and product["id"] not in seen:
+            recommendations.append(product)
+            seen.add(product["id"])
+    return recommendations
 
 
 # =========================================================
@@ -386,11 +324,15 @@ def verify_login_otp():
 
 @app.route("/")
 def home():
+    # Home page: active products + AI recommendations template ko bhejta hai.
 
     conn = None
     cursor = None
     products = []
     home_products = []
+    recommended_products = []
+    browsing_categories = session.get("browsing_categories", [])
+    purchase_history = []
 
     try:
 
@@ -435,6 +377,23 @@ def home():
             for product in products
         ]
 
+        if session.get("user_id"):
+            # Logged-in user ke old orders AI model ko personal suggestions ke liye milte hain.
+            try:
+                cursor.execute(
+                    """SELECT oi.product_name FROM order_items oi
+                       JOIN orders o ON o.id = oi.order_id
+                       WHERE o.user_id = %s ORDER BY o.created_at DESC""",
+                    (session["user_id"],),
+                )
+                purchase_history = [row["product_name"] for row in cursor.fetchall()]
+            except Error:
+                app.logger.exception("Could not load purchase history for recommendations")
+
+        recommended_products = get_home_recommendations(
+            home_products, browsing_categories, purchase_history
+        )
+
         print("----------------------------------------")
         print("HOME PRODUCTS LOADED")
         print("Total Products:", len(products))
@@ -467,7 +426,8 @@ def home():
     return render_template(
         "home.html",
         products=products,
-        home_products=home_products
+        home_products=home_products,
+        recommended_products=recommended_products,
     )
 
 
@@ -481,6 +441,7 @@ def home_page():
 
 @app.route("/products")
 def products_page():
+    # Catalog page: database ke saare active products show karta hai.
     """Show active products from the database in the catalog page."""
     conn = None
     cursor = None
@@ -527,6 +488,7 @@ def products_page():
 
 @app.route("/products/<int:product_id>")
 def product_detail(product_id):
+    # Product detail kholte hi category session mein save hoti hai for AI browsing history.
     conn = None
     cursor = None
     product = None
@@ -545,6 +507,12 @@ def product_detail(product_id):
         )
         row = cursor.fetchone()
         if row:
+            categories = session.get("browsing_categories", [])
+            category = str(row.get("category") or "General").strip()
+            if category:
+                categories = [item for item in categories if item != category]
+                categories.append(category)
+                session["browsing_categories"] = categories[-10:]
             product = {
                 "id": row["id"],
                 "name": row["name"],
@@ -598,6 +566,10 @@ def product_detail(product_id):
 
 @app.route("/checkout")
 def checkout():
+    # Protected page: login zaroori hai; customer details aur live products load hote hain.
+    login_redirect = require_customer_login(url_for("checkout"))
+    if login_redirect:
+        return login_redirect
     conn = None
     cursor = None
     checkout_products = []
@@ -634,6 +606,7 @@ def checkout():
 
 @app.route("/api/cart", methods=["GET", "POST"])
 def api_cart():
+    # Frontend JavaScript yahan se cart add, quantity update aur cart fetch karta hai.
     data = request.get_json(silent=True) or {}
     action = data.get("action")
     conn = cursor = None
@@ -685,6 +658,7 @@ def api_cart():
 
 @app.route("/api/wishlist", methods=["GET", "POST"])
 def api_wishlist():
+    # Wishlist ka database API; cart se alag table wishlist_items use hoti hai.
     data = request.get_json(silent=True) or {}
     conn = cursor = None
     try:
@@ -726,6 +700,10 @@ def api_wishlist():
 
 @app.route("/api/place-order", methods=["POST"])
 def place_order():
+    # Checkout form yahan order create karta hai, stock update karta hai aur cart clear karta hai.
+    login_response = require_customer_login(url_for("checkout"), json_response=True)
+    if login_response:
+        return login_response
     data = request.get_json(silent=True) or {}
     name = str(data.get("name", "")).strip()
     email = str(data.get("email", "")).strip().lower()
@@ -788,7 +766,7 @@ def place_order():
                (order_number, user_id, customer_name, email, phone, address, city, state, pincode,
                 subtotal, shipping, total, payment_method, payment_status, status)
                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'Placed')""",
-            (order_number, session.get("user_id"), name, email, phone, address, city, state, pincode,
+            (order_number, session["user_id"], name, email, phone, address, city, state, pincode,
              subtotal, shipping, total, payment_method,
              "Demo successful" if payment_method.startswith("DEMO_") else "Pending")
         )
@@ -799,7 +777,7 @@ def place_order():
                 (order_id, product["id"], product["seller_id"], product["name"], product["price"], product["quantity"])
             )
             cursor.execute("UPDATE products SET stock = stock - %s WHERE id = %s", (product["quantity"], product["id"]))
-        cursor.execute("DELETE FROM cart_items WHERE cart_key = %s", (get_cart_key(),))
+            cursor.execute("DELETE FROM cart_items WHERE cart_key = %s", (get_cart_key(),))
         conn.commit()
         session["last_order_number"] = order_number
         return jsonify({"success": True, "order_number": order_number,
@@ -821,11 +799,37 @@ def place_order():
 
 @app.route("/orders")
 def my_orders():
-    return redirect(url_for("track_order"))
+    # Sirf current logged-in user ke orders load hote hain.
+    if "user_id" not in session:
+        return require_customer_login(url_for("my_orders"))
+    conn = None
+    cursor = None
+    orders = []
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        ensure_order_tables(cursor)
+        cursor.execute("SELECT * FROM orders WHERE user_id = %s ORDER BY created_at DESC", (session["user_id"],))
+        orders = cursor.fetchall()
+        for order in orders:
+            cursor.execute("SELECT product_name, unit_price, quantity, fulfillment_status FROM order_items WHERE order_id = %s", (order["id"],))
+            order["items"] = cursor.fetchall()
+    except Error as error:
+        app.logger.exception("Could not load order history: %s", error)
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            try:
+                if conn.is_connected(): conn.close()
+            except Exception:
+                pass
+    return render_template("orders.html", orders=orders)
 
 
 @app.route("/orders/<order_number>/cancel", methods=["POST"])
 def cancel_order(order_number):
+    # Valid order cancel karke product stock wapas add karta hai.
     if "user_id" not in session:
         return require_customer_login(url_for("cancel_order", order_number=order_number))
     conn = None
@@ -864,6 +868,7 @@ def cancel_order(order_number):
 
 @app.route("/orders/success/<order_number>")
 def order_success(order_number):
+    # Newly placed order ki confirmation screen.
     if session.get("last_order_number") != order_number:
         abort(404)
     conn = None
@@ -894,6 +899,7 @@ def order_success(order_number):
 
 @app.route("/track-order", methods=["GET", "POST"])
 def track_order():
+    # Order ID aur phone se order tracking/status dikhata hai.
     order = None
     error = None
     if request.method == "POST":
@@ -905,7 +911,11 @@ def track_order():
             conn = get_db_connection()
             cursor = conn.cursor(dictionary=True)
             ensure_order_tables(cursor)
-            cursor.execute("SELECT * FROM orders WHERE order_number = %s AND phone = %s LIMIT 1", (order_number, phone))
+            if session.get("user_id"):
+                cursor.execute("SELECT * FROM orders WHERE order_number = %s AND phone = %s AND user_id = %s LIMIT 1",
+                               (order_number, phone, session["user_id"]))
+            else:
+                cursor.execute("SELECT * FROM orders WHERE order_number = %s AND phone = %s LIMIT 1", (order_number, phone))
             order = cursor.fetchone()
             if order:
                 cursor.execute("SELECT product_name, quantity, fulfillment_status FROM order_items WHERE order_id = %s", (order["id"],))
@@ -1067,14 +1077,17 @@ def ensure_order_tables(cursor):
     methods=["GET", "POST"]
 )
 def login():
+    # GET: login screen kholta hai. POST: username/password check karta hai.
+    # Success par user_id session mein save hoti hai aur next_after_login par redirect hota hai.
+
+    # POST request mein bhi next query parameter read karo. JavaScript login
+    # request current /login?next=/checkout URL par hi bhejti hai, so this is
+    # a reliable fallback if the session value is missing.
+    requested_next = request.args.get("next", "")
+    if requested_next.startswith("/") and not requested_next.startswith("//"):
+        session["next_after_login"] = requested_next
 
     if request.method == "GET":
-
-        requested_next = request.args.get("next", "")
-        # Accept only local paths to prevent open redirects.
-        if requested_next.startswith("/") and not requested_next.startswith("//"):
-            session["next_after_login"] = requested_next
-
         if "user_id" in session:
 
             return redirect(
@@ -1261,11 +1274,17 @@ def login():
                 "message": "Login successful!",
                 "username": user["username"],
                 "user_id": user["id"],
-                "next_url": session.pop("next_after_login", None)
+                "next_url": (
+                    session.pop("next_after_login", None)
+                    or requested_next
+                    or url_for("home")
+                )
             }), 200
 
         return redirect(
-            session.pop("next_after_login", None) or url_for("home")
+            session.pop("next_after_login", None)
+            or requested_next
+            or url_for("home")
         )
 
     except Error as error:
@@ -1332,11 +1351,110 @@ def login():
 # CUSTOMER REGISTER
 # =========================================================
 
+@app.route("/api/send-login-otp", methods=["POST"])
+def send_login_otp():
+    data = request.get_json(silent=True) or {}
+    email = str(data.get("email", "")).strip().lower()
+    if len(email) > 255 or not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", email):
+        return jsonify({"success": False, "message": "Enter a valid email address."}), 400
+
+    now = int(time.time())
+    last_sent = int(session.get("otp_sent_at", 0))
+    if now - last_sent < 60:
+        return jsonify({"success": False, "message": "Please wait before requesting another code."}), 429
+
+    conn = cursor = None
+    try:
+        for stale_ref, stale_record in list(LOGIN_OTP_STORE.items()):
+            if now > stale_record.get("expires_at", 0):
+                LOGIN_OTP_STORE.pop(stale_ref, None)
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""SELECT id, username, email, status FROM users
+                          WHERE LOWER(email) = %s LIMIT 1""", (email,))
+        user = cursor.fetchone()
+        if not user or user.get("status") == "blocked":
+            return jsonify({"success": False, "message": "No active account was found for this email address."}), 404
+
+        code = f"{secrets.randbelow(1_000_000):06d}"
+        secret = secrets.token_hex(16)
+        code_hash = hmac.new(secret.encode(), code.encode(), hashlib.sha256).hexdigest()
+        try:
+            send_login_email(user["email"], code)
+            delivery = {"method": "email", "destination": masked_email(user["email"])}
+        except Exception as error:
+            app.logger.exception("OTP email delivery failed")
+            message = "Could not send OTP email. Check SMTP settings in the local .env file; no code was sent."
+            if app.debug:
+                message += f" ({type(error).__name__}: {error})"
+            return jsonify({"success": False,
+                            "message": message}), 503
+
+        otp_ref = secrets.token_urlsafe(24)
+        LOGIN_OTP_STORE[otp_ref] = {
+            "user_id": user["id"], "username": user["username"], "email": user["email"],
+            "hash": code_hash, "secret": secret, "expires_at": now + 300, "attempts": 0,
+        }
+        session["login_otp_ref"] = otp_ref
+        session["otp_sent_at"] = now
+        return jsonify({"success": True, "delivery": delivery, "expires_in": 300}), 200
+    except Error as error:
+        app.logger.exception("Could not find user for email OTP login: %s", error)
+        return jsonify({"success": False, "message": "Could not look up your account. Please try again."}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            try:
+                if conn.is_connected():
+                    conn.close()
+            except Exception:
+                pass
+
+
+@app.route("/api/verify-login-otp", methods=["POST"])
+def verify_login_otp():
+    data = request.get_json(silent=True) or {}
+    submitted = str(data.get("otp", "")).strip()
+    otp_ref = session.get("login_otp_ref")
+    record = LOGIN_OTP_STORE.get(otp_ref)
+    now = int(time.time())
+    if not re.fullmatch(r"\d{6}", submitted) or not record:
+        return jsonify({"success": False, "message": "Request a new code and enter all 6 digits."}), 400
+    if now > int(record.get("expires_at", 0)):
+        LOGIN_OTP_STORE.pop(otp_ref, None)
+        session.pop("login_otp_ref", None)
+        return jsonify({"success": False, "message": "That code has expired. Please request another one."}), 400
+    if int(record.get("attempts", 0)) >= 5:
+        LOGIN_OTP_STORE.pop(otp_ref, None)
+        session.pop("login_otp_ref", None)
+        return jsonify({"success": False, "message": "Too many incorrect attempts. Request a new code."}), 429
+
+    actual = hmac.new(record["secret"].encode(), submitted.encode(), hashlib.sha256).hexdigest()
+    if not hmac.compare_digest(record["hash"], actual):
+        record["attempts"] += 1
+        return jsonify({"success": False, "message": "Invalid code. Please try again."}), 401
+
+    session["user_id"] = record["user_id"]
+    session["username"] = record["username"]
+    session["email"] = record["email"]
+    LOGIN_OTP_STORE.pop(otp_ref, None)
+    session.pop("login_otp_ref", None)
+    session.pop("otp_sent_at", None)
+    return jsonify({"success": True, "username": record["username"],
+                    "next_url": session.pop("next_after_login", None) or url_for("home")}), 200
+
+
+# =========================================================
+# CUSTOMER REGISTER
+# =========================================================
+
 @app.route(
     "/register",
     methods=["POST"]
 )
 def register():
+    # New customer account banata hai; password hash form mein database mein save hota hai.
 
     db = None
     cursor = None
@@ -1561,6 +1679,7 @@ def register():
 
 @app.route("/My profile")
 def profile():
+    # Customer profile page. Session mein user_id na ho to login page khulta hai.
 
     if "user_id" not in session:
 
@@ -1579,6 +1698,7 @@ def profile():
 
 @app.route("/logout")
 def logout():
+    # Customer ka login/cart-related browser session clear karta hai.
 
     session.clear()
 
@@ -1593,6 +1713,7 @@ def logout():
 
 @app.route("/check-session")
 def check_session():
+    # Home page JavaScript is API se check karta hai ki user login hai ya nahi.
 
     if "user_id" in session:
 
@@ -1626,178 +1747,7 @@ def check_session():
     methods=["GET", "POST"]
 )
 def admin_register():
-
-    if request.method == "GET":
-
-        return render_template(
-            "admin_register.html"
-        )
-
-    conn = None
-    cursor = None
-
-    try:
-
-        username = request.form.get(
-            "username",
-            ""
-        ).strip()
-
-        email = request.form.get(
-            "email",
-            ""
-        ).strip().lower()
-
-        phone = request.form.get(
-            "phone",
-            ""
-        ).strip()
-
-        password = request.form.get(
-            "password",
-            ""
-        )
-
-        confirm_password = request.form.get(
-            "confirm_password",
-            ""
-        )
-
-        if (
-            not username
-            or not email
-            or not phone
-            or not password
-            or not confirm_password
-        ):
-
-            return render_template(
-                "admin_register.html",
-                error="Please fill all fields."
-            )
-
-        if password != confirm_password:
-
-            return render_template(
-                "admin_register.html",
-                error="Passwords do not match."
-            )
-
-        if len(password) < 6:
-
-            return render_template(
-                "admin_register.html",
-                error=(
-                    "Password must be at least "
-                    "6 characters."
-                )
-            )
-
-        conn = get_db_connection()
-
-        cursor = conn.cursor(
-            dictionary=True
-        )
-
-        cursor.execute(
-            """
-            SELECT id
-            FROM admin_users
-            WHERE username = %s
-               OR email = %s
-               OR phone = %s
-            """,
-            (
-                username,
-                email,
-                phone
-            )
-        )
-
-        existing_admin = cursor.fetchone()
-
-        if existing_admin:
-
-            return render_template(
-                "admin_register.html",
-                error=(
-                    "Username, email or phone "
-                    "number already exists."
-                )
-            )
-
-        hashed_password = generate_password_hash(
-            password
-        )
-
-        cursor.execute(
-            """
-            INSERT INTO admin_users
-            (
-                username,
-                email,
-                phone,
-                password
-            )
-            VALUES
-            (
-                %s,
-                %s,
-                %s,
-                %s
-            )
-            """,
-            (
-                username,
-                email,
-                phone,
-                hashed_password
-            )
-        )
-
-        conn.commit()
-
-        return redirect(
-            url_for("admin_login")
-        )
-
-    except Error as error:
-
-        if conn:
-
-            try:
-                conn.rollback()
-            except Exception:
-                pass
-
-        print("----------------------------------------")
-        print("ADMIN REGISTER ERROR")
-        print(error)
-        print("----------------------------------------")
-
-        return render_template(
-            "admin_register.html",
-            error="Database error occurred."
-        )
-
-    finally:
-
-        if cursor:
-
-            try:
-                cursor.close()
-            except Exception:
-                pass
-
-        if conn:
-
-            try:
-
-                if conn.is_connected():
-                    conn.close()
-
-            except Exception:
-                pass
+    return abort(404)
 
 
 # =========================================================
@@ -1932,6 +1882,7 @@ def admin_login():
 # =========================================================
 
 def admin_required():
+    # Admin routes ko protect karne ka small helper.
 
     return (
         session.get(
@@ -1946,6 +1897,7 @@ def admin_required():
 
 @app.route("/admin")
 def admin_dashboard():
+    # Admin ko users, sellers, products aur orders ka overview deta hai.
 
     if not admin_required():
 
@@ -1995,6 +1947,14 @@ def admin_dashboard():
         )
 
         users = cursor.fetchall()
+
+        cursor.execute(
+            """SELECT p.id, p.seller_id, p.name, p.category, p.price, p.stock,
+                      p.status, p.image, p.created_at, s.name AS seller_name
+               FROM products p LEFT JOIN seller_users s ON s.id = p.seller_id
+               ORDER BY p.id DESC"""
+        )
+        products = cursor.fetchall()
 
         cursor.execute(
             """
@@ -2062,6 +2022,7 @@ def admin_dashboard():
             ),
             sellers=sellers,
             users=users,
+            products=products,
             total_sellers=total_sellers,
             active_sellers=active_sellers,
             blocked_sellers=blocked_sellers,
@@ -2085,6 +2046,7 @@ def admin_dashboard():
             ),
             sellers=[],
             users=[],
+            products=[],
             total_sellers=0,
             active_sellers=0,
             blocked_sellers=0,
@@ -2450,6 +2412,29 @@ def admin_change_seller_status(
             )
         )
 
+        if cursor.rowcount == 0:
+            conn.rollback()
+            return redirect(
+                url_for("admin_dashboard")
+            )
+
+        # Blocked seller ke products customers ko nahi dikhne chahiye.
+        # Unblock par sirf admin-blocked products ko wapas active kiya jata hai.
+        if status == "blocked":
+            cursor.execute(
+                """UPDATE products
+                   SET status = 'seller_blocked'
+                   WHERE seller_id = %s AND status = 'active'""",
+                (seller_id,)
+            )
+        else:
+            cursor.execute(
+                """UPDATE products
+                   SET status = 'active'
+                   WHERE seller_id = %s AND status = 'seller_blocked'""",
+                (seller_id,)
+            )
+
         conn.commit()
 
         return redirect(
@@ -2520,6 +2505,36 @@ def admin_delete_seller(
         conn = get_db_connection()
 
         cursor = conn.cursor()
+
+        # Purane orders order_items mein product name/price ka snapshot rakhte hain,
+        # isliye seller/product remove hone par order tracking safe rehti hai.
+        cursor.execute(
+            "SELECT id FROM seller_users WHERE id = %s FOR UPDATE",
+            (seller_id,)
+        )
+        if not cursor.fetchone():
+            conn.rollback()
+            return redirect(
+                url_for("admin_dashboard")
+            )
+
+        # Delete hone wale seller ka product kisi customer's cart/wishlist mein na rahe.
+        cursor.execute(
+            """DELETE ci FROM cart_items ci
+               INNER JOIN products p ON p.id = ci.product_id
+               WHERE p.seller_id = %s""",
+            (seller_id,)
+        )
+        cursor.execute(
+            """DELETE wi FROM wishlist_items wi
+               INNER JOIN products p ON p.id = wi.product_id
+               WHERE p.seller_id = %s""",
+            (seller_id,)
+        )
+        cursor.execute(
+            "DELETE FROM products WHERE seller_id = %s",
+            (seller_id,)
+        )
 
         cursor.execute(
             """
@@ -2751,6 +2766,58 @@ def admin_delete_user(user_id):
 # ADMIN LOGOUT
 # =========================================================
 
+@app.route("/admin/product/<int:product_id>/status", methods=["POST"])
+def admin_change_product_status(product_id):
+    if not admin_required():
+        return redirect(url_for("admin_login"))
+    status = request.form.get("status", "").strip().lower()
+    if status not in {"active", "blocked"}:
+        return redirect(url_for("admin_dashboard"))
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE products SET status = %s WHERE id = %s", (status, product_id))
+        conn.commit()
+    except Error:
+        if conn:
+            conn.rollback()
+        app.logger.exception("Admin could not update product %s", product_id)
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+    return redirect(url_for("admin_dashboard"))
+
+@app.route("/admin/product/<int:product_id>/delete", methods=["POST"])
+def admin_delete_product(product_id):
+    if not admin_required():
+        return redirect(url_for("admin_login"))
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM cart_items WHERE product_id = %s", (product_id,))
+        cursor.execute("DELETE FROM wishlist_items WHERE product_id = %s", (product_id,))
+        cursor.execute("DELETE FROM products WHERE id = %s", (product_id,))
+        conn.commit()
+    except Error:
+        if conn:
+            conn.rollback()
+        app.logger.exception("Admin could not delete product %s", product_id)
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+    return redirect(url_for("admin_dashboard"))
+
+
+# =========================================================
+
 @app.route("/admin/logout")
 def admin_logout():
 
@@ -2788,6 +2855,7 @@ def admin_logout():
     methods=["GET", "POST"]
 )
 def seller_register():
+    # Seller account registration: seller_users table mein seller create hota hai.
 
     if request.method == "GET":
 
@@ -2981,6 +3049,7 @@ def seller_register():
     methods=["GET", "POST"]
 )
 def seller_login():
+    # Seller login success par seller_id session mein save hoti hai.
 
     if session.get(
         "seller_logged_in"
@@ -3125,6 +3194,7 @@ def seller_login():
 
 @app.route("/seller/logout")
 def seller_logout():
+    # Seller session clear karke seller login page par bhejta hai.
 
     session.pop(
         "seller_logged_in",
@@ -3170,6 +3240,7 @@ def seller_logout():
     methods=["GET", "POST"]
 )
 def seller_add_product():
+    # Seller product details/image lekar products table mein new listing add karta hai.
 
     if not session.get(
         "seller_logged_in"
@@ -3287,6 +3358,18 @@ def seller_add_product():
 
         conn = get_db_connection()
 
+        # A seller may have been blocked after logging in. Re-check the account
+        # before creating a new active product from an already-open dashboard.
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(
+            "SELECT status FROM seller_users WHERE id = %s",
+            (session["seller_id"],),
+        )
+        seller = cursor.fetchone()
+        if not seller or seller["status"] != "active":
+            return redirect(url_for("seller_logout"))
+
+        cursor.close()
         cursor = conn.cursor()
 
         cursor.execute(
@@ -3422,6 +3505,7 @@ def seller_add_product():
 
 @app.route("/seller/dashboard")
 def seller_dashboard():
+    # Logged-in seller ko sirf apne products aur sales information dikhata hai.
 
     if not session.get(
         "seller_logged_in"
@@ -3527,6 +3611,90 @@ def seller_dashboard():
 
 
 # =========================================================
+# SELLER DELETE OWN PRODUCT
+# =========================================================
+
+@app.route("/seller/products/<int:product_id>/delete", methods=["POST"])
+def seller_delete_product(product_id):
+    """Seller can delete only a product that belongs to the current seller."""
+    if not session.get("seller_logged_in") or not session.get("seller_id"):
+        return redirect(url_for("seller_login"))
+
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # seller_id condition prevents one seller from deleting another seller's product.
+        cursor.execute(
+            """SELECT id FROM products
+               WHERE id = %s AND seller_id = %s FOR UPDATE""",
+            (product_id, session["seller_id"]),
+        )
+        if not cursor.fetchone():
+            conn.rollback()
+            return redirect(url_for("seller_dashboard"))
+
+        # Remove stale cart/wishlist rows before deleting the catalog product.
+        cursor.execute("DELETE FROM cart_items WHERE product_id = %s", (product_id,))
+        cursor.execute("DELETE FROM wishlist_items WHERE product_id = %s", (product_id,))
+        cursor.execute(
+            "DELETE FROM products WHERE id = %s AND seller_id = %s",
+            (product_id, session["seller_id"]),
+        )
+        conn.commit()
+    except Error as error:
+        if conn:
+            conn.rollback()
+        app.logger.exception("Seller could not delete product %s: %s", product_id, error)
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            try:
+                if conn.is_connected():
+                    conn.close()
+            except Exception:
+                pass
+
+    return redirect(url_for("seller_dashboard"))
+
+
+@app.cli.command("create-admin")
+def create_admin_command():
+    """Create an administrator from the trusted local server console."""
+    import click
+
+    username = click.prompt("Admin username").strip()
+    email = click.prompt("Admin email").strip().lower()
+    phone = click.prompt("Admin phone").strip()
+    password = click.prompt("Admin password", confirmation_prompt=True)
+    if not username or not email or not phone or len(password) < 12:
+        raise click.ClickException("All fields are required and password must be at least 12 characters.")
+
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO admin_users (username, email, phone, password) VALUES (%s, %s, %s, %s)",
+            (username, email, phone, generate_password_hash(password)),
+        )
+        conn.commit()
+        click.echo("Admin account created. Sign in at /admin/login.")
+    except Error as error:
+        if conn:
+            conn.rollback()
+        raise click.ClickException(f"Could not create admin account: {error}")
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+# =========================================================
 # RUN APPLICATION
 # =========================================================
 
@@ -3545,3 +3713,4 @@ if __name__ == "__main__":
         host="127.0.0.1",
         port=5000
     )
+

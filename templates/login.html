@@ -64,7 +64,9 @@
 
                     <!-- ================= NORMAL LOGIN ================= -->
 
-                    <form id="loginForm" method="POST" action="{{ url_for('login') }}">
+                    <!-- No action value: normal form submit bhi current
+                         /login?next=/checkout URL ko preserve karega. -->
+                    <form id="loginForm" method="POST">
 
                         <!-- Username -->
 
@@ -207,7 +209,7 @@
 
                         <div class="otp-icon">
 
-                            <i class="fa-solid fa-mobile-screen-button"></i>
+                            <i class="fa-solid fa-envelope"></i>
 
                         </div>
 
@@ -215,25 +217,25 @@
                         <!-- Title -->
 
                         <h2>
-                            Login with OTP
+                            Login with Email OTP
                         </h2>
 
 
                         <p class="otp-description">
-                            Enter your registered mobile number
+                            Enter your registered email address
                         </p>
 
 
-                        <!-- ================= PHONE STEP ================= -->
+                        <!-- ================= EMAIL STEP ================= -->
 
-                        <div id="phoneStep">
+                        <div id="emailStep">
 
                             <div class="otp-phone-box">
 
-                                <i class="fa-solid fa-phone"></i>
+                                <i class="fa-solid fa-envelope"></i>
 
-                                <input type="tel" id="otpPhone" maxlength="10" inputmode="numeric"
-                                    placeholder="10-digit mobile number">
+                                <input type="email" id="otpEmail" maxlength="255" autocomplete="email"
+                                    placeholder="Registered email address">
 
                             </div>
 
@@ -271,8 +273,8 @@
 
                                 OTP sent to
 
-                                <strong id="maskedPhone">
-                                    ******
+                                <strong id="maskedEmail">
+                                    ******@******
                                 </strong>
 
                             </p>
@@ -595,7 +597,7 @@
 
     <!-- ================= JAVASCRIPT ================= -->
 
-    <script src="{{ url_for('static', filename='login.js', v='server-otp-2') }}"></script>
+    <script src="{{ url_for('static', filename='login.js', v='email-otp-1') }}"></script>
 
 </body>
 

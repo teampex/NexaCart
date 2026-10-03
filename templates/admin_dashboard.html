@@ -21,7 +21,7 @@
     <!-- Admin Dashboard CSS -->
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='admin_dashboard.css') }}"
+        href="{{ url_for('static', filename='admin_dashboard.css', v=3) }}"
     >
 
 </head>
@@ -1063,7 +1063,7 @@
                         </h2>
 
                         <p>
-                            Product management will be available here.
+                            View and manage every seller listing.
                         </p>
 
                     </div>
@@ -1071,23 +1071,19 @@
                 </div>
 
 
-                <div class="dashboard-card">
-
-                    <div class="empty-state">
-
-                        <i class="fa-solid fa-box"></i>
-
-                        <h3>
-                            Product System
-                        </h3>
-
-                        <p>
-                            Product management is not connected yet.
-                        </p>
-
-                    </div>
-
-                </div>
+                <div class="table-card"><div class="table-responsive">
+                    <table><thead><tr><th>Product</th><th>Seller</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Action</th></tr></thead>
+                    <tbody>
+                    {% for product in products|default([]) %}
+                    <tr>
+                        <td><div class="table-user">{% if product.image %}<img class="product-thumb" src="{{ url_for('static', filename=product.image.replace('\\\\', '/')) }}" alt="">{% endif %}<div><strong>{{ product.name }}</strong><small>#{{ product.id }}</small></div></div></td>
+                        <td>{{ product.seller_name or 'Direct listing' }}</td><td>{{ product.category }}</td><td>&#8377;{{ '%.2f'|format(product.price|float) }}</td><td>{{ product.stock }}</td>
+                        <td><span class="status-badge {{ product.status|lower }}">{{ product.status|replace('_',' ')|title }}</span></td>
+                        <td><div class="product-actions"><form method="post" action="{{ url_for('admin_change_product_status', product_id=product.id) }}"><input type="hidden" name="status" value="{{ 'blocked' if product.status == 'active' else 'active' }}"><button class="action-btn" type="submit" aria-label="{{ 'Hide' if product.status == 'active' else 'Show' }} product"><i class="fa-solid {{ 'fa-eye-slash' if product.status == 'active' else 'fa-eye' }}"></i></button></form><form method="post" action="{{ url_for('admin_delete_product', product_id=product.id) }}" onsubmit="return confirm('Delete this product listing?')"><button class="action-btn danger" type="submit" aria-label="Delete product"><i class="fa-solid fa-trash"></i></button></form></div></td>
+                    </tr>
+                    {% else %}<tr><td colspan="7" class="empty-table">No products have been added yet.</td></tr>{% endfor %}
+                    </tbody></table>
+                </div></div>
 
             </section>
 
@@ -1110,7 +1106,7 @@
                         </h2>
 
                         <p>
-                            Order management will be available here.
+                            Recent orders across the marketplace.
                         </p>
 
                     </div>

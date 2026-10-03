@@ -1238,14 +1238,26 @@
                                     <td>
 
 
-                                      <button
-    type="button"
-    class="small-btn"
-    data-product-id="{{ product.id }}"
-    onclick="viewProductDetails(this.dataset.productId)"
->
-    View
-</button>
+                                        <div class="product-actions">
+                                            <button
+                                                type="button"
+                                                class="small-btn"
+                                                data-product-id="{{ product.id }}"
+                                                onclick="viewProductDetails(this.dataset.productId)"
+                                            >
+                                                View
+                                            </button>
+
+                                            <form
+                                                method="POST"
+                                                action="{{ url_for('seller_delete_product', product_id=product.id) }}"
+                                                onsubmit="return confirm('Delete {{ product.name|e }} permanently?');"
+                                            >
+                                                <button type="submit" class="small-btn delete-product-btn">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </div>
 
 
                                     </td>

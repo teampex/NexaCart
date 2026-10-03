@@ -15,6 +15,24 @@ const loginForm =
     document.getElementById("loginForm");
 
 
+/* Protected page ka URL login page ke query string mein hota hai.
+   Example: /login?next=/checkout. Server response ke fallback ke liye use karo. */
+function getLoginReturnUrl() {
+
+    const nextUrl = new URLSearchParams(
+        window.location.search
+    ).get("next") || "";
+
+    return (
+        nextUrl.startsWith("/") &&
+        !nextUrl.startsWith("//")
+    ) ? nextUrl : "";
+}
+
+
+const loginReturnUrl = getLoginReturnUrl();
+
+
 /* Send seller and admin choices to their dedicated login pages. */
 document
     .querySelectorAll('input[name="role"]')
@@ -256,7 +274,7 @@ if (loginForm) {
                     else {
 
                         window.location.href =
-                            result.next_url || "/";
+                            result.next_url || loginReturnUrl || "/";
 
                     }
 
@@ -492,9 +510,9 @@ const otpPanel =
         "otpPanel"
     );
 
-const phoneStep =
+const emailStep =
     document.getElementById(
-        "phoneStep"
+        "emailStep"
     );
 
 const otpStep =
@@ -502,9 +520,9 @@ const otpStep =
         "otpStep"
     );
 
-const otpPhone =
+const otpEmail =
     document.getElementById(
-        "otpPhone"
+        "otpEmail"
     );
 
 const sendOtpBtn =
@@ -527,9 +545,9 @@ const resendOtpBtn =
         "resendOtpBtn"
     );
 
-const maskedPhone =
+const maskedEmail =
     document.getElementById(
-        "maskedPhone"
+        "maskedEmail"
     );
 
 const otpTimer =
@@ -570,14 +588,14 @@ if (otpLoginTrigger) {
             );
 
 
-            phoneStep.hidden =
+            emailStep.hidden =
                 false;
 
             otpStep.hidden =
                 true;
 
 
-            otpPhone.focus();
+            otpEmail.focus();
 
         }
     );
@@ -681,18 +699,15 @@ if (sendOtpBtn) {
         "click",
         async function () {
 
-            const phone =
-                otpPhone.value
-                    .trim()
-                    .replace(/\D/g, "");
+            const email = otpEmail.value.trim().toLowerCase();
 
 
-            if (phone.length !== 10) {
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
 
-                otpPhone.focus();
+                otpEmail.focus();
 
 
-                otpPhone.parentElement
+                otpEmail.parentElement
                     .classList.add(
                         "otp-error"
                     );
@@ -701,7 +716,7 @@ if (sendOtpBtn) {
                 setTimeout(
                     function () {
 
-                        otpPhone.parentElement
+                        otpEmail.parentElement
                             .classList.remove(
                                 "otp-error"
                             );
@@ -712,7 +727,7 @@ if (sendOtpBtn) {
 
 
                 alert(
-                    "Please enter a valid 10-digit mobile number."
+                    "Please enter a valid email address."
                 );
 
                 return;
@@ -725,13 +740,13 @@ if (sendOtpBtn) {
                 const response = await fetch("/api/send-login-otp", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ phone })
+                    body: JSON.stringify({ email })
                 });
                 const result = await response.json();
                 if (!response.ok || !result.success) throw new Error(result.message || "Could not send the code.");
 
-                maskedPhone.textContent = `${result.delivery.method} to ${result.delivery.destination}`;
-                phoneStep.hidden = true;
+                maskedEmail.textContent = `${result.delivery.method} to ${result.delivery.destination}`;
+                emailStep.hidden = true;
                 otpStep.hidden = false;
                 clearOTPBoxes();
                 startTimer();
@@ -935,7 +950,7 @@ if (verifyOtpBtn) {
                 const result = await response.json();
                 if (!response.ok || !result.success) throw new Error(result.message || "Code verification failed.");
                 otpPanel.classList.add("otp-success");
-                window.location.href = result.next_url || "/";
+                window.location.href = result.next_url || loginReturnUrl || "/";
             } catch (error) {
                 alert(error.message);
             } finally {
@@ -997,7 +1012,7 @@ if (backLoginBtn) {
             );
 
 
-            phoneStep.hidden =
+            emailStep.hidden =
                 false;
 
             otpStep.hidden =
@@ -1007,7 +1022,7 @@ if (backLoginBtn) {
             clearOTPBoxes();
 
 
-            otpPhone.value = "";
+            otpEmail.value = "";
 
 
             loginForm.style.display =

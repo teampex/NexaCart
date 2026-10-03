@@ -3,9 +3,14 @@ const homeProductsData = document.getElementById("homeProductsData");
 const products = homeProductsData
     ? JSON.parse(homeProductsData.textContent || "[]")
     : [];
+const recommendationData = document.getElementById("recommendedProductsData");
+const recommendedProducts = recommendationData
+    ? JSON.parse(recommendationData.textContent || "[]")
+    : [];
 
 const $ = id => document.getElementById(id);
 const productGrid = $("productGrid"), cartCountElement = $("cartCount"), wishlistCountElement = $("wishlistCount");
+const recommendedGrid = $("recommendedProductGrid");
 const toast = $("toast"), toastMessage = $("toastMessage");
 let cart = {}, wishlist = new Set();
 let toastTimer;
@@ -22,15 +27,15 @@ function showToast(message) {
 }
 function stars(rating) { return Array.from({ length: 5 }, (_, i) => `<i class="${i < Math.round(rating) ? "fa-solid" : "fa-regular"} fa-star"></i>`).join(""); }
 
-function renderProducts(list = products) {
-    if (!productGrid) return;
-    productGrid.innerHTML = "";
-    if (!list.length) { productGrid.innerHTML = `<div class="no-products" style="grid-column:1/-1;text-align:center;padding:42px 12px;color:#718091"><i class="fa-solid fa-magnifying-glass" style="font-size:28px"></i><h3 style="margin:10px 0 4px;color:#172d40">No products found</h3><p>Try another product name.</p></div>`; return; }
+function renderProducts(list = products, target = productGrid) {
+    if (!target) return;
+    target.innerHTML = "";
+    if (!list.length) { target.innerHTML = `<div class="no-products" style="grid-column:1/-1;text-align:center;padding:42px 12px;color:#718091"><i class="fa-solid fa-magnifying-glass" style="font-size:28px"></i><h3 style="margin:10px 0 4px;color:#172d40">No products found</h3><p>Try another product name.</p></div>`; return; }
     list.forEach(product => {
         const card = document.createElement("article"); card.className = "product-card"; card.dataset.product = product.name;
         const wished = wishlist.has(product.name);
         card.innerHTML = `<div class="product-image">${product.badge ? `<span class="product-badge ${product.badge === "NEW" ? "new" : ""}">${product.badge}</span>` : ""}<button class="product-wishlist ${wished ? "active" : ""}" data-action="wishlist" data-name="${product.name}" aria-label="${wished ? "Remove from" : "Add to"} wishlist"><i class="${wished ? "fa-solid" : "fa-regular"} fa-heart"></i></button><a href="${product.detailUrl}" aria-label="View ${product.name}">${product.image ? `<img src="${product.image}" alt="${product.name}" loading="lazy">` : `<div class="product-image-placeholder" aria-label="No product image available"><i class="fa-regular fa-image" aria-hidden="true"></i></div>`}</a></div><div class="product-info"><h3 class="product-name"><a href="${product.detailUrl}">${product.name}</a></h3><div class="price-row"><span class="current-price">${formatPrice(product.price)}</span>${product.oldPrice ? `<span class="old-price">${formatPrice(product.oldPrice)}</span>` : ""}</div><div class="rating"><span class="rating-stars">${stars(product.rating)}</span><span>(${product.reviews})</span></div><div class="product-actions"><button class="add-cart-btn" data-action="add-cart" data-name="${product.name}"><i class="fa-solid fa-bag-shopping"></i> Add to Cart</button><button class="quick-view-btn" data-action="quick-view" data-name="${product.name}" aria-label="View ${product.name}"><i class="fa-regular fa-eye"></i></button></div></div>`;
-        productGrid.appendChild(card);
+        target.appendChild(card);
     });
 }
 function updateCounts() {
@@ -97,10 +102,12 @@ function closeProfile() { if ($("profileModal")) $("profileModal").hidden = true
 function openProfile() { updateAccountUI(); if ($("profileModal")) $("profileModal").hidden = false; if ($("accountDropdown")) $("accountDropdown").hidden = true; $("accountBtn")?.setAttribute("aria-expanded", "false"); }
 
 // Product interactions are delegated so search re-renders do not break event handlers.
-productGrid?.addEventListener("click", e => {
+function handleProductGridClick(e) {
     const btn = e.target.closest("[data-action]"); if (!btn) return; const { action, name } = btn.dataset;
     if (action === "add-cart") addToCart(name); else if (action === "wishlist") toggleWishlist(name); else if (action === "quick-view") { const p = productByName(name); if (p) showToast(`${p.name} · ${formatPrice(p.price)} · ${p.rating}★`); }
-});
+}
+productGrid?.addEventListener("click", handleProductGridClick);
+recommendedGrid?.addEventListener("click", handleProductGridClick);
 $("cartItems")?.addEventListener("click", e => {
     const b = e.target.closest("[data-action]"); if (!b) return; const name = b.dataset.name;
     if (b.dataset.action === "increase") cart[name] = (cart[name] || 0) + 1;
@@ -148,5 +155,10 @@ document.querySelectorAll(".small-btn").forEach(button => button.addEventListene
 function observeReveal() { if (!("IntersectionObserver" in window)) return; const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.style.opacity = "1"; entry.target.style.transform = "translateY(0)"; observer.unobserve(entry.target); } }), { threshold: .08 }); document.querySelectorAll(".category-card,.promo-card,.product-card,.service-item").forEach(el => { if (el.dataset.revealed) return; el.dataset.revealed = "1"; el.style.opacity = "0"; el.style.transform = "translateY(15px)"; el.style.transition = "opacity .5s ease, transform .5s ease"; observer.observe(el); }); }
 const revealObserver = new MutationObserver(observeReveal); if (productGrid) revealObserver.observe(productGrid, { childList: true });
 
-renderProducts(); renderCart(); renderWishlist(); updateCounts(); updateAccountUI(); observeReveal();
+renderProducts();
+if (recommendedProducts.length && recommendedGrid) {
+    $("aiRecommendations").hidden = false;
+    renderProducts(recommendedProducts, recommendedGrid);
+}
+renderCart(); renderWishlist(); updateCounts(); updateAccountUI(); observeReveal();
 console.log("NexaCart homepage loaded successfully 🚀");

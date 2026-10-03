@@ -833,6 +833,28 @@ th {
     cursor: pointer;
 }
 
+.product-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.product-actions form {
+    margin: 0;
+}
+
+.delete-product-btn {
+    color: #c53540;
+    border-color: #f2c5c9;
+    background: #fff7f7;
+}
+
+.delete-product-btn:hover {
+    color: white;
+    border-color: #d94752;
+    background: #d94752;
+}
+
 
 .text-btn {
     border: none;
