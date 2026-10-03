@@ -263,12 +263,29 @@ def get_home_recommendations(products, browsing_categories=None, purchase_histor
     if not products:
         return []
 
+    def normalized_name(value):
+        return re.sub(r"[^a-z0-9]", "", str(value or "").casefold())
+
     try:
         recommender = importlib.import_module("models.recommendation_model")
+        model_products = list(recommender.item_similarity_df.index)
+        model_categories = list(recommender.category_product_probability.index)
+        product_names = {normalized_name(name): name for name in model_products}
+        category_names = {normalized_name(name): name for name in model_categories}
+        model_purchase_history = [
+            product_names[key]
+            for item in (purchase_history or [])
+            if (key := normalized_name(item)) in product_names
+        ]
+        model_browsing_categories = [
+            category_names[key]
+            for item in (browsing_categories or [])
+            if (key := normalized_name(item)) in category_names
+        ]
         results = recommender.recommend_for_website(
             customer_id=session.get("user_id", "NEW_CUSTOMER"),
-            browsing_categories=browsing_categories or [],
-            purchase_history=purchase_history or [],
+            browsing_categories=model_browsing_categories,
+            purchase_history=model_purchase_history,
             n=5,
         )
     except Exception:
@@ -276,8 +293,11 @@ def get_home_recommendations(products, browsing_categories=None, purchase_histor
         app.logger.exception("Product recommendations are unavailable")
         return []
 
-    def normalized_name(value):
-        # "Smart Watch", "smart-watch" aur "smartwatch" ko ek jaisa banata hai.
+    # Model item names can differ from seller listing names. Keep the model's
+    # learned category probabilities available for matching live listings too.
+    category_product_probability = recommender.category_product_probability
+
+    def normalized_category(value):
         return re.sub(r"[^a-z0-9]", "", str(value or "").casefold())
 
     products_by_name = {
@@ -308,6 +328,21 @@ def get_home_recommendations(products, browsing_categories=None, purchase_histor
     seen = set()
     for result in results:
         product = matching_catalog_product(result.get("product"))
+        if product and product["id"] in seen:
+            product = None
+        if product is None:
+            model_name = result.get("product")
+            if model_name in category_product_probability.columns:
+                model_category = category_product_probability[model_name].idxmax()
+                category_key = normalized_category(model_category)
+                product = next(
+                    (
+                        item for item in products
+                        if normalized_category(item.get("category")) == category_key
+                        and item["id"] not in seen
+                    ),
+                    None,
+                )
         if product and product["id"] not in seen:
             recommendations.append(product)
             seen.add(product["id"])
@@ -366,6 +401,7 @@ def home():
             {
                 "id": product["id"],
                 "name": product["name"],
+                "category": product["category"],
                 "price": float(product["price"] or 0),
                 "oldPrice": 0,
                 "rating": 0,
