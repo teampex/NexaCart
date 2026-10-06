@@ -2,6 +2,8 @@
    NexaCart Seller Dashboard
    ========================================================= */
 
+/* Seller dashboard ke navigation, product form/preview, product list aur dashboard widgets ka browser code. */
+
 "use strict";
 
 

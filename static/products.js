@@ -1,3 +1,4 @@
+/* Products listing page: catalog render, search/filter/sort aur cart/wishlist actions. */
 const allProducts = JSON.parse(document.getElementById("catalogProductsData")?.textContent || "[]");
 const grid = document.getElementById("productsGrid");
 const searchInput = document.getElementById("productSearch");
@@ -28,6 +29,7 @@ if (selectedCategory && categories.includes(selectedCategory)) {
 }
 
 function renderProducts() {
+    // Search, category, price, rating aur sorting selections apply karke product grid banata hai.
     let products = [...allProducts];
     const search = searchInput.value.trim().toLowerCase();
     if (search) products = products.filter(p => `${p.name} ${p.category}`.toLowerCase().includes(search));
@@ -52,6 +54,7 @@ function renderProducts() {
 }
 
 function createProductCard(product) {
+    // Ek catalog product ka HTML card banata hai, jisme detail, wishlist aur cart controls hote hain.
     const name = escapeHtml(product.name);
     const image = escapeHtml(product.image);
     const rating = Number(product.rating || 0);
@@ -75,6 +78,7 @@ function createProductCard(product) {
 }
 
 function addToCart(id) {
+    // Product ID ko /api/cart par bhej kar database cart mein ek quantity add karta hai.
     const product = allProducts.find(p => p.id === id);
     if (!product) return;
     fetch("/api/cart", {
@@ -89,6 +93,7 @@ function addToCart(id) {
 }
 
 function toggleWishlist(id) {
+    // Product ID ko /api/wishlist par bhej kar saved state toggle karta hai.
     const product = allProducts.find(p => p.id === id);
     if (!product) return;
     fetch("/api/wishlist", {
@@ -103,6 +108,7 @@ function toggleWishlist(id) {
 }
 
 function updateWishlistUI(items = null) {
+    // Wishlist response ya server se loaded items ke mutabik heart icons ko active/inactive karta hai.
     const readFromDatabase = items ? Promise.resolve(items) : fetch("/api/wishlist").then(response => response.json()).then(result => {
         if (!result.success) throw new Error(result.message || "Could not load wishlist.");
         return result.items || [];

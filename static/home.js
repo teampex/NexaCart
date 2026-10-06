@@ -1,4 +1,5 @@
 /* NexaCart home interactions. Keeps index.html/login page untouched. */
+/* Homepage ka product rendering, search, panels, account menu aur interactions yahan hain. */
 const homeProductsData = document.getElementById("homeProductsData");
 const products = homeProductsData
     ? JSON.parse(homeProductsData.textContent || "[]")
@@ -28,6 +29,7 @@ function showToast(message) {
 function stars(rating) { return Array.from({ length: 5 }, (_, i) => `<i class="${i < Math.round(rating) ? "fa-solid" : "fa-regular"} fa-star"></i>`).join(""); }
 
 function renderProducts(list = products, target = productGrid) {
+    // Diye gaye products ko cards mein render karta hai; homepage aur recommendations dono isse use karte hain.
     if (!target) return;
     target.innerHTML = "";
     if (!list.length) { target.innerHTML = `<div class="no-products" style="grid-column:1/-1;text-align:center;padding:42px 12px;color:#718091"><i class="fa-solid fa-magnifying-glass" style="font-size:28px"></i><h3 style="margin:10px 0 4px;color:#172d40">No products found</h3><p>Try another product name.</p></div>`; return; }
@@ -39,6 +41,7 @@ function renderProducts(list = products, target = productGrid) {
     });
 }
 function updateCounts() {
+    // Current cart quantity aur wishlist count ko header/panel counters mein dikhata hai.
     if (cartCountElement) cartCountElement.textContent = cartQuantity();
     if (wishlistCountElement) wishlistCountElement.textContent = wishlist.size;
     if ($("cartPanelCount")) $("cartPanelCount").textContent = `(${cartQuantity()})`;
@@ -63,6 +66,7 @@ function closePanels() {
     if ($("panelBackdrop")) $("panelBackdrop").hidden = true; document.body.classList.remove("panel-open");
 }
 function renderCart() {
+    // Cart panel mein item rows, quantities aur subtotal draw karta hai.
     const container = $("cartItems"); if (!container) return;
     const entries = Object.entries(cart).filter(([, qty]) => qty > 0);
     container.innerHTML = entries.length ? "" : `<div class="panel-empty"><i class="fa-solid fa-bag-shopping"></i><strong>Your cart is empty</strong><span>Add something you love to get started.</span></div>`;
@@ -73,6 +77,7 @@ function renderCart() {
     if ($("cartSubtotal")) $("cartSubtotal").textContent = formatPrice(cartTotal()); updateCounts();
 }
 function renderWishlist() {
+    // Wishlist panel mein saved products aur unke actions draw karta hai.
     const container = $("wishlistItems"); if (!container) return;
     const items = [...wishlist].map(productByName).filter(Boolean);
     container.innerHTML = items.length ? "" : `<div class="panel-empty"><i class="fa-regular fa-heart"></i><strong>Your wishlist is empty</strong><span>Tap the heart on a product to save it here.</span></div>`;
@@ -81,6 +86,7 @@ function renderWishlist() {
 
 /* Use the Flask session as the source of truth for login state. */
 async function updateAccountUI() {
+    // /check-session se login state lekar account dropdown/profile labels update karta hai.
     let user = null;
     try {
         const response = await fetch("/check-session", { credentials: "same-origin", cache: "no-store" });

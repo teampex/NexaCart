@@ -2,6 +2,8 @@
    NEXACART - PROFILE PAGE JS
    ========================================================= */
 
+/* Profile page ke sections, user details, local cart/wishlist display aur order summary controls. */
+
 "use strict";
 
 

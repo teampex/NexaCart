@@ -1,3 +1,4 @@
+// Seller login form values validate karke Flask route ko submit karta hai.
 document.addEventListener("DOMContentLoaded", function () {
 
     const loginForm =

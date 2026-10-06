@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Admin dashboard ke tables, filters aur form-based actions ko browser mein initialize karta hai.
 
     // =========================================================
     // NEXACART ADMIN DASHBOARD

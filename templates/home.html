@@ -784,6 +784,7 @@
 </div>
 
 
+<!-- Backend se aaye catalog/recommendation JSON ko home.js aur cart-db.js use karte hain. -->
 <script id="homeProductsData" type="application/json">{{ home_products|default([], true)|tojson }}</script>
 <script id="recommendedProductsData" type="application/json">{{ recommended_products|default([], true)|tojson }}</script>
 <script src="{{ url_for('static', filename='home.js', v='session-fix-1') }}"></script>

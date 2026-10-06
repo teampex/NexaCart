@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Checkout page cart load/render karta hai aur form submit par order API ko request bhejta hai.
     let cart = [];
     const list = document.getElementById("checkoutItems");
     const message = document.getElementById("checkoutMessage");
@@ -20,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderCart() {
+        // Cart rows, item totals, shipping aur final amount checkout UI mein dikhata hai.
         const subtotal = cart.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0);
         const shipping = subtotal === 0 || subtotal >= 999 ? 0 : 49;
         document.getElementById("count").textContent = `(${cart.reduce((sum, item) => sum + item.quantity, 0)})`;
@@ -40,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function cartRequest(payload) {
+        // /api/cart se items load ya remove karta hai, phir checkout view refresh karta hai.
         try {
             const response = await fetch("/api/cart", payload ? {
                 method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
@@ -56,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     form.addEventListener("submit", async event => {
+        // Customer/payment details /api/place-order ko bhejta aur response ke baad redirect karta hai.
         event.preventDefault();
         if (!cart.length) return;
         message.hidden = true;

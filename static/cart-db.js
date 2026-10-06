@@ -1,6 +1,8 @@
 /* The cart UI uses MySQL as its source of truth through /api/cart. */
+/* Is file mein homepage cart/wishlist API requests, UI sync aur quantity buttons ke handlers hain. */
 (() => {
     async function requestCart(payload) {
+        // Payload ho to cart update hota hai; bina payload ke current cart load hota hai.
         const response = await fetch("/api/cart", payload ? {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -24,6 +26,7 @@
     }
 
     async function wishlistRequest(payload) {
+        // Wishlist ko server se load/update karke local UI state aur counters refresh karta hai.
         const response = await fetch("/api/wishlist", payload ? {
             method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
         } : {});
@@ -41,12 +44,14 @@
     }
 
     window.addToCart = async function (name) {
+        // Home page ke Add to Cart button ko database-backed cart request se connect karta hai.
         const product = productByName(name);
         if (!product) return;
         await changeCart({ action: "add", product_id: product.id }, `${name} added to cart`);
     };
 
     window.toggleWishlist = async function (name) {
+        // Home page ke heart button se server par wishlist toggle karta hai.
         const product = productByName(name);
         if (!product) return;
         try {

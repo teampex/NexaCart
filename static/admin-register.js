@@ -1,3 +1,4 @@
+// Admin registration form ka browser-side validation/submit behavior.
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {

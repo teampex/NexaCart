@@ -1,3 +1,4 @@
+// Seller registration form ke inputs, validation aur submit interaction control karta hai.
 document.addEventListener("DOMContentLoaded", function () {
 
     const form =
