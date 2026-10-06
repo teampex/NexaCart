@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Orders | NexaCart</title>
+    <style>
+        * { box-sizing: border-box; } body { margin: 0; background: #f4f6fb; color: #1b2333; font: 15px Arial,sans-serif; }
+        header { display:flex; justify-content:space-between; align-items:center; padding:18px 6%; background:white; border-bottom:1px solid #e4e7ee; }
+        header a { color:#24324c; text-decoration:none; } .logo { font-size:23px; font-weight:800; }.logo span { color:#bc8b22; }
+        main { width:min(950px,92%); margin:36px auto; } h1 { margin-bottom:22px; }
+        .notice { margin-bottom:18px; padding:14px 18px; border-radius:10px; background:#e8fff1; color:#17663c; }
+        .order { margin:16px 0; padding:20px; border:1px solid #e2e6ee; border-radius:14px; background:white; }
+        .order-head,.order-foot { display:flex; justify-content:space-between; gap:16px; align-items:center; flex-wrap:wrap; }
+        .muted { color:#707a8b; font-size:13px; }.status { padding:6px 10px; border-radius:99px; background:#eaf2ff; color:#185bb4; font-weight:700; font-size:13px; }
+        .items { border-top:1px solid #edf0f5; border-bottom:1px solid #edf0f5; margin:16px 0; padding:10px 0; }
+        .item { display:flex; justify-content:space-between; padding:6px 0; }.total { font-size:18px; font-weight:800; }
+        form { margin:0; } button { border:1px solid #bb3131; border-radius:8px; padding:9px 13px; background:white; color:#a32323; cursor:pointer; }
+        .track-form button { border-color:#185bb4; background:#185bb4; color:white; }
+        .empty { padding:35px; border-radius:14px; background:white; text-align:center; }.empty a { display:inline-block; margin-top:10px; color:#2466c4; }
+    </style>
+</head>
+<body>
+    <header><a class="logo" href="{{ url_for('home') }}">Nexa<span>Cart</span></a><a href="{{ url_for('products_page') }}">Continue shopping</a></header>
+    <main>
+        <h1>My Orders</h1>
+        {% if request.args.get('placed') %}<div class="notice">Order {{ request.args.get('placed') }} placed successfully. Payment method: Cash on Delivery.</div>{% endif %}
+        {% if orders %}
+            {% for order in orders %}
+            <article class="order">
+                <div class="order-head">
+                    <div><strong>Order {{ order.order_number }}</strong><div class="muted">Placed {{ order.created_at.strftime('%d %b %Y, %I:%M %p') }}</div></div>
+                    <span class="status">{{ order.status }}</span>
+                </div>
+                <div class="items">
+                    {% for item in order["items"] %}
+                    <div class="item"><span>{{ item.product_name }} × {{ item.quantity }}<br><span class="muted">{{ item.fulfillment_status }}</span></span><strong>₹{{ "{:,.2f}".format(item.unit_price * item.quantity) }}</strong></div>
+                    {% endfor %}
+                </div>
+                <div class="order-foot">
+                    <div><span class="muted">{{ order.payment_method }} · {{ order.payment_status }} · Ship to {{ order.city }}, {{ order.state }}</span><div class="total">Total ₹{{ "{:,.2f}".format(order.total) }}</div></div>
+                    <form class="track-form" method="post" action="{{ url_for('track_order') }}"><input type="hidden" name="order_number" value="{{ order.order_number }}"><input type="hidden" name="phone" value="{{ order.phone }}"><button type="submit">Track order</button></form>
+                    {% if order.status in ['Placed', 'Confirmed', 'Processing'] %}
+                    <form method="post" action="{{ url_for('cancel_order', order_number=order.order_number) }}" onsubmit="return confirm('Cancel this order?')"><button type="submit">Cancel order</button></form>
+                    {% endif %}
+                </div>
+            </article>
+            {% endfor %}
+        {% else %}
+            <div class="empty"><h2>No orders yet</h2><p>Products you order will appear here.</p><a href="{{ url_for('products_page') }}">Browse products</a></div>
+        {% endif %}
+    </main>
+</body>
+</html>

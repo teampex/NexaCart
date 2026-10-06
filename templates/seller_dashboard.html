@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Admin Register - NexaCart</title>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Seller Dashboard - NexaCart</title>
 
     <link
         rel="stylesheet"
@@ -15,142 +21,260 @@
         rel="stylesheet"
         href="{{ url_for('static', filename='seller_dashboard.css') }}"
     >
+
 </head>
+
 
 <body>
 
 <div class="seller-layout">
 
-    <!-- ================= SIDEBAR ================= -->
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
 
     <aside class="seller-sidebar">
 
+
+        <!-- BRAND -->
+
         <div class="seller-brand">
+
             <div class="brand-icon">
+
                 <i class="fa-solid fa-bag-shopping"></i>
+
             </div>
 
+
             <div>
-                <h2>Nexa<span>Cart</span></h2>
-                <small>SELLER CENTER</small>
+
+                <h2>
+                    Nexa<span>Cart</span>
+                </h2>
+
+                <small>
+                    SELLER CENTER
+                </small>
+
             </div>
+
         </div>
 
 
-        <!-- Seller profile -->
+        <!-- SELLER PROFILE -->
 
         <div class="seller-profile">
 
-            <div class="seller-avatar" id="sellerAvatar">
+            <div
+                class="seller-avatar"
+                id="sellerAvatar"
+            >
                 S
             </div>
 
+
             <div>
-                <strong id="sellerName">Seller</strong>
-                <small>Seller Account</small>
+
+                <strong id="sellerName">
+                    {{ seller_name }}
+                </strong>
+
+                <small>
+                    Seller Account
+                </small>
+
             </div>
 
         </div>
 
 
-        <!-- Sidebar -->
+        <!-- NAVIGATION -->
 
         <nav class="seller-nav">
 
+
             <button
+                type="button"
                 class="seller-nav-item active"
                 data-section="dashboard"
+                onclick="openSellerSection('dashboard')"
             >
+
                 <i class="fa-solid fa-chart-line"></i>
-                <span>Dashboard</span>
+
+                <span>
+                    Dashboard
+                </span>
+
             </button>
 
 
             <button
+                type="button"
                 class="seller-nav-item"
                 data-section="products"
+                onclick="openSellerSection('products')"
             >
+
                 <i class="fa-solid fa-box"></i>
-                <span>My Products</span>
+
+                <span>
+                    My Products
+                </span>
+
             </button>
 
 
             <button
+                type="button"
                 class="seller-nav-item"
                 data-section="add-product"
+                onclick="openSellerSection('add-product')"
             >
+
                 <i class="fa-solid fa-plus"></i>
-                <span>Add Product</span>
+
+                <span>
+                    Add Product
+                </span>
+
             </button>
 
 
             <button
+                type="button"
                 class="seller-nav-item"
                 data-section="orders"
+                onclick="openSellerSection('orders')"
             >
+
                 <i class="fa-solid fa-cart-shopping"></i>
-                <span>Orders</span>
+
+                <span>
+                    Orders
+                </span>
+
             </button>
 
 
             <button
+                type="button"
                 class="seller-nav-item"
                 data-section="customers"
+                onclick="openSellerSection('customers')"
             >
+
                 <i class="fa-solid fa-users"></i>
-                <span>Customers</span>
+
+                <span>
+                    Customers
+                </span>
+
             </button>
 
 
             <button
+                type="button"
                 class="seller-nav-item"
                 data-section="analytics"
+                onclick="openSellerSection('analytics')"
             >
+
                 <i class="fa-solid fa-chart-pie"></i>
-                <span>Analytics</span>
+
+                <span>
+                    Analytics
+                </span>
+
             </button>
 
 
             <button
+                type="button"
                 class="seller-nav-item"
                 data-section="settings"
+                onclick="openSellerSection('settings')"
             >
+
                 <i class="fa-solid fa-gear"></i>
-                <span>Settings</span>
+
+                <span>
+                    Settings
+                </span>
+
             </button>
+
 
         </nav>
 
 
+        <!-- SIDEBAR BOTTOM -->
+
         <div class="sidebar-bottom">
 
-            <a href="{{ url_for('home') }}" class="sidebar-link">
-    <i class="fa-solid fa-house"></i>
-    <span>Back to Shopping</span>
-</a>
+            <a href="{{ url_for('seller_orders') }}" class="sidebar-link">
+                <i class="fa-solid fa-box"></i>
+                <span>Customer Orders</span>
+            </a>
 
-       <a href="{{ url_for('seller_logout') }}" class="sidebar-link logout-link">
-    <i class="fa-solid fa-right-from-bracket"></i>
-    <span>Logout</span>
-</a>
+
+            <a
+                href="{{ url_for('home') }}"
+                class="sidebar-link"
+            >
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+                    Back to Shopping
+                </span>
+
+            </a>
+
+
+            <a
+                href="{{ url_for('seller_logout') }}"
+                class="sidebar-link logout-link"
+            >
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
 
         </div>
+
 
     </aside>
 
 
-    <!-- ================= MAIN ================= -->
+
+    <!-- =====================================================
+         MAIN AREA
+    ====================================================== -->
 
     <main class="seller-main">
 
 
-        <!-- TOP BAR -->
+        <!-- =================================================
+             TOP BAR
+        ================================================== -->
 
         <header class="seller-topbar">
 
+
             <div class="mobile-brand">
+
                 <i class="fa-solid fa-bag-shopping"></i>
+
                 Nexa<span>Cart</span>
+
             </div>
 
 
@@ -169,40 +293,61 @@
 
             <div class="top-seller">
 
+
                 <div class="notification">
+
                     <i class="fa-regular fa-bell"></i>
-                    <span>2</span>
+
+                    <span>
+                        2
+                    </span>
+
                 </div>
 
-                <div class="mini-avatar" id="topAvatar">
+
+                <div
+                    class="mini-avatar"
+                    id="topAvatar"
+                >
                     S
                 </div>
+
 
                 <div class="top-seller-name">
 
                     <strong id="topSellerName">
-                        Seller
+                        {{ seller_name }}
                     </strong>
 
-                    <small>Seller</small>
+                    <small>
+                        Seller
+                    </small>
 
                 </div>
 
+
                 <i class="fa-solid fa-chevron-down"></i>
 
+
             </div>
+
 
         </header>
 
 
-        <!-- ================= DASHBOARD ================= -->
+
+        <!-- =================================================
+             DASHBOARD
+        ================================================== -->
 
         <section
             class="seller-section active-section"
             id="dashboard"
         >
 
+
             <div class="section-heading">
+
 
                 <div>
 
@@ -210,122 +355,214 @@
                         SELLER CENTER
                     </span>
 
-                    <h1>Dashboard</h1>
+
+                    <h1>
+                        Dashboard
+                    </h1>
+
 
                     <p>
+
                         Welcome back,
-                        <strong id="dashboardSellerName">
-                            Seller
-                        </strong>!
-                        Here's your store overview.
+
+                        <strong>
+                            {{ seller_name }}
+                        </strong>
+
+                        ! Here's your store overview.
+
                     </p>
 
                 </div>
 
 
                 <button
+                    type="button"
                     class="primary-btn"
-                    data-open-section="add-product"
+                    onclick="openSellerSection('add-product')"
                 >
+
                     <i class="fa-solid fa-plus"></i>
+
                     Add New Product
+
                 </button>
 
+
             </div>
+
 
 
             <!-- STAT CARDS -->
 
             <div class="stats-grid">
 
+
                 <div class="stat-card">
 
+
                     <div class="stat-icon blue">
+
                         <i class="fa-solid fa-box"></i>
+
                     </div>
 
+
                     <div>
-                        <span>Total Products</span>
-                        <h2 id="totalProducts">0</h2>
+
+                        <span>
+                            Total Products
+                        </span>
+
+
+                        <h2 id="totalProducts">
+                            {{ products|length }}
+                        </h2>
+
+
                         <small class="positive">
+
                             <i class="fa-solid fa-arrow-up"></i>
+
                             Store listings
+
                         </small>
+
                     </div>
+
 
                 </div>
 
 
+
                 <div class="stat-card">
 
+
                     <div class="stat-icon purple">
+
                         <i class="fa-solid fa-cart-shopping"></i>
+
                     </div>
 
+
                     <div>
-                        <span>Total Orders</span>
-                        <h2>12</h2>
+
+                        <span>
+                            Total Orders
+                        </span>
+
+                        <h2>
+                            12
+                        </h2>
+
                         <small class="positive">
                             <i class="fa-solid fa-arrow-up"></i>
                             8% this month
                         </small>
+
                     </div>
+
 
                 </div>
 
 
+
                 <div class="stat-card">
+
 
                     <div class="stat-icon green">
                         ₹
                     </div>
 
+
                     <div>
-                        <span>Total Sales</span>
-                        <h2>₹45,800</h2>
+
+                        <span>
+                            Total Sales
+                        </span>
+
+                        <h2>
+                            ₹45,800
+                        </h2>
+
                         <small class="positive">
                             <i class="fa-solid fa-arrow-up"></i>
                             18% this month
                         </small>
+
                     </div>
 
+
                 </div>
+
 
 
                 <div class="stat-card">
 
+
                     <div class="stat-icon orange">
+
                         <i class="fa-solid fa-wallet"></i>
+
                     </div>
 
+
                     <div>
-                        <span>Revenue</span>
-                        <h2>₹32,600</h2>
+
+                        <span>
+                            Revenue
+                        </span>
+
+                        <h2>
+                            ₹32,600
+                        </h2>
+
                         <small class="positive">
                             <i class="fa-solid fa-arrow-up"></i>
                             15% this month
                         </small>
+
                     </div>
 
+
                 </div>
+
 
             </div>
 
 
-            <!-- DASHBOARD LOWER -->
+
+            <!-- DASHBOARD GRID -->
 
             <div class="dashboard-grid">
 
+
+                <!-- SALES -->
+
                 <div class="dashboard-card">
+
 
                     <div class="card-title">
 
-                        <h3>Sales Overview</h3>
+                        <h3>
+                            Sales Overview
+                        </h3>
+
 
                         <select>
-                            <option>Last 7 Days</option>
-                            <option>Last 30 Days</option>
-                            <option>This Year</option>
+
+                            <option>
+                                Last 7 Days
+                            </option>
+
+                            <option>
+                                Last 30 Days
+                            </option>
+
+                            <option>
+                                This Year
+                            </option>
+
                         </select>
 
                     </div>
@@ -333,146 +570,338 @@
 
                     <div class="sales-chart">
 
-                        <div class="chart-bar" style="height:35%">
+
+                        <div
+                            class="chart-bar"
+                            style="height:35%"
+                        >
                             <span>Mon</span>
                         </div>
 
-                        <div class="chart-bar" style="height:55%">
+
+                        <div
+                            class="chart-bar"
+                            style="height:55%"
+                        >
                             <span>Tue</span>
                         </div>
 
-                        <div class="chart-bar" style="height:43%">
+
+                        <div
+                            class="chart-bar"
+                            style="height:43%"
+                        >
                             <span>Wed</span>
                         </div>
 
-                        <div class="chart-bar" style="height:70%">
+
+                        <div
+                            class="chart-bar"
+                            style="height:70%"
+                        >
                             <span>Thu</span>
                         </div>
 
-                        <div class="chart-bar" style="height:57%">
+
+                        <div
+                            class="chart-bar"
+                            style="height:57%"
+                        >
                             <span>Fri</span>
                         </div>
 
-                        <div class="chart-bar" style="height:82%">
+
+                        <div
+                            class="chart-bar"
+                            style="height:82%"
+                        >
                             <span>Sat</span>
                         </div>
 
-                        <div class="chart-bar" style="height:94%">
+
+                        <div
+                            class="chart-bar"
+                            style="height:94%"
+                        >
                             <span>Sun</span>
                         </div>
 
+
                     </div>
+
 
                 </div>
 
 
+
+                <!-- QUICK ACTIONS -->
+
                 <div class="dashboard-card">
+
 
                     <div class="card-title">
 
-                        <h3>Quick Actions</h3>
+                        <h3>
+                            Quick Actions
+                        </h3>
 
                     </div>
 
 
                     <div class="quick-actions">
 
+
                         <button
-                            data-open-section="add-product"
+                            type="button"
                             class="quick-action primary"
+                            onclick="openSellerSection('add-product')"
                         >
+
                             <i class="fa-solid fa-plus"></i>
+
                             Add Product
+
                         </button>
 
 
                         <button
-                            data-open-section="products"
+                            type="button"
                             class="quick-action"
+                            onclick="openSellerSection('products')"
                         >
+
                             <i class="fa-solid fa-box"></i>
+
                             Manage Products
+
                         </button>
 
 
                         <button
-                            data-open-section="orders"
+                            type="button"
                             class="quick-action"
+                            onclick="openSellerSection('orders')"
                         >
+
                             <i class="fa-solid fa-cart-shopping"></i>
+
                             View Orders
+
                         </button>
 
 
                         <a
-                            href="home.html"
+                            href="{{ url_for('home') }}"
                             class="quick-action"
                         >
+
                             <i class="fa-solid fa-store"></i>
+
                             Open Store
+
                         </a>
+
 
                     </div>
 
+
                 </div>
 
+
             </div>
+
 
 
             <!-- RECENT PRODUCTS -->
 
             <div class="dashboard-card recent-card">
 
+
                 <div class="card-title">
 
-                    <h3>Recent Products</h3>
+
+                    <h3>
+                        Recent Products
+                    </h3>
+
 
                     <button
-                        data-open-section="products"
+                        type="button"
                         class="text-btn"
+                        onclick="openSellerSection('products')"
                     >
                         View All →
                     </button>
 
+
                 </div>
+
 
 
                 <div class="table-wrapper">
 
+
                     <table>
+
 
                         <thead>
 
                             <tr>
-                                <th>Product</th>
-                                <th>Price</th>
-                                <th>Stock</th>
-                                <th>Status</th>
+
+                                <th>
+                                    Product
+                                </th>
+
+                                <th>
+                                    Price
+                                </th>
+
+                                <th>
+                                    Stock
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
                             </tr>
 
                         </thead>
 
+
                         <tbody id="recentProducts">
+
+
+                            {% if products %}
+
+                                {% for product in products[:5] %}
+
+                                <tr>
+
+
+                                    <td>
+
+
+                                        <div class="product-table-item">
+
+
+                                            {% if product.image %}
+
+                                                <img
+                                                    src="{{ product.image }}"
+                                                    alt="{{ product.name }}"
+                                                >
+
+                                            {% else %}
+
+                                                <div class="product-table-icon">
+
+                                                    <i class="fa-solid fa-box"></i>
+
+                                                </div>
+
+                                            {% endif %}
+
+
+                                            <div>
+
+                                                <strong>
+                                                    {{ product.name }}
+                                                </strong>
+
+                                                <small>
+                                                    {{ product.category }}
+                                                </small>
+
+                                            </div>
+
+
+                                        </div>
+
+
+                                    </td>
+
+
+                                    <td>
+                                        ₹{{ "%.2f"|format(product.price|float) }}
+                                    </td>
+
+
+                                    <td>
+                                        {{ product.stock }}
+                                    </td>
+
+
+                                    <td>
+
+                                        {% if product.status == "active" %}
+
+                                            <span class="status delivered">
+                                                Active
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="status processing">
+                                                Blocked
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                </tr>
+
+                                {% endfor %}
+
+
+                            {% else %}
+
+
+                                <tr>
+
+                                    <td
+                                        colspan="4"
+                                        style="text-align:center;"
+                                    >
+                                        No products found.
+                                    </td>
+
+                                </tr>
+
+
+                            {% endif %}
+
 
                         </tbody>
 
+
                     </table>
+
 
                 </div>
 
+
             </div>
+
 
         </section>
 
 
-        <!-- ================= PRODUCTS ================= -->
+
+        <!-- =================================================
+             MY PRODUCTS
+        ================================================== -->
 
         <section
             class="seller-section"
             id="products"
         >
 
+
             <div class="section-heading">
+
 
                 <div>
 
@@ -480,7 +909,9 @@
                         STORE MANAGEMENT
                     </span>
 
-                    <h1>My Products</h1>
+                    <h1>
+                        My Products
+                    </h1>
 
                     <p>
                         Manage your product listings and inventory.
@@ -490,110 +921,401 @@
 
 
                 <button
+                    type="button"
                     class="primary-btn"
-                    data-open-section="add-product"
+                    onclick="openSellerSection('add-product')"
                 >
+
                     <i class="fa-solid fa-plus"></i>
+
                     Add Product
+
                 </button>
+
 
             </div>
 
 
+
             <div class="dashboard-card">
 
+
                 <div class="product-filters">
+
 
                     <div class="search-field">
 
                         <i class="fa-solid fa-magnifying-glass"></i>
 
                         <input
+                            type="text"
                             id="productSearch"
                             placeholder="Search products..."
                         >
 
                     </div>
 
-                    
+
                     <select id="categoryFilter">
 
-    <option value="">All Categories</option>
 
-    <option>Electronics</option>
-    <option>Mobile Phones</option>
-    <option>Laptops &amp; Computers</option>
-    <option>Tablets</option>
-    <option>Audio &amp; Headphones</option>
-    <option>Cameras &amp; Photography</option>
-    <option>Televisions</option>
-    <option>Home Appliances</option>
-    <option>Kitchen Appliances</option>
-    <option>Furniture</option>
-    <option>Home &amp; Decor</option>
-    <option>Fashion – Men</option>
-    <option>Fashion – Women</option>
-    <option>Footwear</option>
-    <option>Watches</option>
-    <option>Jewellery &amp; Accessories</option>
-    <option>Beauty &amp; Personal Care</option>
-    <option>Sports &amp; Fitness</option>
-    <option>Toys &amp; Games</option>
-    <option>Books</option>
-    <option>Groceries</option>
-    <option>Baby Products</option>
-    <option>Automotive Accessories</option>
-    <option>Pet Supplies</option>
+                        <option value="">
+                            All Categories
+                        </option>
 
-</select>
 
-                <div class="product-count">
+                        <option>
+                            Electronics
+                        </option>
 
-                    <span id="productCount">
-                        0
-                    </span>
-                    Products
+
+                        <option>
+                            Mobile Phones
+                        </option>
+
+
+                        <option>
+                            Laptops &amp; Computers
+                        </option>
+
+
+                        <option>
+                            Tablets
+                        </option>
+
+
+                        <option>
+                            Audio &amp; Headphones
+                        </option>
+
+
+                        <option>
+                            Cameras &amp; Photography
+                        </option>
+
+
+                        <option>
+                            Televisions
+                        </option>
+
+
+                        <option>
+                            Home Appliances
+                        </option>
+
+
+                        <option>
+                            Kitchen Appliances
+                        </option>
+
+
+                        <option>
+                            Furniture
+                        </option>
+
+
+                        <option>
+                            Home &amp; Decor
+                        </option>
+
+
+                        <option>
+                            Fashion – Men
+                        </option>
+
+
+                        <option>
+                            Fashion – Women
+                        </option>
+
+
+                        <option>
+                            Footwear
+                        </option>
+
+
+                        <option>
+                            Watches
+                        </option>
+
+
+                        <option>
+                            Jewellery &amp; Accessories
+                        </option>
+
+
+                        <option>
+                            Beauty &amp; Personal Care
+                        </option>
+
+
+                        <option>
+                            Sports &amp; Fitness
+                        </option>
+
+
+                        <option>
+                            Toys &amp; Games
+                        </option>
+
+
+                        <option>
+                            Books
+                        </option>
+
+
+                        <option>
+                            Groceries
+                        </option>
+
+
+                        <option>
+                            Baby Products
+                        </option>
+
+
+                        <option>
+                            Automotive Accessories
+                        </option>
+
+
+                        <option>
+                            Pet Supplies
+                        </option>
+
+
+                    </select>
+
+
+                    <div class="product-count">
+
+                        <span id="productCount">
+                            {{ products|length }}
+                        </span>
+
+                        Products
+
+                    </div>
+
 
                 </div>
+
 
 
                 <div class="table-wrapper">
 
+
                     <table>
+
 
                         <thead>
 
                             <tr>
-                                <th>Product</th>
-                                <th>Price</th>
-                                <th>Stock</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+
+                                <th>
+                                    Product
+                                </th>
+
+                                <th>
+                                    Category
+                                </th>
+
+                                <th>
+                                    Price
+                                </th>
+
+                                <th>
+                                    Stock
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+
                             </tr>
 
                         </thead>
 
+
                         <tbody id="productsTable">
+
+
+                            {% if products %}
+
+
+                                {% for product in products %}
+
+                                <tr
+                                    data-product-id="{{ product.id }}"
+                                    data-product-name="{{ product.name|lower }}"
+                                    data-product-category="{{ product.category|lower }}"
+                                >
+
+
+                                    <td>
+
+
+                                        <div class="product-table-item">
+
+
+                                            {% if product.image %}
+
+                                                <img
+                                                    src="{{ product.image }}"
+                                                    alt="{{ product.name }}"
+                                                >
+
+                                            {% else %}
+
+                                                <div class="product-table-icon">
+
+                                                    <i class="fa-solid fa-box"></i>
+
+                                                </div>
+
+                                            {% endif %}
+
+
+                                            <div>
+
+                                                <strong>
+                                                    {{ product.name }}
+                                                </strong>
+
+                                                <small>
+                                                    Product ID #{{ product.id }}
+                                                </small>
+
+                                            </div>
+
+
+                                        </div>
+
+
+                                    </td>
+
+
+                                    <td>
+                                        {{ product.category }}
+                                    </td>
+
+
+                                    <td>
+                                        ₹{{ "%.2f"|format(product.price|float) }}
+                                    </td>
+
+
+                                    <td>
+                                        {{ product.stock }}
+                                    </td>
+
+
+                                    <td>
+
+
+                                        {% if product.status == "active" %}
+
+                                            <span class="status delivered">
+                                                Active
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="status processing">
+                                                Blocked
+                                            </span>
+
+                                        {% endif %}
+
+
+                                    </td>
+
+
+                                    <td>
+
+
+                                        <div class="product-actions">
+                                            <button
+                                                type="button"
+                                                class="small-btn"
+                                                data-product-id="{{ product.id }}"
+                                                onclick="viewProductDetails(this.dataset.productId)"
+                                            >
+                                                View
+                                            </button>
+
+                                            <form
+                                                method="POST"
+                                                action="{{ url_for('seller_delete_product', product_id=product.id) }}"
+                                                onsubmit="return confirm('Delete {{ product.name|e }} permanently?');"
+                                            >
+                                                <button type="submit" class="small-btn delete-product-btn">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </div>
+
+
+                                    </td>
+
+
+                                </tr>
+
+                                {% endfor %}
+
+
+                            {% else %}
+
+
+                                <tr>
+
+                                    <td
+                                        colspan="6"
+                                        style="text-align:center;"
+                                    >
+
+                                        No products available.
+
+                                    </td>
+
+                                </tr>
+
+
+                            {% endif %}
+
 
                         </tbody>
 
+
                     </table>
+
 
                 </div>
 
+
             </div>
+
 
         </section>
 
 
-        <!-- ================= ADD PRODUCT ================= -->
+
+        <!-- =================================================
+             ADD PRODUCT
+        ================================================== -->
 
         <section
             class="seller-section"
             id="add-product"
         >
 
+
             <div class="section-heading">
+
 
                 <div>
 
@@ -601,7 +1323,11 @@
                         PRODUCT MANAGEMENT
                     </span>
 
-                    <h1>Add New Product</h1>
+
+                    <h1>
+                        Add New Product
+                    </h1>
+
 
                     <p>
                         Add a new product to your NexaCart store.
@@ -609,134 +1335,307 @@
 
                 </div>
 
+
             </div>
+
 
 
             <div class="add-product-grid">
 
 
+                <!-- FORM -->
+
                 <div class="dashboard-card">
 
-                    <form id="addProductForm">
+
+                    <form
+                        id="addProductForm"
+                        action="{{ url_for('seller_add_product') }}"
+                        method="POST"
+                        enctype="multipart/form-data"
+                    >
+
 
                         <div class="form-grid">
 
 
+                            <!-- NAME -->
+
                             <div class="form-group">
+
 
                                 <label>
                                     Product Name *
                                 </label>
 
+
                                 <input
+                                    type="text"
                                     id="productName"
+                                    name="name"
                                     required
                                     placeholder="Enter product name"
                                 >
 
+
                             </div>
 
 
+
+                            <!-- CATEGORY -->
+
                             <div class="form-group">
+
 
                                 <label>
                                     Category *
                                 </label>
 
-                                <select id="productCategory" required>
+
+                                <select
+                                    id="productCategory"
+                                    name="category"
+                                    required
+                                >
+
 
                                     <option value="">
                                         Select category
                                     </option>
 
-                                    <option>Electronics</option>
-                                    <option>Fashion</option>
-                                    <option>Shoes</option>
-                                    <option>Bags</option>
-                                    <option>Beauty</option>
-                                    <option>Gaming</option>
-                                    <option>Sports</option>
-                                    <option>Books</option>
-                                    <option>Home & Living</option>
+
+                                    <option>
+                                        Electronics
+                                    </option>
+
+
+                                    <option>
+                                        Mobile Phones
+                                    </option>
+
+
+                                    <option>
+                                        Laptops &amp; Computers
+                                    </option>
+
+
+                                    <option>
+                                        Tablets
+                                    </option>
+
+
+                                    <option>
+                                        Audio &amp; Headphones
+                                    </option>
+
+
+                                    <option>
+                                        Cameras &amp; Photography
+                                    </option>
+
+
+                                    <option>
+                                        Televisions
+                                    </option>
+
+
+                                    <option>
+                                        Home Appliances
+                                    </option>
+
+
+                                    <option>
+                                        Kitchen Appliances
+                                    </option>
+
+
+                                    <option>
+                                        Furniture
+                                    </option>
+
+
+                                    <option>
+                                        Home &amp; Decor
+                                    </option>
+
+
+                                    <option>
+                                        Fashion – Men
+                                    </option>
+
+
+                                    <option>
+                                        Fashion – Women
+                                    </option>
+
+
+                                    <option>
+                                        Footwear
+                                    </option>
+
+
+                                    <option>
+                                        Watches
+                                    </option>
+
+
+                                    <option>
+                                        Jewellery &amp; Accessories
+                                    </option>
+
+
+                                    <option>
+                                        Beauty &amp; Personal Care
+                                    </option>
+
+
+                                    <option>
+                                        Sports &amp; Fitness
+                                    </option>
+
+
+                                    <option>
+                                        Toys &amp; Games
+                                    </option>
+
+
+                                    <option>
+                                        Books
+                                    </option>
+
+
+                                    <option>
+                                        Groceries
+                                    </option>
+
+
+                                    <option>
+                                        Baby Products
+                                    </option>
+
+
+                                    <option>
+                                        Automotive Accessories
+                                    </option>
+
+
+                                    <option>
+                                        Pet Supplies
+                                    </option>
+
 
                                 </select>
+
 
                             </div>
 
 
+
+                            <!-- PRICE -->
+
                             <div class="form-group">
+
 
                                 <label>
                                     Price *
                                 </label>
 
+
                                 <input
-                                    id="productPrice"
                                     type="number"
-                                    min="1"
+                                    id="productPrice"
+                                    name="price"
+                                    min="0"
+                                    step="0.01"
                                     required
-                                    placeholder="₹ Enter price"
+                                    placeholder="Enter price"
                                 >
+
 
                             </div>
 
 
+
+                            <!-- STOCK -->
+
                             <div class="form-group">
+
 
                                 <label>
                                     Stock Quantity *
                                 </label>
 
+
                                 <input
-                                    id="productStock"
                                     type="number"
+                                    id="productStock"
+                                    name="stock"
                                     min="0"
                                     required
-                                    placeholder="Enter stock"
+                                    placeholder="Enter stock quantity"
                                 >
+
 
                             </div>
 
 
+
+                            <!-- DESCRIPTION -->
+
                             <div class="form-group full">
+
 
                                 <label>
                                     Product Description
                                 </label>
 
+
                                 <textarea
                                     id="productDescription"
+                                    name="description"
                                     placeholder="Write product description..."
                                 ></textarea>
+
 
                             </div>
 
 
+
+                            <!-- IMAGE -->
+
                             <div class="form-group full">
+
 
                                 <label>
                                     Product Image
                                 </label>
 
+
                                 <div class="image-upload">
 
+
                                     <i class="fa-solid fa-cloud-arrow-up"></i>
+
 
                                     <p>
                                         Upload product image
                                     </p>
 
-                                    <input
-                                        type="file"
-                                        id="productImage"
-                                        accept="image/*"
-                                    >
+                                          <input
+    type="file"
+    id="productImage"
+    name="image"
+    accept="image/png,image/jpeg,image/jpg,image/webp"
+>
 
                                 </div>
 
+
                             </div>
 
+
                         </div>
+
 
 
                         <button
@@ -750,58 +1649,78 @@
 
                         </button>
 
+
                     </form>
+
 
                 </div>
 
 
-                <!-- PREVIEW -->
+
+                <!-- PRODUCT PREVIEW -->
 
                 <div class="dashboard-card">
 
+
                     <div class="card-title">
 
-                        <h3>Product Preview</h3>
+                        <h3>
+                            Product Preview
+                        </h3>
 
                     </div>
 
 
                     <div class="product-preview">
 
+
                         <img
                             id="previewImage"
                             src="https://placehold.co/600x400?text=Product+Preview"
+                            alt="Product Preview"
                         >
+
 
                         <h3 id="previewName">
                             Your Product
                         </h3>
 
+
                         <strong id="previewPrice">
                             ₹0
                         </strong>
+
 
                         <p id="previewDescription">
                             Product description will appear here.
                         </p>
 
+
                     </div>
+
 
                 </div>
 
+
             </div>
+
 
         </section>
 
 
-        <!-- ================= ORDERS ================= -->
+
+        <!-- =================================================
+             ORDERS
+        ================================================== -->
 
         <section
             class="seller-section"
             id="orders"
         >
 
+
             <div class="section-heading">
+
 
                 <div>
 
@@ -809,7 +1728,11 @@
                         ORDER MANAGEMENT
                     </span>
 
-                    <h1>Orders</h1>
+
+                    <h1>
+                        Orders
+                    </h1>
+
 
                     <p>
                         Track customer orders and delivery status.
@@ -817,58 +1740,122 @@
 
                 </div>
 
+
             </div>
+
 
 
             <div class="stats-grid">
 
-                <div class="stat-card">
-                    <div>
-                        <span>Total Orders</span>
-                        <h2>12</h2>
-                    </div>
-                </div>
 
                 <div class="stat-card">
+
                     <div>
-                        <span>Processing</span>
-                        <h2>5</h2>
+
+                        <span>
+                            Total Orders
+                        </span>
+
+                        <h2>
+                            12
+                        </h2>
+
                     </div>
+
                 </div>
 
-                <div class="stat-card">
-                    <div>
-                        <span>Delivered</span>
-                        <h2>6</h2>
-                    </div>
-                </div>
 
                 <div class="stat-card">
+
                     <div>
-                        <span>Total Sales</span>
-                        <h2>₹45,800</h2>
+
+                        <span>
+                            Processing
+                        </span>
+
+                        <h2>
+                            5
+                        </h2>
+
                     </div>
+
                 </div>
+
+
+                <div class="stat-card">
+
+                    <div>
+
+                        <span>
+                            Delivered
+                        </span>
+
+                        <h2>
+                            6
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div>
+
+                        <span>
+                            Total Sales
+                        </span>
+
+                        <h2>
+                            ₹45,800
+                        </h2>
+
+                    </div>
+
+                </div>
+
 
             </div>
 
 
+
             <div class="dashboard-card large-card">
+
 
                 <div class="table-wrapper">
 
+
                     <table>
+
 
                         <thead>
 
                             <tr>
 
-                                <th>Order ID</th>
-                                <th>Customer</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Date</th>
-                                <th>Action</th>
+                                <th>
+                                    Order ID
+                                </th>
+
+                                <th>
+                                    Customer
+                                </th>
+
+                                <th>
+                                    Amount
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Date
+                                </th>
+
+                                <th>
+                                    Action
+                                </th>
 
                             </tr>
 
@@ -877,87 +1864,158 @@
 
                         <tbody>
 
+
                             <tr>
-                                <td>#ORD001</td>
-                                <td>Priya Sharma</td>
-                                <td>₹1,299</td>
+
                                 <td>
+                                    #ORD001
+                                </td>
+
+                                <td>
+                                    Priya Sharma
+                                </td>
+
+                                <td>
+                                    ₹1,299
+                                </td>
+
+                                <td>
+
                                     <span class="status delivered">
                                         Delivered
                                     </span>
+
                                 </td>
-                                <td>28 Sep 2026</td>
+
                                 <td>
+                                    28 Sep 2026
+                                </td>
+
+                                <td>
+
                                     <button
+                                        type="button"
                                         class="small-btn"
                                         onclick="alert('Order details')"
                                     >
                                         View
                                     </button>
+
                                 </td>
+
                             </tr>
 
 
                             <tr>
-                                <td>#ORD002</td>
-                                <td>Rahul Verma</td>
-                                <td>₹2,499</td>
+
                                 <td>
+                                    #ORD002
+                                </td>
+
+                                <td>
+                                    Rahul Verma
+                                </td>
+
+                                <td>
+                                    ₹2,499
+                                </td>
+
+                                <td>
+
                                     <span class="status processing">
                                         Processing
                                     </span>
+
                                 </td>
-                                <td>27 Sep 2026</td>
+
                                 <td>
+                                    27 Sep 2026
+                                </td>
+
+                                <td>
+
                                     <button
+                                        type="button"
                                         class="small-btn"
                                         onclick="alert('Order details')"
                                     >
                                         View
                                     </button>
+
                                 </td>
+
                             </tr>
 
 
                             <tr>
-                                <td>#ORD003</td>
-                                <td>Sneha Patel</td>
-                                <td>₹1,799</td>
+
                                 <td>
+                                    #ORD003
+                                </td>
+
+                                <td>
+                                    Sneha Patel
+                                </td>
+
+                                <td>
+                                    ₹1,799
+                                </td>
+
+                                <td>
+
                                     <span class="status shipped">
                                         Shipped
                                     </span>
+
                                 </td>
-                                <td>26 Sep 2026</td>
+
                                 <td>
+                                    26 Sep 2026
+                                </td>
+
+                                <td>
+
                                     <button
+                                        type="button"
                                         class="small-btn"
                                         onclick="alert('Order details')"
                                     >
                                         View
                                     </button>
+
                                 </td>
+
                             </tr>
+
 
                         </tbody>
 
+
                     </table>
+
 
                 </div>
 
+
             </div>
+
 
         </section>
 
 
-        <!-- ================= CUSTOMERS ================= -->
+
+        <!-- =================================================
+             CUSTOMERS
+        ================================================== -->
 
         <section
             class="seller-section"
             id="customers"
         >
 
+
             <div class="section-heading">
+
 
                 <div>
 
@@ -965,7 +2023,11 @@
                         CUSTOMER MANAGEMENT
                     </span>
 
-                    <h1>Customers</h1>
+
+                    <h1>
+                        Customers
+                    </h1>
+
 
                     <p>
                         View customers who purchased from your store.
@@ -973,105 +2035,230 @@
 
                 </div>
 
+
             </div>
+
 
 
             <div class="stats-grid">
 
-                <div class="stat-card">
-                    <div>
-                        <span>Total Customers</span>
-                        <h2>128</h2>
-                    </div>
-                </div>
 
                 <div class="stat-card">
+
                     <div>
-                        <span>New This Month</span>
-                        <h2>24</h2>
+
+                        <span>
+                            Total Customers
+                        </span>
+
+                        <h2>
+                            128
+                        </h2>
+
                     </div>
+
                 </div>
 
-                <div class="stat-card">
-                    <div>
-                        <span>Average Order</span>
-                        <h2>₹3,840</h2>
-                    </div>
-                </div>
 
                 <div class="stat-card">
+
                     <div>
-                        <span>Returning</span>
-                        <h2>78%</h2>
+
+                        <span>
+                            New This Month
+                        </span>
+
+                        <h2>
+                            24
+                        </h2>
+
                     </div>
+
                 </div>
+
+
+                <div class="stat-card">
+
+                    <div>
+
+                        <span>
+                            Average Order
+                        </span>
+
+                        <h2>
+                            ₹3,840
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div>
+
+                        <span>
+                            Returning
+                        </span>
+
+                        <h2>
+                            78%
+                        </h2>
+
+                    </div>
+
+                </div>
+
 
             </div>
+
 
 
             <div class="dashboard-card large-card">
 
+
                 <div class="table-wrapper">
 
+
                     <table>
+
 
                         <thead>
 
                             <tr>
-                                <th>Customer</th>
-                                <th>Email</th>
-                                <th>Orders</th>
-                                <th>Total Spent</th>
-                                <th>Last Order</th>
+
+                                <th>
+                                    Customer
+                                </th>
+
+                                <th>
+                                    Email
+                                </th>
+
+                                <th>
+                                    Orders
+                                </th>
+
+                                <th>
+                                    Total Spent
+                                </th>
+
+                                <th>
+                                    Last Order
+                                </th>
+
                             </tr>
 
                         </thead>
 
+
                         <tbody>
 
-                            <tr>
-                                <td>Priya Sharma</td>
-                                <td>priya@example.com</td>
-                                <td>5</td>
-                                <td>₹8,420</td>
-                                <td>28 Sep 2026</td>
-                            </tr>
 
                             <tr>
-                                <td>Rahul Verma</td>
-                                <td>rahul@example.com</td>
-                                <td>3</td>
-                                <td>₹5,699</td>
-                                <td>27 Sep 2026</td>
+
+                                <td>
+                                    Priya Sharma
+                                </td>
+
+                                <td>
+                                    priya@example.com
+                                </td>
+
+                                <td>
+                                    5
+                                </td>
+
+                                <td>
+                                    ₹8,420
+                                </td>
+
+                                <td>
+                                    28 Sep 2026
+                                </td>
+
                             </tr>
 
+
                             <tr>
-                                <td>Sneha Patel</td>
-                                <td>sneha@example.com</td>
-                                <td>4</td>
-                                <td>₹7,120</td>
-                                <td>26 Sep 2026</td>
+
+                                <td>
+                                    Rahul Verma
+                                </td>
+
+                                <td>
+                                    rahul@example.com
+                                </td>
+
+                                <td>
+                                    3
+                                </td>
+
+                                <td>
+                                    ₹5,699
+                                </td>
+
+                                <td>
+                                    27 Sep 2026
+                                </td>
+
                             </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    Sneha Patel
+                                </td>
+
+                                <td>
+                                    sneha@example.com
+                                </td>
+
+                                <td>
+                                    4
+                                </td>
+
+                                <td>
+                                    ₹7,120
+                                </td>
+
+                                <td>
+                                    26 Sep 2026
+                                </td>
+
+                            </tr>
+
 
                         </tbody>
 
+
                     </table>
+
 
                 </div>
 
+
             </div>
+
 
         </section>
 
 
-        <!-- ================= ANALYTICS ================= -->
+
+        <!-- =================================================
+             ANALYTICS
+        ================================================== -->
 
         <section
             class="seller-section"
             id="analytics"
         >
 
+
             <div class="section-heading">
+
 
                 <div>
 
@@ -1079,7 +2266,11 @@
                         STORE ANALYTICS
                     </span>
 
-                    <h1>Analytics</h1>
+
+                    <h1>
+                        Analytics
+                    </h1>
+
 
                     <p>
                         Understand your store performance.
@@ -1089,129 +2280,264 @@
 
 
                 <button
+                    type="button"
                     class="secondary-btn"
                     onclick="alert('Report generated successfully!')"
                 >
+
                     <i class="fa-solid fa-download"></i>
+
                     Generate Report
+
                 </button>
 
+
             </div>
+
 
 
             <div class="stats-grid">
 
-                <div class="stat-card">
-                    <span>Total Sales</span>
-                    <h2>₹45,800</h2>
-                    <small class="positive">↗ 18%</small>
-                </div>
 
                 <div class="stat-card">
-                    <span>Revenue</span>
-                    <h2>₹32,600</h2>
-                    <small class="positive">↗ 15%</small>
+
+                    <span>
+                        Total Sales
+                    </span>
+
+                    <h2>
+                        ₹45,800
+                    </h2>
+
+                    <small class="positive">
+                        ↗ 18%
+                    </small>
+
                 </div>
 
-                <div class="stat-card">
-                    <span>Orders</span>
-                    <h2>12</h2>
-                    <small class="positive">↗ 8%</small>
-                </div>
 
                 <div class="stat-card">
-                    <span>Rating</span>
-                    <h2>4.8/5</h2>
-                    <small class="positive">↗ 0.2</small>
+
+                    <span>
+                        Revenue
+                    </span>
+
+                    <h2>
+                        ₹32,600
+                    </h2>
+
+                    <small class="positive">
+                        ↗ 15%
+                    </small>
+
                 </div>
+
+
+                <div class="stat-card">
+
+                    <span>
+                        Orders
+                    </span>
+
+                    <h2>
+                        12
+                    </h2>
+
+                    <small class="positive">
+                        ↗ 8%
+                    </small>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span>
+                        Rating
+                    </span>
+
+                    <h2>
+                        4.8/5
+                    </h2>
+
+                    <small class="positive">
+                        ↗ 0.2
+                    </small>
+
+                </div>
+
 
             </div>
+
 
 
             <div class="dashboard-grid">
 
+
                 <div class="dashboard-card">
 
+
                     <div class="card-title">
-                        <h3>Sales Trend</h3>
+
+                        <h3>
+                            Sales Trend
+                        </h3>
+
                     </div>
+
 
                     <div class="sales-chart">
 
-                        <div class="chart-bar" style="height:35%">
+
+                        <div
+                            class="chart-bar"
+                            style="height:35%"
+                        >
                             <span>Mon</span>
                         </div>
 
-                        <div class="chart-bar" style="height:55%">
+
+                        <div
+                            class="chart-bar"
+                            style="height:55%"
+                        >
                             <span>Tue</span>
                         </div>
 
-                        <div class="chart-bar" style="height:45%">
+
+                        <div
+                            class="chart-bar"
+                            style="height:45%"
+                        >
                             <span>Wed</span>
                         </div>
 
-                        <div class="chart-bar" style="height:68%">
+
+                        <div
+                            class="chart-bar"
+                            style="height:68%"
+                        >
                             <span>Thu</span>
                         </div>
 
-                        <div class="chart-bar" style="height:58%">
+
+                        <div
+                            class="chart-bar"
+                            style="height:58%"
+                        >
                             <span>Fri</span>
                         </div>
 
-                        <div class="chart-bar" style="height:82%">
+
+                        <div
+                            class="chart-bar"
+                            style="height:82%"
+                        >
                             <span>Sat</span>
                         </div>
 
-                        <div class="chart-bar" style="height:95%">
+
+                        <div
+                            class="chart-bar"
+                            style="height:95%"
+                        >
                             <span>Sun</span>
                         </div>
 
+
                     </div>
 
+
                 </div>
+
 
 
                 <div class="dashboard-card">
 
+
                     <div class="card-title">
-                        <h3>Top Categories</h3>
+
+                        <h3>
+                            Top Categories
+                        </h3>
+
                     </div>
 
-                    <div class="category-stat">
-                        <span>Electronics</span>
-                        <strong>42%</strong>
-                    </div>
 
                     <div class="category-stat">
-                        <span>Fashion</span>
-                        <strong>26%</strong>
+
+                        <span>
+                            Electronics
+                        </span>
+
+                        <strong>
+                            42%
+                        </strong>
+
                     </div>
 
-                    <div class="category-stat">
-                        <span>Home & Living</span>
-                        <strong>18%</strong>
-                    </div>
 
                     <div class="category-stat">
-                        <span>Others</span>
-                        <strong>14%</strong>
+
+                        <span>
+                            Fashion
+                        </span>
+
+                        <strong>
+                            26%
+                        </strong>
+
                     </div>
+
+
+                    <div class="category-stat">
+
+                        <span>
+                            Home &amp; Living
+                        </span>
+
+                        <strong>
+                            18%
+                        </strong>
+
+                    </div>
+
+
+                    <div class="category-stat">
+
+                        <span>
+                            Others
+                        </span>
+
+                        <strong>
+                            14%
+                        </strong>
+
+                    </div>
+
 
                 </div>
 
+
             </div>
+
 
         </section>
 
 
-        <!-- ================= SETTINGS ================= -->
+
+        <!-- =================================================
+             SETTINGS
+        ================================================== -->
 
         <section
             class="seller-section"
             id="settings"
         >
 
+
             <div class="section-heading">
+
 
                 <div>
 
@@ -1219,7 +2545,11 @@
                         STORE SETTINGS
                     </span>
 
-                    <h1>Settings</h1>
+
+                    <h1>
+                        Settings
+                    </h1>
+
 
                     <p>
                         Manage your seller account and store preferences.
@@ -1227,7 +2557,9 @@
 
                 </div>
 
+
             </div>
+
 
 
             <div class="settings-grid">
@@ -1235,46 +2567,58 @@
 
                 <div class="dashboard-card">
 
-                    <h3>Store Information</h3>
+
+                    <h3>
+                        Store Information
+                    </h3>
+
 
                     <form id="settingsForm">
 
+
                         <div class="form-group">
+
 
                             <label>
                                 Store Name
                             </label>
 
+
                             <input
                                 value="NexaCart Seller Store"
                             >
+
 
                         </div>
 
 
                         <div class="form-group">
+
 
                             <label>
                                 Seller Email
                             </label>
 
+
                             <input
                                 id="sellerEmail"
-                                value="seller@nexacart.com"
+                                value="{{ seller_email }}"
                             >
+
 
                         </div>
 
 
                         <div class="form-group">
 
+
                             <label>
                                 Store Description
                             </label>
 
-                            <textarea>
-Your trusted NexaCart store.
-                            </textarea>
+
+                            <textarea>Your trusted NexaCart store.</textarea>
+
 
                         </div>
 
@@ -1283,20 +2627,29 @@ Your trusted NexaCart store.
                             type="submit"
                             class="primary-btn"
                         >
+
                             Save Changes
+
                         </button>
 
+
                     </form>
+
 
                 </div>
 
 
+
                 <div class="dashboard-card">
 
-                    <h3>Preferences</h3>
+
+                    <h3>
+                        Preferences
+                    </h3>
 
 
                     <div class="setting-row">
+
 
                         <div>
 
@@ -1310,14 +2663,23 @@ Your trusted NexaCart store.
 
                         </div>
 
-                        <button class="toggle active">
+
+                        <button
+                            type="button"
+                            class="toggle active"
+                        >
+
                             <span></span>
+
                         </button>
+
 
                     </div>
 
 
+
                     <div class="setting-row">
+
 
                         <div>
 
@@ -1331,14 +2693,23 @@ Your trusted NexaCart store.
 
                         </div>
 
-                        <button class="toggle active">
+
+                        <button
+                            type="button"
+                            class="toggle active"
+                        >
+
                             <span></span>
+
                         </button>
+
 
                     </div>
 
 
+
                     <div class="setting-row">
+
 
                         <div>
 
@@ -1352,24 +2723,480 @@ Your trusted NexaCart store.
 
                         </div>
 
-                        <button class="toggle active">
+
+                        <button
+                            type="button"
+                            class="toggle active"
+                        >
+
                             <span></span>
+
                         </button>
+
 
                     </div>
 
+
                 </div>
+
 
             </div>
 
+
         </section>
 
+
     </main>
+
 
 </div>
 
 
-<script src="{{ url_for('static', filename='seller_dashboard.js') }}"></script>
+
+<!-- =========================================================
+     BASIC SELLER DASHBOARD NAVIGATION
+========================================================== -->
+
+<script>
+
+function openSellerSection(sectionId) {
+
+    const sections = document.querySelectorAll(
+        ".seller-section"
+    );
+
+    sections.forEach(function(section) {
+
+        section.classList.remove(
+            "active-section"
+        );
+
+    });
+
+
+    const targetSection = document.getElementById(
+        sectionId
+    );
+
+
+    if (targetSection) {
+
+        targetSection.classList.add(
+            "active-section"
+        );
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+
+    const navItems = document.querySelectorAll(
+        ".seller-nav-item"
+    );
+
+
+    navItems.forEach(function(item) {
+
+        item.classList.remove(
+            "active"
+        );
+
+
+        if (
+            item.dataset.section === sectionId
+        ) {
+
+            item.classList.add(
+                "active"
+            );
+
+        }
+
+    });
+
+}
+
+
+/* Product detail helper */
+
+function viewProductDetails(productId) {
+
+    const row = document.querySelector(
+        '[data-product-id="' + productId + '"]'
+    );
+
+
+    if (!row) {
+
+        return;
+
+    }
+
+
+    const productName =
+        row.querySelector(
+            "strong"
+        );
+
+
+    if (productName) {
+
+        alert(
+            "Product: "
+            + productName.textContent.trim()
+            + "\nProduct ID: "
+            + productId
+        );
+
+    }
+
+}
+
+
+/* Product preview */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+
+        const productName =
+            document.getElementById(
+                "productName"
+            );
+
+
+        const productPrice =
+            document.getElementById(
+                "productPrice"
+            );
+
+
+        const productDescription =
+            document.getElementById(
+                "productDescription"
+            );
+
+
+        const productImage =
+            document.getElementById(
+                "productImage"
+            );
+
+
+        const previewName =
+            document.getElementById(
+                "previewName"
+            );
+
+
+        const previewPrice =
+            document.getElementById(
+                "previewPrice"
+            );
+
+
+        const previewDescription =
+            document.getElementById(
+                "previewDescription"
+            );
+
+
+        const previewImage =
+            document.getElementById(
+                "previewImage"
+            );
+
+
+        if (productName) {
+
+            productName.addEventListener(
+                "input",
+                function() {
+
+                    previewName.textContent =
+                        this.value
+                        || "Your Product";
+
+                }
+            );
+
+        }
+
+
+        if (productPrice) {
+
+            productPrice.addEventListener(
+                "input",
+                function() {
+
+                    previewPrice.textContent =
+                        "₹"
+                        + (
+                            this.value
+                            || "0"
+                        );
+
+                }
+            );
+
+        }
+
+
+        if (productDescription) {
+
+            productDescription.addEventListener(
+                "input",
+                function() {
+
+                    previewDescription.textContent =
+                        this.value
+                        || "Product description will appear here.";
+
+                }
+            );
+
+        }
+
+
+        if (
+            productImage
+            && previewImage
+        ) {
+
+            productImage.addEventListener(
+                "change",
+                function() {
+
+                    const file =
+                        this.files[0];
+
+
+                    if (!file) {
+
+                        return;
+
+                    }
+
+
+                    const reader =
+                        new FileReader();
+
+
+                    reader.onload =
+                        function(event) {
+
+                            previewImage.src =
+                                event.target.result;
+
+                        };
+
+
+                    reader.readAsDataURL(
+                        file
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* Product search */
+
+        const productSearch =
+            document.getElementById(
+                "productSearch"
+            );
+
+
+        const categoryFilter =
+            document.getElementById(
+                "categoryFilter"
+            );
+
+
+        function filterProducts() {
+
+            const search =
+                (
+                    productSearch
+                    ? productSearch.value
+                    : ""
+                )
+                .toLowerCase()
+                .trim();
+
+
+            const category =
+                (
+                    categoryFilter
+                    ? categoryFilter.value
+                    : ""
+                )
+                .toLowerCase()
+                .trim();
+
+
+            const rows =
+                document.querySelectorAll(
+                    "#productsTable tr[data-product-id]"
+                );
+
+
+            let visibleCount = 0;
+
+
+            rows.forEach(
+                function(row) {
+
+
+                    const name =
+                        row.dataset.productName
+                        || "";
+
+
+                    const rowCategory =
+                        row.dataset.productCategory
+                        || "";
+
+
+                    const searchMatch =
+                        !search
+                        || name.includes(search);
+
+
+                    const categoryMatch =
+                        !category
+                        || rowCategory === category;
+
+
+                    if (
+                        searchMatch
+                        && categoryMatch
+                    ) {
+
+                        row.style.display =
+                            "";
+
+                        visibleCount++;
+
+                    } else {
+
+                        row.style.display =
+                            "none";
+
+                    }
+
+                }
+            );
+
+
+            const countElement =
+                document.getElementById(
+                    "productCount"
+                );
+
+
+            if (countElement) {
+
+                countElement.textContent =
+                    visibleCount;
+
+            }
+
+        }
+
+
+        if (productSearch) {
+
+            productSearch.addEventListener(
+                "input",
+                filterProducts
+            );
+
+        }
+
+
+        if (categoryFilter) {
+
+            categoryFilter.addEventListener(
+                "change",
+                filterProducts
+            );
+
+        }
+
+
+        /* Settings form */
+
+        const settingsForm =
+            document.getElementById(
+                "settingsForm"
+            );
+
+
+        if (settingsForm) {
+
+            settingsForm.addEventListener(
+                "submit",
+                function(event) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Settings saved successfully!"
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* Toggle buttons */
+
+        document
+            .querySelectorAll(
+                ".toggle"
+            )
+            .forEach(
+                function(toggle) {
+
+                    toggle.addEventListener(
+                        "click",
+                        function() {
+
+                            this.classList.toggle(
+                                "active"
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+    }
+);
+
+</script>
+
+
+
+<!-- =========================================================
+     MAIN SELLER JAVASCRIPT
+========================================================== -->
+
+<script
+    src="{{ url_for('static', filename='seller_dashboard.js') }}"
+></script>
+
 
 </body>
+
 </html>

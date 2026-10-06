@@ -11,7 +11,7 @@
     <title>NexaCart | All Products</title>
 
     <link rel="stylesheet"
-          href="products.css">
+          href="{{ url_for('static', filename='products.css') }}">
 
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -22,13 +22,13 @@
 
 <header class="products-navbar">
 
-    <a href="home.html"
+    <a href="{{ url_for('home') }}"
        class="logo">
         <i class="fa-solid fa-brain"></i>
         Nexa<span>Cart</span>
     </a>
 
-    <a href="home.html"
+    <a href="{{ url_for('home') }}"
        class="back-home">
         <i class="fa-solid fa-arrow-left"></i>
         Home
@@ -181,8 +181,8 @@
 </main>
 
 
-<script src="products-data.js"></script>
-<script src="products.js"></script>
+<script id="catalogProductsData" type="application/json">{{ products|tojson }}</script>
+<script src="{{ url_for('static', filename='products.js') }}" defer></script>
 
 </body>
 

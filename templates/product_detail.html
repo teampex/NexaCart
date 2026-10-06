@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ product.name }} | NexaCart</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; color: #eef0ff; background: #050918; font-family: Arial, sans-serif; }
+        header { height: 72px; padding: 0 6%; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #ffffff18; }
+        header a { color: #eef0ff; text-decoration: none; }
+        .logo { font-size: 24px; font-weight: 800; }.logo span { color: #f5b642; }
+        .back { color: #c8cbe0; }
+        main { width: min(1100px, 90%); margin: 56px auto; }
+        .detail { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: center; }
+        .image { min-height: 420px; display: grid; place-items: center; overflow: hidden; border-radius: 22px; background: #11182b; }
+        .image img { width: 100%; height: 480px; object-fit: contain; }
+        .placeholder { color: #7c83a2; font-size: 64px; }
+        .category { color: #b294ff; text-transform: uppercase; letter-spacing: .12em; font-size: 13px; }
+        h1 { margin: 14px 0; font-size: clamp(30px, 4vw, 46px); }
+        .price { margin: 24px 0; color: #fff; font-size: 30px; font-weight: 700; }
+        .description { color: #c0c4d6; line-height: 1.8; white-space: pre-line; }
+        .stock { margin: 24px 0; color: #aeb4ca; }
+        button { border: 0; border-radius: 10px; padding: 14px 22px; background: #7454ff; color: white; font-size: 16px; font-weight: 700; cursor: pointer; }
+        button:disabled { background: #45495c; cursor: not-allowed; }
+        .product-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+        .buy-now { background: #f5b642; color: #172033; }
+        .nav-actions { display: flex; gap: 18px; }
+        .more-products { margin-top: 72px; }
+        .more-products h2 { margin: 0 0 22px; font-size: 26px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
+        .product-card { overflow: hidden; border: 1px solid #ffffff18; border-radius: 14px; background: #11182b; color: inherit; text-decoration: none; transition: transform .2s, border-color .2s; }
+        .product-card:hover { transform: translateY(-4px); border-color: #7454ff; }
+        .product-card img, .product-placeholder { width: 100%; height: 180px; object-fit: cover; background: #18213a; }
+        .product-placeholder { display: grid; place-items: center; color: #7c83a2; font-size: 36px; }
+        .product-card-info { padding: 14px; }
+        .product-card-info small { color: #b294ff; }
+        .product-card-info h3 { margin: 8px 0; font-size: 16px; }
+        .product-card-info strong { color: #fff; }
+        @media (max-width: 700px) { main { margin: 28px auto; }.detail { grid-template-columns: 1fr; gap: 28px; }.image { min-height: 280px; }.image img { height: 320px; } }
+    </style>
+</head>
+<body>
+    <header>
+        <a class="logo" href="{{ url_for('home') }}">Nexa<span>Cart</span></a>
+        <nav class="nav-actions">
+            <a class="back" href="{{ url_for('my_orders') }}">My Orders</a>
+            <a class="back" href="{{ url_for('products_page') }}"><i class="fa-solid fa-arrow-left"></i> All products</a>
+        </nav>
+    </header>
+    <main>
+        <section class="detail">
+            <div class="image">
+                {% if product.image %}<img src="{{ product.image }}" alt="{{ product.name }}">
+                {% else %}<div class="placeholder"><i class="fa-regular fa-image"></i></div>{% endif %}
+            </div>
+            <div>
+                <span class="category">{{ product.category }}</span>
+                <h1>{{ product.name }}</h1>
+                <div class="price">₹{{ "{:,.2f}".format(product.price) }}</div>
+                <p class="description">{{ product.description }}</p>
+                <p class="stock">{% if product.stock > 0 %}{{ product.stock }} available{% else %}Out of stock{% endif %}</p>
+                <div class="product-actions">
+                    <button id="addToCart" {% if product.stock < 1 %}disabled{% endif %}>Add to Cart</button>
+                    <button class="buy-now" id="buyNow" {% if product.stock < 1 %}disabled{% endif %}>Buy Now</button>
+                </div>
+            </div>
+        </section>
+        {% if more_products %}
+        <section class="more-products">
+            <h2>More products to explore</h2>
+            <div class="product-grid">
+                {% for item in more_products %}
+                <a class="product-card" href="{{ url_for('product_detail', product_id=item.id) }}">
+                    {% if item.image %}<img src="{{ item.image }}" alt="{{ item.name }}" loading="lazy">
+                    {% else %}<div class="product-placeholder"><i class="fa-regular fa-image"></i></div>{% endif %}
+                    <div class="product-card-info">
+                        <small>{{ item.category }}</small>
+                        <h3>{{ item.name }}</h3>
+                        <strong>&#8377;{{ "{:,.2f}".format(item.price) }}</strong>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+    </main>
+    <script id="productData" type="application/json">{{ product|tojson }}</script>
+    <script>
+        const product = JSON.parse(document.getElementById("productData").textContent);
+        async function addProductToCart() {
+            const response = await fetch("/api/cart", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "add", product_id: product.id })
+            });
+            const result = await response.json();
+            if (!response.ok || !result.success) throw new Error(result.message || "Could not add product to cart.");
+        }
+        document.getElementById("addToCart")?.addEventListener("click", () => {
+            addProductToCart().then(() => alert(`${product.name} added to cart.`)).catch(error => alert(error.message));
+        });
+        document.getElementById("buyNow")?.addEventListener("click", async () => {
+            try {
+                await addProductToCart();
+                window.location.href = "{{ url_for('checkout') }}";
+            } catch (error) { alert(error.message); }
+        });
+    </script>
+</body>
+</html>

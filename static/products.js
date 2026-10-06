@@ -1,552 +1,128 @@
+const allProducts = JSON.parse(document.getElementById("catalogProductsData")?.textContent || "[]");
 const grid = document.getElementById("productsGrid");
+const searchInput = document.getElementById("productSearch");
+const categoryFilter = document.getElementById("categoryFilter");
+const priceFilter = document.getElementById("priceFilter");
+const ratingFilter = document.getElementById("ratingFilter");
+const sortProducts = document.getElementById("sortProducts");
+const pageTitle = document.getElementById("pageTitle");
+const productCount = document.getElementById("productCount");
+const noResults = document.getElementById("noResults");
+const categories = [...new Set(allProducts.map(product => product.category).filter(Boolean))].sort();
 
-const searchInput =
-    document.getElementById("productSearch");
-
-const categoryFilter =
-    document.getElementById("categoryFilter");
-
-const priceFilter =
-    document.getElementById("priceFilter");
-
-const ratingFilter =
-    document.getElementById("ratingFilter");
-
-const sortProducts =
-    document.getElementById("sortProducts");
-
-const pageTitle =
-    document.getElementById("pageTitle");
-
-const productCount =
-    document.getElementById("productCount");
-
-const noResults =
-    document.getElementById("noResults");
-
-
-/* ==============================
-   CATEGORY DROPDOWN
-============================== */
+function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+}
 
 categories.forEach(category => {
-
-    const option =
-        document.createElement("option");
-
+    const option = document.createElement("option");
     option.value = category;
-
     option.textContent = category;
-
     categoryFilter.appendChild(option);
-
 });
 
-
-/* ==============================
-   URL CATEGORY
-============================== */
-
-const params =
-    new URLSearchParams(window.location.search);
-
-const selectedCategory =
-    params.get("category");
-
-
-if (selectedCategory &&
-    categories.includes(selectedCategory)) {
-
-    categoryFilter.value =
-        selectedCategory;
-
-    pageTitle.textContent =
-        selectedCategory;
-
+const selectedCategory = new URLSearchParams(window.location.search).get("category");
+if (selectedCategory && categories.includes(selectedCategory)) {
+    categoryFilter.value = selectedCategory;
+    pageTitle.textContent = selectedCategory;
 }
-
-
-/* ==============================
-   RENDER
-============================== */
 
 function renderProducts() {
+    let products = [...allProducts];
+    const search = searchInput.value.trim().toLowerCase();
+    if (search) products = products.filter(p => `${p.name} ${p.category}`.toLowerCase().includes(search));
 
-    let products =
-        [...allProducts];
+    if (categoryFilter.value !== "all") products = products.filter(p => p.category === categoryFilter.value);
+    const price = priceFilter.value;
+    if (price === "0-1000") products = products.filter(p => p.price < 1000);
+    if (price === "1000-2000") products = products.filter(p => p.price >= 1000 && p.price <= 2000);
+    if (price === "2000-5000") products = products.filter(p => p.price > 2000 && p.price <= 5000);
+    if (price === "5000+") products = products.filter(p => p.price > 5000);
+    if (ratingFilter.value !== "all") products = products.filter(p => Number(p.rating || 0) >= Number(ratingFilter.value));
 
+    if (sortProducts.value === "low") products.sort((a, b) => a.price - b.price);
+    if (sortProducts.value === "high") products.sort((a, b) => b.price - a.price);
+    if (sortProducts.value === "rating") products.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    if (sortProducts.value === "newest") products.sort((a, b) => b.id - a.id);
 
-    /* SEARCH */
-
-    const search =
-        searchInput.value
-            .trim()
-            .toLowerCase();
-
-    if (search) {
-
-        products =
-            products.filter(product =>
-
-                product.name
-                    .toLowerCase()
-                    .includes(search)
-
-                ||
-
-                product.category
-                    .toLowerCase()
-                    .includes(search)
-            );
-    }
-
-
-    /* CATEGORY */
-
-    const category =
-        categoryFilter.value;
-
-    if (category !== "all") {
-
-        products =
-            products.filter(product =>
-                product.category === category
-            );
-    }
-
-
-    /* PRICE */
-
-    const price =
-        priceFilter.value;
-
-    if (price === "0-1000") {
-
-        products =
-            products.filter(p =>
-                p.price < 1000
-            );
-
-    }
-
-    if (price === "1000-2000") {
-
-        products =
-            products.filter(p =>
-                p.price >= 1000 &&
-                p.price <= 2000
-            );
-
-    }
-
-    if (price === "2000-5000") {
-
-        products =
-            products.filter(p =>
-                p.price > 2000 &&
-                p.price <= 5000
-            );
-
-    }
-
-    if (price === "5000+") {
-
-        products =
-            products.filter(p =>
-                p.price > 5000
-            );
-    }
-
-
-    /* RATING */
-
-    const rating =
-        ratingFilter.value;
-
-    if (rating !== "all") {
-
-        products =
-            products.filter(p =>
-                p.rating >= Number(rating)
-            );
-    }
-
-
-    /* SORT */
-
-    const sort =
-        sortProducts.value;
-
-    if (sort === "low") {
-
-        products.sort(
-            (a,b) => a.price - b.price
-        );
-    }
-
-    if (sort === "high") {
-
-        products.sort(
-            (a,b) => b.price - a.price
-        );
-    }
-
-    if (sort === "rating") {
-
-        products.sort(
-            (a,b) => b.rating - a.rating
-        );
-    }
-
-    if (sort === "newest") {
-
-        products.sort(
-            (a,b) => b.id - a.id
-        );
-    }
-
-
-    /* COUNT */
-
-    productCount.textContent =
-        `${products.length} products found`;
-
-
-    /* EMPTY */
-
-    if (products.length === 0) {
-
-        grid.innerHTML = "";
-
-        noResults.style.display =
-            "block";
-
-        return;
-    }
-
-    noResults.style.display =
-        "none";
-
-
-    /* CARDS */
-
-    grid.innerHTML =
-        products.map(product =>
-            createProductCard(product)
-        ).join("");
-
-
+    productCount.textContent = `${products.length} products found`;
+    noResults.style.display = products.length ? "none" : "block";
+    grid.innerHTML = products.map(createProductCard).join("");
     updateWishlistUI();
 }
-
-
-/* ==============================
-   PRODUCT CARD
-============================== */
 
 function createProductCard(product) {
-
-    return `
-
-        <article class="product-card">
-
-            <div class="product-image">
-
-                ${
-                    product.badge
-                    ?
-                    `<span class="badge">
-                        ${product.badge}
-                    </span>`
-                    :
-                    ""
-                }
-
-                <button
-                    class="wishlist"
-                    onclick="toggleWishlist(${product.id})">
-
-                    <i class="fa-regular fa-heart"></i>
-
-                </button>
-
-                <img
-                    src="${product.image}"
-                    alt="${product.name}"
-                    loading="lazy">
-
+    const name = escapeHtml(product.name);
+    const image = escapeHtml(product.image);
+    const rating = Number(product.rating || 0);
+    const price = Number(product.price || 0);
+    return `<article class="product-card">
+        <div class="product-image">
+            <button class="wishlist" onclick="toggleWishlist(${product.id})" aria-label="Toggle wishlist"><i class="fa-regular fa-heart"></i></button>
+            <a href="/products/${product.id}" aria-label="View ${name}">${image ? `<img src="${image}" alt="${name}" loading="lazy">` : `<div class="product-image-placeholder"><i class="fa-regular fa-image"></i></div>`}</a>
+        </div>
+        <div class="product-info">
+            <span class="product-category">${escapeHtml(product.category)}</span>
+            <h3><a href="/products/${product.id}">${name}</a></h3>
+            <div class="rating">${rating ? `⭐ ${rating}` : "No ratings yet"}<span>(${Number(product.reviews || 0)})</span></div>
+            <div class="price-row"><span class="price">₹${price.toLocaleString("en-IN")}</span></div>
+            <div class="card-actions">
+                <button class="add-cart" onclick="addToCart(${product.id})"><i class="fa-solid fa-bag-shopping"></i> Add to Cart</button>
+                <a class="quick-view" href="/products/${product.id}" aria-label="View product details"><i class="fa-regular fa-eye"></i></a>
             </div>
-
-
-            <div class="product-info">
-
-                <span class="product-category">
-                    ${product.category}
-                </span>
-
-                <h3>
-                    ${product.name}
-                </h3>
-
-                <div class="rating">
-
-                    ⭐ ${product.rating}
-
-                    <span>
-                        (${product.reviews})
-                    </span>
-
-                </div>
-
-
-                <div class="price-row">
-
-                    <span class="price">
-                        ₹${product.price.toLocaleString("en-IN")}
-                    </span>
-
-                    <span class="old-price">
-                        ₹${product.oldPrice.toLocaleString("en-IN")}
-                    </span>
-
-                    <span class="discount">
-                        ${product.discount}% OFF
-                    </span>
-
-                </div>
-
-
-                <div class="card-actions">
-
-                    <button
-                        class="add-cart"
-                        onclick="addToCart(${product.id})">
-
-                        <i class="fa-solid fa-bag-shopping"></i>
-                        Add to Cart
-
-                    </button>
-
-
-                    <button
-                        class="quick-view"
-                        onclick="quickView(${product.id})">
-
-                        <i class="fa-regular fa-eye"></i>
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        </article>
-
-    `;
+        </div>
+    </article>`;
 }
-
-
-/* ==============================
-   CART
-============================== */
 
 function addToCart(id) {
-
-    const product =
-        allProducts.find(
-            p => p.id === id
-        );
-
+    const product = allProducts.find(p => p.id === id);
     if (!product) return;
-
-
-    let cart =
-        JSON.parse(
-            localStorage.getItem("nexaCart")
-        ) || [];
-
-
-    const existing =
-        cart.find(
-            item => item.id === id
-        );
-
-
-    if (existing) {
-
-        existing.quantity++;
-
-    } else {
-
-        cart.push({
-
-            id: product.id,
-
-            name: product.name,
-
-            price: product.price,
-
-            image: product.image,
-
-            quantity: 1
-
-        });
-
-    }
-
-
-    localStorage.setItem(
-        "nexaCart",
-        JSON.stringify(cart)
-    );
-
-
-    alert(
-        `${product.name} added to cart!`
-    );
+    fetch("/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "add", product_id: product.id })
+    }).then(async response => {
+        const result = await response.json();
+        if (!response.ok || !result.success) throw new Error(result.message || "Could not add to cart.");
+        alert(`${product.name} added to cart!`);
+    }).catch(error => alert(error.message));
 }
-
-
-/* ==============================
-   WISHLIST
-============================== */
 
 function toggleWishlist(id) {
-
-    let wishlist =
-        JSON.parse(
-            localStorage.getItem("nexaWishlist")
-        ) || [];
-
-
-    if (wishlist.includes(id)) {
-
-        wishlist =
-            wishlist.filter(
-                item => item !== id
-            );
-
-    } else {
-
-        wishlist.push(id);
-
-    }
-
-
-    localStorage.setItem(
-        "nexaWishlist",
-        JSON.stringify(wishlist)
-    );
-
-
-    updateWishlistUI();
+    const product = allProducts.find(p => p.id === id);
+    if (!product) return;
+    fetch("/api/wishlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "toggle", product_id: product.id })
+    }).then(async response => {
+        const result = await response.json();
+        if (!response.ok || !result.success) throw new Error(result.message || "Could not update wishlist.");
+        updateWishlistUI(result.items || []);
+    }).catch(error => alert(error.message));
 }
 
-
-function updateWishlistUI() {
-
-    const wishlist =
-        JSON.parse(
-            localStorage.getItem("nexaWishlist")
-        ) || [];
-
-
-    document
-        .querySelectorAll(".wishlist")
-        .forEach((button, index) => {
-
-            const card =
-                button.closest(".product-card");
-
-            const productName =
-                card.querySelector("h3")
-                    .textContent;
-
-            const product =
-                allProducts.find(
-                    p => p.name === productName
-                );
-
-            if (!product) return;
-
-
-            if (wishlist.includes(product.id)) {
-
-                button.classList.add("active");
-
-                button.innerHTML =
-                    `<i class="fa-solid fa-heart"></i>`;
-
-            } else {
-
-                button.classList.remove("active");
-
-                button.innerHTML =
-                    `<i class="fa-regular fa-heart"></i>`;
-            }
-
-        });
+function updateWishlistUI(items = null) {
+    const readFromDatabase = items ? Promise.resolve(items) : fetch("/api/wishlist").then(response => response.json()).then(result => {
+        if (!result.success) throw new Error(result.message || "Could not load wishlist.");
+        return result.items || [];
+    });
+    readFromDatabase.then(wishlistItems => {
+    const wishlist = new Set(wishlistItems.map(item => item.name));
+    document.querySelectorAll(".wishlist").forEach(button => {
+        const card = button.closest(".product-card");
+        const product = allProducts.find(p => p.name === card.querySelector("h3").textContent);
+        const active = product && wishlist.has(product.name);
+        button.classList.toggle("active", Boolean(active));
+        button.innerHTML = `<i class="${active ? "fa-solid" : "fa-regular"} fa-heart"></i>`;
+    });
+    }).catch(error => console.error(error));
 }
-
-
-/* ==============================
-   QUICK VIEW
-============================== */
 
 function quickView(id) {
-
-    const product =
-        allProducts.find(
-            p => p.id === id
-        );
-
-    if (!product) return;
-
-
-    alert(
-`${product.name}
-
-Category: ${product.category}
-Rating: ⭐ ${product.rating}
-Price: ₹${product.price.toLocaleString("en-IN")}
-
-${product.description}`
-    );
+    const product = allProducts.find(p => p.id === id);
+    if (product) alert(`${product.name}\n\nCategory: ${product.category}\nPrice: ₹${Number(product.price).toLocaleString("en-IN")}\nStock: ${product.stock}\n\n${product.description || ""}`);
 }
 
-
-/* ==============================
-   FILTER EVENTS
-============================== */
-
-searchInput.addEventListener(
-    "input",
-    renderProducts
-);
-
-categoryFilter.addEventListener(
-    "change",
-    renderProducts
-);
-
-priceFilter.addEventListener(
-    "change",
-    renderProducts
-);
-
-ratingFilter.addEventListener(
-    "change",
-    renderProducts
-);
-
-sortProducts.addEventListener(
-    "change",
-    renderProducts
-);
-
-
-/* ==============================
-   FIRST LOAD
-============================== */
-
+[searchInput, categoryFilter, priceFilter, ratingFilter, sortProducts].forEach(control => control.addEventListener("input", renderProducts));
 renderProducts();

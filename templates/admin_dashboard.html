@@ -10,18 +10,18 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Admin Dashboard - NexaCart</title>
+    <title>NexaCart Admin Dashboard</title>
 
-
+    <!-- Font Awesome -->
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
 
-
+    <!-- Admin Dashboard CSS -->
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='admin_dashboard.css') }}"
+        href="{{ url_for('static', filename='admin_dashboard.css', v=3) }}"
     >
 
 </head>
@@ -30,1742 +30,1265 @@
 <body>
 
 
-<div class="admin-layout">
-
-
     <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
+         ADMIN DASHBOARD WRAPPER
+         ===================================================== -->
 
-    <aside class="admin-sidebar">
-
-
-        <!-- BRAND -->
-
-        <div class="admin-brand">
-
-            <div class="brand-icon">
-
-                <i class="fa-solid fa-bag-shopping"></i>
-
-            </div>
-
-
-            <div>
-
-                <h2>
-                    Nexa<span>Cart</span>
-                </h2>
-
-                <small>
-                    ADMIN PANEL
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <!-- ADMIN PROFILE -->
-
-        <div class="admin-profile">
-
-            <div class="admin-avatar">
-
-                {{ admin_username[0]|upper }}
-
-            </div>
-
-
-            <div>
-
-                <strong>
-                    {{ admin_username }}
-                </strong>
-
-                <small>
-                    Administrator
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <!-- NAVIGATION -->
-
-        <nav class="admin-nav">
-
-
-            <button
-                type="button"
-                class="admin-nav-item active"
-                data-section="dashboard"
-            >
-
-                <i class="fa-solid fa-chart-line"></i>
-
-                <span>
-                    Dashboard
-                </span>
-
-            </button>
-
-
-            <button
-                type="button"
-                class="admin-nav-item"
-                data-section="sellers"
-            >
-
-                <i class="fa-solid fa-store"></i>
-
-                <span>
-                    Sellers
-                </span>
-
-            </button>
-
-
-            <button
-                type="button"
-                class="admin-nav-item"
-                data-section="users"
-            >
-
-                <i class="fa-solid fa-users"></i>
-
-                <span>
-                    Users
-                </span>
-
-            </button>
-
-
-            <button
-                type="button"
-                class="admin-nav-item"
-                data-section="products"
-            >
-
-                <i class="fa-solid fa-box"></i>
-
-                <span>
-                    Products
-                </span>
-
-            </button>
-
-
-            <button
-                type="button"
-                class="admin-nav-item"
-                data-section="orders"
-            >
-
-                <i class="fa-solid fa-cart-shopping"></i>
-
-                <span>
-                    Orders
-                </span>
-
-            </button>
-
-
-            <button
-                type="button"
-                class="admin-nav-item"
-                data-section="categories"
-            >
-
-                <i class="fa-solid fa-layer-group"></i>
-
-                <span>
-                    Categories
-                </span>
-
-            </button>
-
-
-            <button
-                type="button"
-                class="admin-nav-item"
-                data-section="analytics"
-            >
-
-                <i class="fa-solid fa-chart-pie"></i>
-
-                <span>
-                    Analytics
-                </span>
-
-            </button>
-
-
-            <button
-                type="button"
-                class="admin-nav-item"
-                data-section="settings"
-            >
-
-                <i class="fa-solid fa-gear"></i>
-
-                <span>
-                    Settings
-                </span>
-
-            </button>
-
-
-        </nav>
-
-
-        <!-- SIDEBAR BOTTOM -->
-
-        <div class="sidebar-bottom">
-
-
-            <a
-                href="{{ url_for('home') }}"
-                class="back-store"
-            >
-
-                <i class="fa-solid fa-house"></i>
-
-                Back to Store
-
-            </a>
-
-
-            <a
-                href="{{ url_for('admin_logout') }}"
-                class="logout-link"
-            >
-
-                <i class="fa-solid fa-right-from-bracket"></i>
-
-                Logout
-
-            </a>
-
-
-        </div>
-
-
-    </aside>
-
-
-
-    <!-- =====================================================
-         MAIN
-    ====================================================== -->
-
-    <main class="admin-main">
-
-
-        <!-- TOPBAR -->
-
-        <header class="admin-topbar">
-
-
-            <div>
-
-                <span class="top-eyebrow">
-                    NEXACART ADMIN
-                </span>
-
-
-                <h1 id="pageTitle">
-                    Dashboard
-                </h1>
-
-            </div>
-
-
-            <button
-                type="button"
-                class="mobile-menu"
-                id="mobileMenu"
-            >
-
-                <i class="fa-solid fa-bars"></i>
-
-            </button>
-
-
-        </header>
-
+    <div class="admin-dashboard">
 
 
         <!-- =================================================
-             DASHBOARD SECTION
-        ================================================== -->
+             SIDEBAR
+             ================================================= -->
 
-        <section
-            class="admin-section active-section"
-            id="dashboard"
-        >
+        <aside class="admin-sidebar">
 
 
-            <!-- WELCOME -->
+            <!-- Sidebar Logo -->
+            <div class="admin-logo">
 
-            <div class="welcome-box">
-
+                <div class="admin-logo-icon">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </div>
 
                 <div>
-
-                    <span>
-                        ADMINISTRATION
-                    </span>
-
-
-                    <h2>
-                        Welcome back,
-                        {{ admin_username }}!
-                    </h2>
-
-
-                    <p>
-                        Manage your NexaCart marketplace
-                        from one place.
-                    </p>
-
+                    <h2>NexaCart</h2>
+                    <span>Admin Panel</span>
                 </div>
-
-
-                <i class="fa-solid fa-shield-halved"></i>
-
 
             </div>
 
 
-
-            <!-- STATS -->
-
-            <div class="stats-grid">
+            <!-- Sidebar Navigation -->
+            <nav class="admin-navigation">
 
 
-                <!-- TOTAL USERS -->
-
-                <div
-                    class="stat-card clickable-stat-card"
-                    data-section-target="users"
-                    title="View All Users"
-                    role="button"
-                    tabindex="0"
+                <!-- Dashboard -->
+                <button
+                    type="button"
+                    class="admin-nav-item active"
+                    data-section="dashboard"
                 >
 
-                    <div class="stat-icon blue">
+                    <i class="fa-solid fa-chart-line"></i>
 
-                        <i class="fa-solid fa-users"></i>
+                    <span>Dashboard</span>
 
-                    </div>
-
-
-                    <div>
-
-                        <span>
-                            Total Users
-                        </span>
+                </button>
 
 
-                        <h2 id="totalUsers">
-                            {{ total_users }}
-                        </h2>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- TOTAL SELLERS -->
-
-                <div
-                    class="stat-card clickable-stat-card"
-                    data-section-target="sellers"
-                    title="View All Sellers"
-                    role="button"
-                    tabindex="0"
+                <!-- Sellers -->
+                <button
+                    type="button"
+                    class="admin-nav-item"
+                    data-section="sellers"
                 >
 
-                    <div class="stat-icon purple">
+                    <i class="fa-solid fa-store"></i>
 
-                        <i class="fa-solid fa-store"></i>
+                    <span>Sellers</span>
 
-                    </div>
-
-
-                    <div>
-
-                        <span>
-                            Total Sellers
-                        </span>
+                </button>
 
 
-                        <h2 id="totalSellers">
-                            {{ total_sellers }}
-                        </h2>
+                <!-- Users -->
+                <button
+                    type="button"
+                    class="admin-nav-item"
+                    data-section="users"
+                >
 
-                    </div>
+                    <i class="fa-solid fa-users"></i>
 
-                </div>
+                    <span>Users</span>
 
-
-
-                <!-- TOTAL PRODUCTS -->
-
-                <div class="stat-card">
-
-                    <div class="stat-icon orange">
-
-                        <i class="fa-solid fa-box"></i>
-
-                    </div>
+                </button>
 
 
-                    <div>
+                <!-- Products -->
+                <button
+                    type="button"
+                    class="admin-nav-item"
+                    data-section="products"
+                >
 
-                        <span>
-                            Total Products
-                        </span>
+                    <i class="fa-solid fa-box"></i>
 
+                    <span>Products</span>
 
-                        <h2 id="totalProducts">
-                            0
-                        </h2>
-
-                    </div>
-
-                </div>
+                </button>
 
 
+                <!-- Orders -->
+                <button
+                    type="button"
+                    class="admin-nav-item"
+                    data-section="orders"
+                >
 
-                <!-- ACTIVE SELLERS -->
+                    <i class="fa-solid fa-bag-shopping"></i>
 
-                <div class="stat-card">
+                    <span>Orders</span>
 
-                    <div class="stat-icon green">
-
-                        <i class="fa-solid fa-user-check"></i>
-
-                    </div>
-
-
-                    <div>
-
-                        <span>
-                            Active Sellers
-                        </span>
+                </button>
 
 
-                        <h2 id="activeSellers">
-                            {{ active_sellers }}
-                        </h2>
+                <!-- Categories -->
+                <button
+                    type="button"
+                    class="admin-nav-item"
+                    data-section="categories"
+                >
 
-                    </div>
+                    <i class="fa-solid fa-layer-group"></i>
 
-                </div>
+                    <span>Categories</span>
 
+                </button>
+
+
+                <!-- Analytics -->
+                <button
+                    type="button"
+                    class="admin-nav-item"
+                    data-section="analytics"
+                >
+
+                    <i class="fa-solid fa-chart-pie"></i>
+
+                    <span>Analytics</span>
+
+                </button>
+
+
+                <!-- Settings -->
+                <button
+                    type="button"
+                    class="admin-nav-item"
+                    data-section="settings"
+                >
+
+                    <i class="fa-solid fa-gear"></i>
+
+                    <span>Settings</span>
+
+                </button>
+
+
+            </nav>
+
+
+            <!-- Sidebar Bottom -->
+            <div class="admin-sidebar-bottom">
+
+                <a
+                    href="{{ url_for('admin_logout') }}"
+                    class="admin-logout"
+                >
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    <span>Logout</span>
+
+                </a>
 
             </div>
 
 
-
-            <!-- DASHBOARD GRID -->
-
-            <div class="dashboard-grid">
+        </aside>
 
 
-                <!-- SELLER OVERVIEW -->
+        <!-- =================================================
+             MAIN CONTENT
+             ================================================= -->
 
-                <div class="dashboard-card">
-
-
-                    <div class="card-heading">
-
-
-                        <div>
-
-                            <span>
-                                SELLER OVERVIEW
-                            </span>
+        <main class="admin-main">
 
 
-                            <h3>
-                                Seller Status
-                            </h3>
+            <!-- =================================================
+                 TOP HEADER
+                 ================================================= -->
 
-                        </div>
-
-
-                        <i class="fa-solid fa-store"></i>
+            <header class="admin-header">
 
 
-                    </div>
+                <div class="admin-header-left">
 
-
-                    <div class="status-overview">
-
-
-                        <div>
-
-                            <strong id="activeSellerCount">
-                                {{ active_sellers }}
-                            </strong>
-
-
-                            <span>
-                                Active
-                            </span>
-
-                        </div>
-
-
-                        <div>
-
-                            <strong id="blockedSellerCount">
-                                {{ blocked_sellers }}
-                            </strong>
-
-
-                            <span>
-                                Blocked
-                            </span>
-
-                        </div>
-
-
-                    </div>
-
-
-                </div>
-
-
-
-                <!-- QUICK ACTION -->
-
-                <div class="dashboard-card quick-card">
-
-
-                    <div class="card-heading">
-
-
-                        <div>
-
-                            <span>
-                                QUICK ACTION
-                            </span>
-
-
-                            <h3>
-                                Manage Sellers
-                            </h3>
-
-                        </div>
-
-
-                        <i class="fa-solid fa-arrow-right"></i>
-
-
-                    </div>
-
-
+                    <!-- Mobile Menu -->
                     <button
                         type="button"
-                        class="primary-btn"
-                        data-section-target="sellers"
+                        id="mobileMenu"
+                        class="mobile-menu-btn"
                     >
 
-                        <i class="fa-solid fa-store"></i>
-
-                        View All Sellers
+                        <i class="fa-solid fa-bars"></i>
 
                     </button>
 
 
-                </div>
+                    <div>
 
+                        <h1 id="pageTitle">
+                            Dashboard
+                        </h1>
 
-            </div>
+                        <p>
+                            Manage your NexaCart platform
+                        </p>
 
-
-        </section>
-
-
-
-        <!-- =================================================
-             SELLERS SECTION
-        ================================================== -->
-
-        <section
-            class="admin-section"
-            id="sellers"
-        >
-
-
-            <div class="section-heading">
-
-
-                <div>
-
-                    <span>
-                        SELLER MANAGEMENT
-                    </span>
-
-
-                    <h2>
-                        All Sellers
-                    </h2>
-
-
-                    <p>
-                        View and manage every seller
-                        registered on NexaCart.
-                    </p>
+                    </div>
 
                 </div>
 
 
-            </div>
+                <div class="admin-header-right">
+
+                    <div class="admin-profile">
+
+                        <div class="admin-profile-icon">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                {{ session.get("admin_username", "Admin") }}
+                            </strong>
+
+                            <span>
+                                Administrator
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
 
 
-
-            <!-- SELLER TOOLBAR -->
-
-            <div class="seller-toolbar">
+            </header>
 
 
-                <div class="search-box">
+            <!-- =================================================
+                 DASHBOARD SECTION
+                 ================================================= -->
 
-                    <i class="fa-solid fa-magnifying-glass"></i>
+            <section
+                id="dashboard"
+                class="admin-section active-section"
+            >
 
 
-                    <input
-                        type="text"
-                        id="sellerSearch"
-                        placeholder="Search seller..."
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            Dashboard Overview
+                        </h2>
+
+                        <p>
+                            Monitor your NexaCart platform.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Statistics -->
+                <div class="stats-grid">
+
+
+                    <!-- Total Sellers -->
+                    <div class="stat-card">
+
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-store"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Total Sellers
+                            </span>
+
+                            <strong>
+                                {{ total_sellers }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Active Sellers -->
+                    <div class="stat-card">
+
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Active Sellers
+                            </span>
+
+                            <strong>
+                                {{ active_sellers }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Blocked Sellers -->
+                    <div class="stat-card">
+
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-ban"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Blocked Sellers
+                            </span>
+
+                            <strong>
+                                {{ blocked_sellers }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Total Users -->
+                    <div class="stat-card">
+
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Total Users
+                            </span>
+
+                            <strong>
+                                {{ total_users }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- Quick Actions -->
+                <div class="dashboard-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h3>
+                                Quick Actions
+                            </h3>
+
+                            <p>
+                                Manage sellers and users quickly.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-actions">
+
+
+                        <button
+                            type="button"
+                            class="quick-action-btn"
+                            data-section-target="sellers"
+                        >
+
+                            <i class="fa-solid fa-store"></i>
+
+                            <span>
+                                Manage Sellers
+                            </span>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="quick-action-btn"
+                            data-section-target="users"
+                        >
+
+                            <i class="fa-solid fa-users"></i>
+
+                            <span>
+                                Manage Users
+                            </span>
+
+                        </button>
+
+
+                    </div>
+
+                </div>
+
+
+            </section>
+
+
+            <!-- =================================================
+                 SELLERS SECTION
+                 ================================================= -->
+
+            <section
+                id="sellers"
+                class="admin-section"
+            >
+
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            Seller Management
+                        </h2>
+
+                        <p>
+                            Manage seller accounts and their status.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Seller Controls -->
+                <div class="table-controls">
+
+
+                    <div class="search-box">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        <input
+                            type="text"
+                            id="sellerSearch"
+                            placeholder="Search seller..."
+                        >
+
+                    </div>
+
+
+                    <select
+                        id="sellerStatusFilter"
+                        class="status-filter"
                     >
 
+                        <option value="">
+                            All Status
+                        </option>
+
+                        <option value="active">
+                            Active
+                        </option>
+
+                        <option value="blocked">
+                            Blocked
+                        </option>
+
+                    </select>
+
+
                 </div>
 
 
-                <select id="sellerStatusFilter">
+                <!-- Sellers Table -->
+                <div class="table-card">
 
-                    <option value="">
-                        All Status
-                    </option>
+                    <div class="table-responsive">
 
+                        <table>
 
-                    <option value="active">
-                        Active
-                    </option>
+                            <thead>
 
+                                <tr>
 
-                    <option value="blocked">
-                        Blocked
-                    </option>
+                                    <th>
+                                        Seller
+                                    </th>
 
-                </select>
+                                    <th>
+                                        Email
+                                    </th>
 
+                                    <th>
+                                        Phone
+                                    </th>
 
-            </div>
+                                    <th>
+                                        Products
+                                    </th>
 
+                                    <th>
+                                        Status
+                                    </th>
 
+                                    <th>
+                                        Joined
+                                    </th>
 
-            <!-- SELLER TABLE -->
+                                    <th>
+                                        Actions
+                                    </th>
 
-            <div class="dashboard-card table-card">
+                                </tr>
 
-
-                <div class="table-wrapper">
-
-
-                    <table>
-
-
-                        <thead>
-
-                            <tr>
-
-                                <th>
-                                    Seller
-                                </th>
-
-
-                                <th>
-                                    Email
-                                </th>
+                            </thead>
 
 
-                                <th>
-                                    Phone
-                                </th>
+                            <tbody id="sellersTable">
 
 
-                                <th>
-                                    Products
-                                </th>
+                                {% if sellers %}
+
+                                    {% for seller in sellers %}
+
+                                    <tr
+                                        class="seller-row"
+                                        data-seller-id="{{ seller.id }}"
+                                        data-name="{{ seller.name }}"
+                                        data-email="{{ seller.email }}"
+                                        data-phone="{{ seller.phone }}"
+                                        data-status="{{ seller.status }}"
+                                    >
 
 
-                                <th>
-                                    Status
-                                </th>
+                                        <!-- Seller -->
+                                        <td>
 
+                                            <div class="table-user">
 
-                                <th>
-                                    Joined
-                                </th>
+                                                <div class="user-avatar">
 
+                                                    {{ seller.name[0]|upper }}
 
-                                <th>
-                                    Actions
-                                </th>
+                                                </div>
 
-                            </tr>
+                                                <div>
 
-                        </thead>
+                                                    <strong>
+                                                        {{ seller.name }}
+                                                    </strong>
 
+                                                    <small>
+                                                        ID #{{ seller.id }}
+                                                    </small>
 
-
-                        <tbody id="sellersTable">
-
-
-                            {% if sellers %}
-
-
-                                {% for seller in sellers %}
-
-
-                                <tr
-                                    class="seller-row"
-                                    data-seller-id="{{ seller.id }}"
-                                    data-name="{{ seller.name|lower }}"
-                                    data-email="{{ seller.email|lower }}"
-                                    data-phone="{{ seller.phone }}"
-                                    data-status="{{ seller.status }}"
-                                >
-
-
-                                    <!-- SELLER -->
-
-                                    <td>
-
-
-                                        <div class="seller-cell">
-
-
-                                            <div class="seller-table-avatar">
-
-                                                {{ seller.name[0]|upper }}
+                                                </div>
 
                                             </div>
 
+                                        </td>
 
-                                            <div>
 
-                                                <strong>
-                                                    {{ seller.name }}
-                                                </strong>
+                                        <!-- Email -->
+                                        <td>
+                                            {{ seller.email }}
+                                        </td>
 
 
-                                                <small>
-                                                    Seller #{{ seller.id }}
-                                                </small>
+                                        <!-- Phone -->
+                                        <td>
+                                            {{ seller.phone }}
+                                        </td>
 
-                                            </div>
 
+                                        <!-- Product Count -->
+                                        <td>
+                                            {{ seller.product_count }}
+                                        </td>
 
-                                        </div>
 
-
-                                    </td>
-
-
-
-                                    <!-- EMAIL -->
-
-                                    <td>
-
-                                        {{ seller.email }}
-
-                                    </td>
-
-
-
-                                    <!-- PHONE -->
-
-                                    <td>
-
-                                        {{ seller.phone }}
-
-                                    </td>
-
-
-
-                                    <!-- PRODUCTS -->
-
-                                    <td>
-
-                                        0
-
-                                    </td>
-
-
-
-                                    <!-- STATUS -->
-
-                                    <td>
-
-
-                                        {% if seller.status == "active" %}
-
-
-                                            <span
-                                                class="status-badge active"
-                                            >
-                                                Active
-                                            </span>
-
-
-                                        {% else %}
-
-
-                                            <span
-                                                class="status-badge blocked"
-                                            >
-                                                Blocked
-                                            </span>
-
-
-                                        {% endif %}
-
-
-                                    </td>
-
-
-
-                                    <!-- JOINED -->
-
-                                    <td>
-
-
-                                        {% if seller.created_at %}
-
-                                            {{ seller.created_at.strftime('%d %b %Y') }}
-
-                                        {% else %}
-
-                                            -
-
-                                        {% endif %}
-
-
-                                    </td>
-
-
-
-                                    <!-- ACTIONS -->
-
-                                    <td>
-
-
-                                        <div class="table-actions">
-
-
-                                            <!-- VIEW -->
-
-                                            <button
-                                                type="button"
-                                                class="action-btn view-btn"
-                                                title="View Seller"
-                                            >
-
-                                                <i class="fa-solid fa-eye"></i>
-
-                                            </button>
-
-
-
-                                            <!-- BLOCK / ACTIVATE -->
+                                        <!-- Status -->
+                                        <td>
 
                                             {% if seller.status == "active" %}
 
-
-                                                <form
-                                                    method="POST"
-                                                    action="{{ url_for('admin_change_seller_status', seller_id=seller.id) }}"
-                                                    class="seller-status-form"
-                                                >
-
-                                                    <input
-                                                        type="hidden"
-                                                        name="status"
-                                                        value="blocked"
-                                                    >
-
-
-                                                    <button
-                                                        type="submit"
-                                                        class="action-btn block-btn"
-                                                        title="Block Seller"
-                                                    >
-
-                                                        <i class="fa-solid fa-ban"></i>
-
-                                                    </button>
-
-                                                </form>
-
+                                                <span class="status-badge active">
+                                                    Active
+                                                </span>
 
                                             {% else %}
 
+                                                <span class="status-badge blocked">
+                                                    Blocked
+                                                </span>
 
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <!-- Joined -->
+                                        <td>
+                                            {{ seller.created_at }}
+                                        </td>
+
+
+                                        <!-- Actions -->
+                                        <td>
+
+                                            <div class="table-actions">
+
+
+                                                <!-- View Seller -->
+                                                <a
+                                                    href="{{ url_for('admin_view_seller', seller_id=seller.id) }}"
+                                                    class="action-btn view-btn"
+                                                    title="View Seller"
+                                                >
+
+                                                    <i class="fa-solid fa-eye"></i>
+
+                                                </a>
+
+
+                                                <!-- Block / Activate -->
                                                 <form
                                                     method="POST"
                                                     action="{{ url_for('admin_change_seller_status', seller_id=seller.id) }}"
-                                                    class="seller-status-form"
+                                                    data-confirm-status="{% if seller.status == 'active' %}blocked{% else %}active{% endif %}"
                                                 >
 
                                                     <input
                                                         type="hidden"
                                                         name="status"
-                                                        value="active"
+                                                        value="{% if seller.status == 'active' %}blocked{% else %}active{% endif %}"
                                                     >
 
+
+                                                    {% if seller.status == "active" %}
+
+                                                        <button
+                                                            type="submit"
+                                                            class="action-btn block-btn"
+                                                            title="Block Seller"
+                                                        >
+
+                                                            <i class="fa-solid fa-ban"></i>
+
+                                                        </button>
+
+                                                    {% else %}
+
+                                                        <button
+                                                            type="submit"
+                                                            class="action-btn activate-btn"
+                                                            title="Activate Seller"
+                                                        >
+
+                                                            <i class="fa-solid fa-check"></i>
+
+                                                        </button>
+
+                                                    {% endif %}
+
+                                                </form>
+
+
+                                                <!-- Delete Seller -->
+                                                <form
+                                                    method="POST"
+                                                    action="{{ url_for('admin_delete_seller', seller_id=seller.id) }}"
+                                                    data-confirm-delete-seller
+                                                >
 
                                                     <button
                                                         type="submit"
-                                                        class="action-btn unblock-btn"
-                                                        title="Activate Seller"
+                                                        class="action-btn delete-btn"
+                                                        title="Delete Seller"
                                                     >
 
-                                                        <i class="fa-solid fa-check"></i>
+                                                        <i class="fa-solid fa-trash"></i>
 
                                                     </button>
 
                                                 </form>
 
 
+                                            </div>
+
+                                        </td>
+
+
+                                    </tr>
+
+                                    {% endfor %}
+
+
+                                {% else %}
+
+                                    <tr>
+
+                                        <td
+                                            colspan="7"
+                                            class="empty-table"
+                                        >
+
+                                            <i class="fa-solid fa-store-slash"></i>
+
+                                            <span>
+                                                No sellers found.
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endif %}
+
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+            </section>
+
+
+            <!-- =================================================
+                 USERS SECTION
+                 ================================================= -->
+
+            <section
+                id="users"
+                class="admin-section"
+            >
+
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            User Management
+                        </h2>
+
+                        <p>
+                            Manage customer accounts and account status.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Users Table -->
+                <div class="table-card">
+
+                    <div class="table-responsive">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        User
+                                    </th>
+
+                                    <th>
+                                        Email
+                                    </th>
+
+                                    <th>
+                                        Phone
+                                    </th>
+
+                                    <th>
+                                        Joined
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Actions
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+
+                                {% if users %}
+
+                                    {% for user in users %}
+
+                                    <tr>
+
+
+                                        <!-- User -->
+                                        <td>
+
+                                            <div class="table-user">
+
+                                                <div class="user-avatar">
+
+                                                    {{ user.username[0]|upper }}
+
+                                                </div>
+
+                                                <div>
+
+                                                    <strong>
+                                                        {{ user.username }}
+                                                    </strong>
+
+                                                    <small>
+                                                        ID #{{ user.id }}
+                                                    </small>
+
+                                                </div>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <!-- Email -->
+                                        <td>
+                                            {{ user.email }}
+                                        </td>
+
+
+                                        <!-- Phone -->
+                                        <td>
+                                            {{ user.phone }}
+                                        </td>
+
+
+                                        <!-- Joined -->
+                                        <td>
+                                            {{ user.created_at }}
+                                        </td>
+
+
+                                        <!-- Status -->
+                                        <td>
+
+                                            {% if user.status == "active" %}
+
+                                                <span class="status-badge active">
+                                                    Active
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="status-badge blocked">
+                                                    Blocked
+                                                </span>
+
                                             {% endif %}
 
+                                        </td>
 
 
-                                            <!-- DELETE -->
+                                        <!-- Actions -->
+                                        <td>
 
-                                            <button
-                                                type="button"
-                                                class="action-btn delete-btn"
-                                                title="Delete Seller"
-                                            >
+                                            <div class="table-actions">
 
-                                                <i class="fa-solid fa-trash"></i>
 
-                                            </button>
+                                                <!-- View User -->
+                                                <a
+                                                    href="{{ url_for('admin_view_user', user_id=user.id) }}"
+                                                    class="action-btn view-btn"
+                                                    title="View User"
+                                                >
 
+                                                    <i class="fa-solid fa-eye"></i>
 
-                                        </div>
+                                                </a>
 
 
-                                    </td>
+                                                <!-- Block / Activate User -->
+                                                <form
+                                                    method="POST"
+                                                    action="{{ url_for('admin_change_user_status', user_id=user.id) }}"
+                                                    data-confirm-status="{% if user.status == 'active' %}blocked{% else %}active{% endif %}"
+                                                >
 
+                                                    <input
+                                                        type="hidden"
+                                                        name="status"
+                                                        value="{% if user.status == 'active' %}blocked{% else %}active{% endif %}"
+                                                    >
 
-                                </tr>
 
+                                                    {% if user.status == "active" %}
 
-                                {% endfor %}
+                                                        <button
+                                                            type="submit"
+                                                            class="action-btn block-btn"
+                                                            title="Block User"
+                                                        >
 
+                                                            <i class="fa-solid fa-ban"></i>
 
-                            {% else %}
+                                                        </button>
 
+                                                    {% else %}
 
-                                <tr>
+                                                        <button
+                                                            type="submit"
+                                                            class="action-btn activate-btn"
+                                                            title="Activate User"
+                                                        >
 
-                                    <td
-                                        colspan="7"
-                                        class="empty-table"
-                                    >
+                                                            <i class="fa-solid fa-check"></i>
 
-                                        <i class="fa-solid fa-store"></i>
+                                                        </button>
 
+                                                    {% endif %}
 
-                                        <span>
-                                            No sellers registered yet.
-                                        </span>
+                                                </form>
 
-                                    </td>
 
-                                </tr>
+                                                <!-- Delete User -->
+                                                <form
+                                                    method="POST"
+                                                    action="{{ url_for('admin_delete_user', user_id=user.id) }}"
+                                                    data-confirm-delete-user
+                                                >
 
+                                                    <button
+                                                        type="submit"
+                                                        class="action-btn delete-btn"
+                                                        title="Delete User"
+                                                    >
 
-                            {% endif %}
+                                                        <i class="fa-solid fa-trash"></i>
 
+                                                    </button>
 
-                        </tbody>
+                                                </form>
 
-
-                    </table>
-
-
-                </div>
-
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- =================================================
-             USERS SECTION
-        ================================================== -->
-
-        <section
-            class="admin-section"
-            id="users"
-        >
-
-
-            <div class="section-heading">
-
-
-                <div>
-
-                    <span>
-                        USER MANAGEMENT
-                    </span>
-
-
-                    <h2>
-                        All Users
-                    </h2>
-
-
-                    <p>
-                        View all customers registered
-                        on NexaCart.
-                    </p>
-
-                </div>
-
-
-            </div>
-
-
-
-            <!-- USER TABLE -->
-
-            <div class="dashboard-card table-card">
-
-
-                <div class="table-wrapper">
-
-
-                    <table>
-
-
-                        <thead>
-
-                            <tr>
-
-                                <th>
-                                    User
-                                </th>
-
-
-                                <th>
-                                    Email
-                                </th>
-
-
-                                <th>
-                                    Joined
-                                </th>
-
-
-                                <th>
-                                    Status
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-
-                        <tbody>
-
-
-                            {% if users %}
-
-
-                                {% for user in users %}
-
-
-                                <tr>
-
-
-                                    <!-- USER -->
-
-                                    <td>
-
-
-                                        <div class="seller-cell">
-
-
-                                            <div class="seller-table-avatar">
-
-                                                {{ user.username[0]|upper }}
 
                                             </div>
 
-
-                                            <div>
-
-                                                <strong>
-                                                    {{ user.username }}
-                                                </strong>
+                                        </td>
 
 
-                                                <small>
-                                                    User #{{ user.id }}
-                                                </small>
+                                    </tr>
 
-                                            </div>
+                                    {% endfor %}
 
 
-                                        </div>
+                                {% else %}
 
+                                    <tr>
 
-                                    </td>
-
-
-
-                                    <!-- EMAIL -->
-
-                                    <td>
-
-                                        {{ user.email }}
-
-                                    </td>
-
-
-
-                                    <!-- JOINED -->
-
-                                    <td>
-
-
-                                        {% if user.created_at %}
-
-                                            {{ user.created_at.strftime('%d %b %Y') }}
-
-                                        {% else %}
-
-                                            -
-
-                                        {% endif %}
-
-
-                                    </td>
-
-
-
-                                    <!-- STATUS -->
-
-                                    <td>
-
-                                        <span
-                                            class="status-badge active"
+                                        <td
+                                            colspan="6"
+                                            class="empty-table"
                                         >
-                                            Active
-                                        </span>
 
-                                    </td>
+                                            <i class="fa-solid fa-users-slash"></i>
 
+                                            <span>
+                                                No users found.
+                                            </span>
 
-                                </tr>
+                                        </td>
 
+                                    </tr>
 
-                                {% endfor %}
-
-
-                            {% else %}
-
-
-                                <tr>
-
-                                    <td
-                                        colspan="4"
-                                        class="empty-table"
-                                    >
-
-                                        <i class="fa-solid fa-users"></i>
+                                {% endif %}
 
 
-                                        <span>
-                                            No users registered yet.
-                                        </span>
+                            </tbody>
 
-                                    </td>
+                        </table>
 
-                                </tr>
-
-
-                            {% endif %}
-
-
-                        </tbody>
-
-
-                    </table>
-
+                    </div>
 
                 </div>
 
 
-            </div>
+            </section>
 
 
-        </section>
+            <!-- =================================================
+                 PRODUCTS SECTION
+                 ================================================= -->
 
-
-
-        <!-- =================================================
-             PRODUCTS SECTION
-        ================================================== -->
-
-        <section
-            class="admin-section"
-            id="products"
-        >
-
-
-            <div class="section-heading">
-
-
-                <span>
-                    PRODUCT MANAGEMENT
-                </span>
-
-
-                <h2>
-                    Products
-                </h2>
-
-
-                <p>
-                    Admin product moderation will be connected
-                    with the seller product system.
-                </p>
-
-
-            </div>
-
-
-            <div class="empty-panel">
-
-
-                <i class="fa-solid fa-box"></i>
-
-
-                <h3>
-                    Product Management
-                </h3>
-
-
-                <p>
-                    Product management will be connected
-                    after the product database is created.
-                </p>
-
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- =================================================
-             ORDERS SECTION
-        ================================================== -->
-
-        <section
-            class="admin-section"
-            id="orders"
-        >
-
-
-            <div class="section-heading">
-
-
-                <span>
-                    ORDER MANAGEMENT
-                </span>
-
-
-                <h2>
-                    Orders
-                </h2>
-
-
-                <p>
-                    All marketplace orders will be shown here.
-                </p>
-
-
-            </div>
-
-
-            <div class="empty-panel">
-
-
-                <i class="fa-solid fa-cart-shopping"></i>
-
-
-                <h3>
-                    Order Management
-                </h3>
-
-
-                <p>
-                    Customer, seller and delivery order
-                    management will be added here.
-                </p>
-
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- =================================================
-             CATEGORIES SECTION
-        ================================================== -->
-
-        <section
-            class="admin-section"
-            id="categories"
-        >
-
-
-            <div class="section-heading">
-
-
-                <span>
-                    CATEGORY MANAGEMENT
-                </span>
-
-
-                <h2>
-                    Categories
-                </h2>
-
-
-                <p>
-                    Manage NexaCart product categories.
-                </p>
-
-
-            </div>
-
-
-            <div class="empty-panel">
-
-
-                <i class="fa-solid fa-layer-group"></i>
-
-
-                <h3>
-                    Category Management
-                </h3>
-
-
-                <p>
-                    Add, edit, activate or deactivate categories.
-                </p>
-
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- =================================================
-             ANALYTICS SECTION
-        ================================================== -->
-
-        <section
-            class="admin-section"
-            id="analytics"
-        >
-
-
-            <div class="section-heading">
-
-
-                <span>
-                    MARKETPLACE ANALYTICS
-                </span>
-
-
-                <h2>
-                    Analytics
-                </h2>
-
-
-                <p>
-                    Platform-wide analytics will be displayed here.
-                </p>
-
-
-            </div>
-
-
-            <div class="empty-panel">
-
-
-                <i class="fa-solid fa-chart-pie"></i>
-
-
-                <h3>
-                    Analytics
-                </h3>
-
-
-                <p>
-                    Sales, users, sellers and product analytics
-                    will be connected in the next phase.
-                </p>
-
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- =================================================
-             SETTINGS SECTION
-        ================================================== -->
-
-        <section
-            class="admin-section"
-            id="settings"
-        >
-
-
-            <div class="section-heading">
-
-
-                <span>
-                    ADMIN SETTINGS
-                </span>
-
-
-                <h2>
-                    Settings
-                </h2>
-
-
-                <p>
-                    Manage administrator account settings.
-                </p>
-
-
-            </div>
-
-
-            <div class="empty-panel">
-
-
-                <i class="fa-solid fa-gear"></i>
-
-
-                <h3>
-                    Admin Settings
-                </h3>
-
-
-                <p>
-                    Admin profile and password management
-                    will be added here.
-                </p>
-
-
-            </div>
-
-
-        </section>
-
-
-    </main>
-
-</div>
-
-
-
-<!-- =========================================================
-     SELLER DETAILS MODAL
-========================================================== -->
-
-<div
-    class="modal-overlay"
-    id="sellerModal"
->
-
-
-    <div class="seller-modal">
-
-
-        <button
-            type="button"
-            class="modal-close"
-            id="closeSellerModal"
-        >
-
-            <i class="fa-solid fa-xmark"></i>
-
-        </button>
-
-
-
-        <!-- MODAL HEADER -->
-
-        <div class="modal-header">
-
-
-            <div
-                class="large-avatar"
-                id="modalAvatar"
+            <section
+                id="products"
+                class="admin-section"
             >
-                S
-            </div>
 
+                <div class="section-heading">
 
-            <div>
+                    <div>
 
+                        <h2>
+                            Products
+                        </h2>
 
-                <span>
-                    SELLER PROFILE
-                </span>
+                        <p>
+                            View and manage every seller listing.
+                        </p>
 
-
-                <h2 id="modalSellerName">
-                    Seller
-                </h2>
-
-
-                <p id="modalSellerEmail">
-                    seller@example.com
-                </p>
-
-
-            </div>
-
-
-        </div>
-
-
-
-        <!-- SELLER INFO -->
-
-        <div class="seller-info-grid">
-
-
-            <div>
-
-                <span>
-                    Phone
-                </span>
-
-
-                <strong id="modalSellerPhone">
-                    -
-                </strong>
-
-            </div>
-
-
-            <div>
-
-                <span>
-                    Status
-                </span>
-
-
-                <strong id="modalSellerStatus">
-                    -
-                </strong>
-
-            </div>
-
-
-            <div>
-
-                <span>
-                    Joined
-                </span>
-
-
-                <strong id="modalSellerJoined">
-                    -
-                </strong>
-
-            </div>
-
-
-            <div>
-
-                <span>
-                    Total Products
-                </span>
-
-
-                <strong id="modalProductCount">
-                    0
-                </strong>
-
-            </div>
-
-
-        </div>
-
-
-
-        <!-- PRODUCTS -->
-
-        <div class="modal-products">
-
-
-            <div class="modal-products-heading">
-
-                <h3>
-                    Seller Products
-                </h3>
-
-            </div>
-
-
-            <div id="modalProductsList">
-
-
-                <div class="no-products">
-
-                    <i class="fa-solid fa-box"></i>
-
-                    <span>
-                        No products added by this seller yet.
-                    </span>
+                    </div>
 
                 </div>
 
 
-            </div>
+                <div class="table-card"><div class="table-responsive">
+                    <table><thead><tr><th>Product</th><th>Seller</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Action</th></tr></thead>
+                    <tbody>
+                    {% for product in products|default([]) %}
+                    <tr>
+                        <td><div class="table-user">{% if product.image %}<img class="product-thumb" src="{{ url_for('static', filename=product.image.replace('\\\\', '/')) }}" alt="">{% endif %}<div><strong>{{ product.name }}</strong><small>#{{ product.id }}</small></div></div></td>
+                        <td>{{ product.seller_name or 'Direct listing' }}</td><td>{{ product.category }}</td><td>&#8377;{{ '%.2f'|format(product.price|float) }}</td><td>{{ product.stock }}</td>
+                        <td><span class="status-badge {{ product.status|lower }}">{{ product.status|replace('_',' ')|title }}</span></td>
+                        <td><div class="product-actions"><form method="post" action="{{ url_for('admin_change_product_status', product_id=product.id) }}"><input type="hidden" name="status" value="{{ 'blocked' if product.status == 'active' else 'active' }}"><button class="action-btn" type="submit" aria-label="{{ 'Hide' if product.status == 'active' else 'Show' }} product"><i class="fa-solid {{ 'fa-eye-slash' if product.status == 'active' else 'fa-eye' }}"></i></button></form><form method="post" action="{{ url_for('admin_delete_product', product_id=product.id) }}" onsubmit="return confirm('Delete this product listing?')"><button class="action-btn danger" type="submit" aria-label="Delete product"><i class="fa-solid fa-trash"></i></button></form></div></td>
+                    </tr>
+                    {% else %}<tr><td colspan="7" class="empty-table">No products have been added yet.</td></tr>{% endfor %}
+                    </tbody></table>
+                </div></div>
+
+            </section>
 
 
-        </div>
+            <!-- =================================================
+                 ORDERS SECTION
+                 ================================================= -->
 
-
-
-        <!-- MODAL ACTIONS -->
-
-        <div class="modal-actions">
-
-
-            <button
-                type="button"
-                class="secondary-btn"
-                id="modalToggleStatus"
+            <section
+                id="orders"
+                class="admin-section"
             >
-                Block Seller
-            </button>
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            Orders
+                        </h2>
+
+                        <p>
+                            Recent orders across the marketplace.
+                        </p>
+
+                    </div>
+
+                </div>
 
 
-            <button
-                type="button"
-                class="danger-btn"
-                id="modalDeleteSeller"
+                <div class="dashboard-card">
+
+                    <div class="empty-state">
+
+                        <i class="fa-solid fa-bag-shopping"></i>
+
+                        <h3>
+                            Order System
+                        </h3>
+
+                        <p>
+                            Order management is not connected yet.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 CATEGORIES SECTION
+                 ================================================= -->
+
+            <section
+                id="categories"
+                class="admin-section"
             >
 
-                <i class="fa-solid fa-trash"></i>
+                <div class="section-heading">
 
-                Delete Seller
+                    <div>
 
-            </button>
+                        <h2>
+                            Categories
+                        </h2>
+
+                        <p>
+                            Category management will be available here.
+                        </p>
+
+                    </div>
+
+                </div>
 
 
-        </div>
+                <div class="dashboard-card">
+
+                    <div class="empty-state">
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                        <h3>
+                            Category System
+                        </h3>
+
+                        <p>
+                            Category management is not connected yet.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 ANALYTICS SECTION
+                 ================================================= -->
+
+            <section
+                id="analytics"
+                class="admin-section"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            Analytics
+                        </h2>
+
+                        <p>
+                            Platform analytics will be available here.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard-card">
+
+                    <div class="empty-state">
+
+                        <i class="fa-solid fa-chart-pie"></i>
+
+                        <h3>
+                            Analytics System
+                        </h3>
+
+                        <p>
+                            Analytics are not connected yet.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 SETTINGS SECTION
+                 ================================================= -->
+
+            <section
+                id="settings"
+                class="admin-section"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            Settings
+                        </h2>
+
+                        <p>
+                            Admin settings will be available here.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard-card">
+
+                    <div class="empty-state">
+
+                        <i class="fa-solid fa-gear"></i>
+
+                        <h3>
+                            Settings
+                        </h3>
+
+                        <p>
+                            Settings management is not connected yet.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+        </main>
 
 
     </div>
 
 
-</div>
+    <!-- =====================================================
+         ADMIN DASHBOARD JAVASCRIPT
+         ===================================================== -->
 
-
-
-<!-- =========================================================
-     DELETE CONFIRMATION MODAL
-========================================================== -->
-
-<div
-    class="modal-overlay"
-    id="deleteModal"
->
-
-
-    <div class="confirm-modal">
-
-
-        <div class="warning-icon">
-
-            <i class="fa-solid fa-triangle-exclamation"></i>
-
-        </div>
-
-
-        <h2>
-            Delete Seller?
-        </h2>
-
-
-        <p>
-            Seller deletion will be connected
-            to the seller management backend.
-        </p>
-
-
-        <button
-            type="button"
-            class="cancel-btn"
-            id="cancelDelete"
-        >
-            Cancel
-        </button>
-
-
-    </div>
-
-
-</div>
-
-
-
-<!-- =========================================================
-     JAVASCRIPT
-========================================================== -->
-
-<script
-    src="{{ url_for('static', filename='admin_dashboard.js') }}"
-></script>
+    <script
+        src="{{ url_for('static', filename='admin_dashboard.js') }}"
+    ></script>
 
 
 </body>
