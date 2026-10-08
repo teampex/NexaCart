@@ -2,6 +2,8 @@
    ELEMENTS
 ========================================================= */
 
+/* Is file mein customer login/register forms aur email OTP bhejne/verify karne ka browser flow hai. */
+
 const authWrapper =
     document.getElementById("authWrapper");
 
@@ -608,6 +610,7 @@ if (otpLoginTrigger) {
 ========================================================= */
 
 function startTimer() {
+    // Resend OTP control ke liye 60-second countdown shuru karta hai.
 
     clearInterval(
         otpInterval
@@ -673,6 +676,7 @@ function updateTimer() {
 ========================================================= */
 
 function clearOTPBoxes() {
+    // OTP ke chhe input boxes aur unki error styling reset karta hai.
 
     otpBoxes.forEach(
         box => {
@@ -692,6 +696,8 @@ function clearOTPBoxes() {
 /* =========================================================
    SEND OTP
 ========================================================= */
+
+// Email format check karke /api/send-login-otp call karta aur OTP entry step kholta hai.
 
 if (sendOtpBtn) {
 
@@ -887,6 +893,8 @@ function getEnteredOTP() {
 /* =========================================================
    VERIFY OTP
 ========================================================= */
+
+// Chhe boxes ka code /api/verify-login-otp ko bhejta hai; success par user ko redirect karta hai.
 
 if (verifyOtpBtn) {
 

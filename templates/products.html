@@ -181,6 +181,7 @@
 </main>
 
 
+<!-- Flask catalog JSON products.js ko deta hai; client side par search/filter/sort hota hai. -->
 <script id="catalogProductsData" type="application/json">{{ products|tojson }}</script>
 <script src="{{ url_for('static', filename='products.js') }}" defer></script>
 

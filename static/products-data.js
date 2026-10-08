@@ -1,3 +1,4 @@
+// Legacy/static catalog data builder: categories se sample product entries banata hai.
 const categories = [
     "Electronics",
     "Fashion",

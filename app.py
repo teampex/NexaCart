@@ -73,6 +73,7 @@ ALLOWED_IMAGE_EXTENSIONS = {
 }
 
 
+# Upload validation: sirf configured image extensions ko product photos ke liye allow karta hai.
 def allowed_image(filename):
     return (
         "." in filename
@@ -81,6 +82,7 @@ def allowed_image(filename):
     )
 
 
+# Product image ko validate karke unique naam se static/uploads/products mein save karta hai.
 def save_product_image(image):
     if not image or not image.filename:
         return None
@@ -130,6 +132,7 @@ def save_product_image(image):
     )
 
 
+# Database mein saved image path ko browser ke liye usable static URL mein badalta hai.
 def product_image_url(image_path):
     """Return a valid static URL for current and legacy product image paths."""
     if not image_path:
@@ -178,6 +181,7 @@ def product_image_url(image_path):
 # DATABASE CONNECTION
 # =========================================================
 
+# MySQL database connection banata hai; database queries wale routes isi helper ko use karte hain.
 def get_db_connection():
     # Har database query se pehle isi function se MySQL connection banta hai.
 
@@ -193,6 +197,7 @@ def get_db_connection():
 # USER SESSION AVAILABLE IN ALL HTML PAGES
 # =========================================================
 
+# Har template render par session ke current user ki basic details template context mein deta hai.
 @app.context_processor
 def inject_user():
     # Ye data har HTML template ko automatically milta hai.
@@ -203,6 +208,7 @@ def inject_user():
     }
 
 
+# Protected customer pages/actions ke liye login check karke redirect ya JSON error deta hai.
 def require_customer_login(next_url=None, json_response=False):
     # Login na hone par intended page save hota hai. Login ke baad user
     # Home ki jagah isi saved page, jaise /checkout ya /orders, par jaata hai.
@@ -215,6 +221,7 @@ def require_customer_login(next_url=None, json_response=False):
     return redirect(url_for("login", next=session["next_after_login"]))
 
 
+# Guest ya logged-in customer ke cart/wishlist records ko identify karne wali key deta hai.
 def get_cart_key():
     # Guest/customer cart ko identify karne ke liye browser session mein unique key.
     session.permanent = True
@@ -223,6 +230,7 @@ def get_cart_key():
     return session["cart_key"]
 
 
+# OTP confirmation mein email ka kuch hissa chhupa kar privacy rakhta hai.
 def masked_email(email):
     local, separator, domain = str(email).partition("@")
     if not separator:
@@ -230,6 +238,7 @@ def masked_email(email):
     return f"{local[:1]}***@{domain}"
 
 
+# SMTP settings se login OTP email bhejta hai; code generate ya verify karna iska kaam nahi.
 def send_login_email(email, code):
     host = os.getenv("SMTP_HOST", "").strip()
     username = os.getenv("SMTP_USERNAME", "").strip()
@@ -257,14 +266,67 @@ def send_login_email(email, code):
             server.send_message(message)
 
 
+# Homepage ke liye saved model aur fallback catalog se product suggestions banata hai.
 def get_home_recommendations(products, browsing_categories=None, purchase_history=None):
     # AI section: saved .pkl model load hota hai; ismein training nahi hoti.
     # Model browsing categories aur prior orders ke basis par product names deta hai.
     if not products:
         return []
 
+    # Always fill the recommendations row from the live catalog when the
+    # saved model is unavailable or its training catalog does not match these
+    # seller listings. The homepage can still show useful picks in either case.
+    fallback_products = products[:5]
+
     def normalized_name(value):
         return re.sub(r"[^a-z0-9]", "", str(value or "").casefold())
+
+    def purchase_fields(item):
+        if isinstance(item, dict):
+            return (
+                item.get("name") or item.get("product_name"),
+                item.get("category"),
+            )
+        return item, None
+
+    # A purchase category is the strongest signal for the requested behavior:
+    # show the live products from that same store category, not unrelated CF picks.
+    purchased_categories = {
+        normalized_name(category)
+        for _, category in map(purchase_fields, purchase_history or [])
+        if normalized_name(category)
+    }
+    target_categories = purchased_categories or {
+        normalized_name(category)
+        for category in (browsing_categories or [])
+        if normalized_name(category)
+    }
+    category_products = [
+        item for item in products
+        if normalized_name(item.get("category")) in target_categories
+    ]
+    if category_products:
+        return category_products
+
+    def model_category_for(value):
+        """Translate store category labels into the model's six categories."""
+        category_key = normalized_name(value)
+        for category in recommender.category_product_probability.index:
+            if normalized_name(category) == category_key:
+                return category
+
+        aliases = {
+            "Electronics": ("electronic", "phone", "mobile", "smartphone", "laptop", "computer", "gadget", "tech"),
+            "Beauty": ("beauty", "cosmetic", "makeup", "skincare", "skin", "lipstick", "perfume"),
+            "Books": ("book", "fiction", "comic", "biography", "novel", "reading"),
+            "Fashion": ("fashion", "clothing", "apparel", "wear", "shirt", "jean", "jacket", "shoe", "sneaker"),
+            "Fitness": ("fitness", "sport", "gym", "exercise", "dumbbell", "treadmill", "yoga", "resistance"),
+            "Home Decor": ("home", "decor", "curtain", "cushion", "lamp", "wallart", "furniture"),
+        }
+        for model_category, terms in aliases.items():
+            if any(term in category_key for term in terms):
+                return model_category
+        return None
 
     try:
         recommender = importlib.import_module("models.recommendation_model")
@@ -272,16 +334,40 @@ def get_home_recommendations(products, browsing_categories=None, purchase_histor
         model_categories = list(recommender.category_product_probability.index)
         product_names = {normalized_name(name): name for name in model_products}
         category_names = {normalized_name(name): name for name in model_categories}
-        model_purchase_history = [
-            product_names[key]
-            for item in (purchase_history or [])
-            if (key := normalized_name(item)) in product_names
-        ]
+        model_purchase_history = []
         model_browsing_categories = [
             category_names[key]
             for item in (browsing_categories or [])
             if (key := normalized_name(item)) in category_names
         ]
+
+        # Order history must influence recommendations too. The saved model is
+        # trained on generic names (e.g. "Smartphone"), while seller listings
+        # often use names such as "phone 9" and store-specific categories.
+        for item in (purchase_history or []):
+            purchased_name, purchased_category = purchase_fields(item)
+
+            key = normalized_name(purchased_name)
+            if key in product_names:
+                model_purchase_history.append(product_names[key])
+            else:
+                # Map common seller naming variants to the equivalent trained item.
+                item_aliases = {
+                    "smartphone": ("phone", "mobile"),
+                    "smartwatch": ("watch",),
+                    "headphones": ("headphone", "earphone", "earbud"),
+                    "shoes": ("shoe", "sneaker"),
+                }
+                for model_name, aliases in item_aliases.items():
+                    if any(alias in key for alias in aliases):
+                        canonical_key = normalized_name(model_name)
+                        if canonical_key in product_names:
+                            model_purchase_history.append(product_names[canonical_key])
+                            break
+
+            mapped_category = model_category_for(purchased_category or purchased_name)
+            if mapped_category and mapped_category not in model_browsing_categories:
+                model_browsing_categories.append(mapped_category)
         results = recommender.recommend_for_website(
             customer_id=session.get("user_id", "NEW_CUSTOMER"),
             browsing_categories=model_browsing_categories,
@@ -291,7 +377,7 @@ def get_home_recommendations(products, browsing_categories=None, purchase_histor
     except Exception:
         # AI is optional: a missing dependency/model must not break the storefront.
         app.logger.exception("Product recommendations are unavailable")
-        return []
+        return fallback_products
 
     # Model item names can differ from seller listing names. Keep the model's
     # learned category probabilities available for matching live listings too.
@@ -346,6 +432,17 @@ def get_home_recommendations(products, browsing_categories=None, purchase_histor
         if product and product["id"] not in seen:
             recommendations.append(product)
             seen.add(product["id"])
+
+    # Model names/categories can be unrelated to the products currently sold.
+    # Complete any short result with distinct live products so the section does
+    # not disappear just because the training and store catalogs differ.
+    for product in products:
+        if len(recommendations) >= 5:
+            break
+        if product["id"] not in seen:
+            recommendations.append(product)
+            seen.add(product["id"])
+
     return recommendations
 
 
@@ -359,6 +456,7 @@ def get_home_recommendations(products, browsing_categories=None, purchase_histor
 
 @app.route("/")
 def home():
+    # Homepage products, customer activity, recommendations, cart aur wishlist data load karta hai.
     # Home page: active products + AI recommendations template ko bhejta hai.
 
     conn = None
@@ -417,12 +515,16 @@ def home():
             # Logged-in user ke old orders AI model ko personal suggestions ke liye milte hain.
             try:
                 cursor.execute(
-                    """SELECT oi.product_name FROM order_items oi
+                    """SELECT oi.product_name, p.category FROM order_items oi
                        JOIN orders o ON o.id = oi.order_id
+                       LEFT JOIN products p ON p.id = oi.product_id
                        WHERE o.user_id = %s ORDER BY o.created_at DESC""",
                     (session["user_id"],),
                 )
-                purchase_history = [row["product_name"] for row in cursor.fetchall()]
+                purchase_history = [
+                    {"name": row["product_name"], "category": row["category"]}
+                    for row in cursor.fetchall()
+                ]
             except Error:
                 app.logger.exception("Could not load purchase history for recommendations")
 
@@ -469,6 +571,7 @@ def home():
 
 @app.route("/home")
 def home_page():
+    # /home URL ko main storefront homepage par redirect karta hai.
 
     return redirect(
         url_for("home")
@@ -477,6 +580,7 @@ def home_page():
 
 @app.route("/products")
 def products_page():
+    # Active catalog template ko deta hai, jahan browser search/filter/sort karta hai.
     # Catalog page: database ke saare active products show karta hai.
     """Show active products from the database in the catalog page."""
     conn = None
@@ -524,6 +628,7 @@ def products_page():
 
 @app.route("/products/<int:product_id>")
 def product_detail(product_id):
+    # Ek active product ki detail dikhata hai; unavailable ID par not-found response deta hai.
     # Product detail kholte hi category session mein save hoti hai for AI browsing history.
     conn = None
     cursor = None
@@ -602,6 +707,7 @@ def product_detail(product_id):
 
 @app.route("/checkout")
 def checkout():
+    # Customer login check karke database cart aur delivery details ke saath checkout page kholta hai.
     # Protected page: login zaroori hai; customer details aur live products load hote hain.
     login_redirect = require_customer_login(url_for("checkout"))
     if login_redirect:
@@ -642,6 +748,7 @@ def checkout():
 
 @app.route("/api/cart", methods=["GET", "POST"])
 def api_cart():
+    # GET cart deta hai; POST se item add, quantity set, ya remove karke MySQL cart update karta hai.
     # Frontend JavaScript yahan se cart add, quantity update aur cart fetch karta hai.
     data = request.get_json(silent=True) or {}
     action = data.get("action")
@@ -694,6 +801,7 @@ def api_cart():
 
 @app.route("/api/wishlist", methods=["GET", "POST"])
 def api_wishlist():
+    # GET wishlist deta hai; POST se product toggle/remove karke MySQL wishlist update karta hai.
     # Wishlist ka database API; cart se alag table wishlist_items use hoti hai.
     data = request.get_json(silent=True) or {}
     conn = cursor = None
@@ -736,6 +844,7 @@ def api_wishlist():
 
 @app.route("/api/place-order", methods=["POST"])
 def place_order():
+    # Checkout validate karke order/items save, stock update aur cart clear karta hai.
     # Checkout form yahan order create karta hai, stock update karta hai aur cart clear karta hai.
     login_response = require_customer_login(url_for("checkout"), json_response=True)
     if login_response:
@@ -835,6 +944,7 @@ def place_order():
 
 @app.route("/orders")
 def my_orders():
+    # Logged-in customer ke past aur current orders dikhata hai.
     # Sirf current logged-in user ke orders load hote hain.
     if "user_id" not in session:
         return require_customer_login(url_for("my_orders"))
@@ -865,6 +975,7 @@ def my_orders():
 
 @app.route("/orders/<order_number>/cancel", methods=["POST"])
 def cancel_order(order_number):
+    # Eligible customer order cancel karke order state aur stock update karta hai.
     # Valid order cancel karke product stock wapas add karta hai.
     if "user_id" not in session:
         return require_customer_login(url_for("cancel_order", order_number=order_number))
@@ -904,6 +1015,7 @@ def cancel_order(order_number):
 
 @app.route("/orders/success/<order_number>")
 def order_success(order_number):
+    # Order placement ke baad confirmation page ke liye order summary load karta hai.
     # Newly placed order ki confirmation screen.
     if session.get("last_order_number") != order_number:
         abort(404)
@@ -935,6 +1047,7 @@ def order_success(order_number):
 
 @app.route("/track-order", methods=["GET", "POST"])
 def track_order():
+    # Order number aur contact details se delivery/status information dhoondhta hai.
     # Order ID aur phone se order tracking/status dikhata hai.
     order = None
     error = None
@@ -973,6 +1086,7 @@ def track_order():
 
 @app.route("/seller/orders")
 def seller_orders():
+    # Logged-in seller ko uske products se jude customer orders dikhata hai.
     if not session.get("seller_logged_in"):
         return redirect(url_for("seller_login"))
     conn = None
@@ -1006,6 +1120,7 @@ def seller_orders():
 
 @app.route("/seller/orders/<int:item_id>/status", methods=["POST"])
 def seller_update_order_status(item_id):
+    # Seller ke apne order item ka fulfillment status update karta hai.
     if not session.get("seller_logged_in"):
         return redirect(url_for("seller_login"))
     new_status = request.form.get("status", "")
@@ -1048,6 +1163,7 @@ def seller_update_order_status(item_id):
 
 
 def ensure_order_tables(cursor):
+    # Zaroorat par order tables create karta hai; caller ka open database cursor use hota hai.
     cursor.execute(
         """
         CREATE TABLE IF NOT EXISTS orders (
@@ -1389,6 +1505,7 @@ def login():
 
 @app.route("/api/send-login-otp", methods=["POST"])
 def send_login_otp():
+    # Registered active email ke liye OTP generate/hash/store karke SMTP se send karta hai.
     data = request.get_json(silent=True) or {}
     email = str(data.get("email", "")).strip().lower()
     if len(email) > 255 or not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", email):
@@ -1450,6 +1567,7 @@ def send_login_otp():
 
 @app.route("/api/verify-login-otp", methods=["POST"])
 def verify_login_otp():
+    # OTP expiry, attempts aur code verify karke success par customer login session set karta hai.
     data = request.get_json(silent=True) or {}
     submitted = str(data.get("otp", "")).strip()
     otp_ref = session.get("login_otp_ref")
@@ -1485,6 +1603,7 @@ def verify_login_otp():
 # CUSTOMER REGISTER
 # =========================================================
 
+# Registration POST ko process karke validated details aur hashed password se customer account create karta hai.
 @app.route(
     "/register",
     methods=["POST"]
@@ -1715,6 +1834,7 @@ def register():
 
 @app.route("/My profile")
 def profile():
+    # Logged-in customer ki profile page ke liye account details load karta hai.
     # Customer profile page. Session mein user_id na ho to login page khulta hai.
 
     if "user_id" not in session:
@@ -1734,6 +1854,7 @@ def profile():
 
 @app.route("/logout")
 def logout():
+    # Customer session clear karke storefront par wapas bhejta hai.
     # Customer ka login/cart-related browser session clear karta hai.
 
     session.clear()
@@ -1749,6 +1870,7 @@ def logout():
 
 @app.route("/check-session")
 def check_session():
+    # Frontend account menu ko current customer login state JSON mein batata hai.
     # Home page JavaScript is API se check karta hai ki user login hai ya nahi.
 
     if "user_id" in session:
@@ -1778,6 +1900,7 @@ def check_session():
 # ADMIN REGISTER
 # =========================================================
 
+# Admin self-registration intentionally disabled; route returns 404 so public users cannot create admins.
 @app.route(
     "/admin/register",
     methods=["GET", "POST"]
@@ -1790,6 +1913,7 @@ def admin_register():
 # ADMIN LOGIN
 # =========================================================
 
+# Admin login page dikhata hai aur submitted credentials se admin session establish karta hai.
 @app.route(
     "/admin/login",
     methods=["GET", "POST"]
@@ -1918,6 +2042,7 @@ def admin_login():
 # =========================================================
 
 def admin_required():
+    # Admin-only routes ke liye session mein valid admin login verify karta hai.
     # Admin routes ko protect karne ka small helper.
 
     return (
@@ -1933,6 +2058,7 @@ def admin_required():
 
 @app.route("/admin")
 def admin_dashboard():
+    # Admin overview ke liye users, sellers, products aur orders ka dashboard data load karta hai.
     # Admin ko users, sellers, products aur orders ka overview deta hai.
 
     if not admin_required():
@@ -2120,6 +2246,7 @@ def admin_dashboard():
     "/admin/seller/<int:seller_id>"
 )
 def admin_view_seller(seller_id):
+    # Admin ko ek seller aur uske listed products/orders ki detail dikhata hai.
 
     if not admin_required():
 
@@ -2261,6 +2388,7 @@ def admin_view_seller(seller_id):
     "/admin/user/<int:user_id>"
 )
 def admin_view_user(user_id):
+    # Admin ko ek customer account aur uske order details dikhata hai.
 
     if not admin_required():
 
@@ -2398,6 +2526,8 @@ def admin_view_user(user_id):
 # =========================================================
 # ADMIN BLOCK / UNBLOCK SELLER
 # =========================================================
+
+# Admin action se seller account ka access status update hota hai.
 
 @app.route(
     "/admin/seller/<int:seller_id>/status",
@@ -2725,11 +2855,14 @@ def admin_change_user_status(
 # ADMIN DELETE USER
 # =========================================================
 
+# Admin action se customer account aur required dependent data remove hota hai.
+
 @app.route(
     "/admin/user/<int:user_id>/delete",
     methods=["POST"]
 )
 def admin_delete_user(user_id):
+    # Admin action par customer account ko database se delete karta hai.
 
     if not admin_required():
 
@@ -2804,6 +2937,7 @@ def admin_delete_user(user_id):
 
 @app.route("/admin/product/<int:product_id>/status", methods=["POST"])
 def admin_change_product_status(product_id):
+    # Admin product ko storefront par active ya hidden kar sakta hai.
     if not admin_required():
         return redirect(url_for("admin_login"))
     status = request.form.get("status", "").strip().lower()
@@ -2829,6 +2963,7 @@ def admin_change_product_status(product_id):
 
 @app.route("/admin/product/<int:product_id>/delete", methods=["POST"])
 def admin_delete_product(product_id):
+    # Admin selected product ko catalog se delete karta hai.
     if not admin_required():
         return redirect(url_for("admin_login"))
     conn = None
@@ -2856,6 +2991,7 @@ def admin_delete_product(product_id):
 
 @app.route("/admin/logout")
 def admin_logout():
+    # Admin session clear karke admin login page par bhejta hai.
 
     session.pop(
         "admin_logged_in",
@@ -2885,6 +3021,8 @@ def admin_logout():
 # =========================================================
 # SELLER REGISTER
 # =========================================================
+
+# Seller registration request validate karke seller account database mein create karta hai.
 
 @app.route(
     "/seller/register",
@@ -3080,6 +3218,8 @@ def seller_register():
 # SELLER LOGIN
 # =========================================================
 
+# Seller login page dikhata hai aur valid credentials par seller session start karta hai.
+
 @app.route(
     "/seller/login",
     methods=["GET", "POST"]
@@ -3231,6 +3371,7 @@ def seller_login():
 @app.route("/seller/logout")
 def seller_logout():
     # Seller session clear karke seller login page par bhejta hai.
+    # Logout ke baad private seller pages dobara kholne par login check dobara chalega.
 
     session.pop(
         "seller_logged_in",
@@ -3270,6 +3411,8 @@ def seller_logout():
 # =========================================================
 # SELLER - ADD PRODUCT
 # =========================================================
+
+# Seller-submitted product details aur image ko validate karke catalog mein save karta hai.
 
 @app.route(
     "/seller/add-product",
@@ -3541,6 +3684,7 @@ def seller_add_product():
 
 @app.route("/seller/dashboard")
 def seller_dashboard():
+    # Seller ke apne products, sales aur settings ka dashboard data load karta hai.
     # Logged-in seller ko sirf apne products aur sales information dikhata hai.
 
     if not session.get(
@@ -3652,6 +3796,7 @@ def seller_dashboard():
 
 @app.route("/seller/products/<int:product_id>/delete", methods=["POST"])
 def seller_delete_product(product_id):
+    # Ownership verify karke seller ko sirf apna product delete karne deta hai.
     """Seller can delete only a product that belongs to the current seller."""
     if not session.get("seller_logged_in") or not session.get("seller_id"):
         return redirect(url_for("seller_login"))
@@ -3699,6 +3844,7 @@ def seller_delete_product(product_id):
 
 @app.cli.command("create-admin")
 def create_admin_command():
+    # Flask CLI helper: development/setup ke waqt admin account create karta hai.
     """Create an administrator from the trusted local server console."""
     import click
 

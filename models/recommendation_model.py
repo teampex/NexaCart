@@ -3,6 +3,7 @@ import joblib
 import pandas as pd
 from pathlib import Path
 
+# Saved recommendation artifacts load karke category/browsing signals ke liye ranking helpers deta hai.
 MODEL_DIR = Path(__file__).resolve().parent
 
 

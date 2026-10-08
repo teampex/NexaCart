@@ -1,3 +1,4 @@
+// Admin login form validation aur Flask login response ke mutabik navigation.
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
